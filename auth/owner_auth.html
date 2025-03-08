@@ -11,9 +11,14 @@
         ;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/png" href="assets/logo-sm.png" />
+    <link rel="icon" type="image/png" href="../assets/logo-sm.png" />
     <link rel="stylesheet" href="/dormies/styles/auth.css" />
     <script type="module" src="/dormies/js/auth.js" defer></script>
+    <script
+      type="module"
+      src="/dormies/js/firebase/owner_auth.js"
+      defer
+    ></script>
     <title>Dormies - Owner Login</title>
   </head>
   <body>
@@ -49,7 +54,6 @@
               type="email"
               id="owner_email"
               name="owner_email"
-              required
             />
 
             <label for="owner_password">Password</label>
@@ -59,12 +63,9 @@
               type="password"
               id="owner_password"
               name="owner_password"
-              required
             />
 
-            <button class="reg-btn" type="submit" id="owner_submit">
-              Login
-            </button>
+            <button class="reg-btn" type="submit" id="login_btn">Login</button>
           </form>
         </div>
       </div>

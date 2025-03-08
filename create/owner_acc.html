@@ -14,6 +14,7 @@
     <link rel="icon" type="image/png" href="../assets/logo-sm.png" />
     <link rel="stylesheet" href="../styles/create.css" />
     <script type="module" src="../js/create.js" defer></script>
+    <script type="module" src="../js/firebase/owner.js" defer></script>
     <title>Dormies - Owner Sign Up</title>
   </head>
   <body>
@@ -42,47 +43,47 @@
             <a href="../auth/owner_auth.html">Sign In</a>
           </p>
           <form class="owner">
-            <label for="owner_name_up">Name</label>
+            <label for="owner_name">Name</label>
             <input
               placeholder="Enter your name"
               class="owner-input"
               type="text"
-              id="owner_name_up"
+              id="owner_name"
               name="owner_name"
               required
             />
 
-            <label for="owner_bisname_up">Dorm Name</label>
+            <label for="owner_bisname">Dorm Name</label>
             <input
               placeholder="Enter business name"
               class="owner-input"
               type="text"
-              id="owner_bisname_up"
-              name="owner_first_name"
+              id="owner_bisname"
+              name="owner_bisname"
               required
             />
 
-            <label for="owner_email_up">Email</label>
+            <label for="owner_remail">Email</label>
             <input
               placeholder="Enter your email"
               class="owner-input"
               type="email"
-              id="owner_email_up"
-              name="owner_email"
+              id="owner_remail"
+              name="owner_remail"
               required
             />
 
-            <label for="owner_password_up">Password</label>
+            <label for="owner_rpassword">Password</label>
             <input
               placeholder="Enter your password"
               class="owner-input"
               type="password"
-              id="owner_password_up"
-              name="owner_password"
+              id="owner_rpassword"
+              name="owner_rpassword"
               required
             />
 
-            <button class="reg-btn" type="submit" id="owner_submit_up">
+            <button class="reg-btn" type="submit" id="owner_submit">
               Sign Up
             </button>
           </form>
