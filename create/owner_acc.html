@@ -11,16 +11,14 @@
         ;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/png" href="assets/logo-sm.png" />
-    <link rel="stylesheet" href="/dormies/styles/create_acc.css" />
-    <script type="module" src="/dormies/js/create_acc.js" defer></script>
-    <script type="module" src="/dormies/js/firebase.js" defer></script>
-    <title>Dormies - Sign Up</title>
+    <link rel="icon" type="image/png" href="../assets/logo-sm.png" />
+    <link rel="stylesheet" href="../styles/create.css" />
+    <script type="module" src="../js/create.js" defer></script>
+    <title>Dormies - Owner Sign Up</title>
   </head>
-
   <body>
     <div class="loader">
-      <img src="assets/logo-md.png" class="loader-img" alt="logo-md" />
+      <img src="../assets/logo-md.png" class="loader-img" alt="logo-md" />
       <div>
         <span>Find.</span>
         <span>Book.</span>
@@ -33,14 +31,15 @@
         <img
           class="reg-logo"
           id="reg_logo"
-          src="assets/logo-lg.png"
+          src="../assets/logo-lg.png"
           alt="logo-lg"
         />
 
         <div class="form-container">
           <h2>Create Account</h2>
           <p>
-            Already have an account? <button id="owner_btn">Sign In</button>
+            Already have an account?
+            <a href="../auth/owner_auth.html">Sign In</a>
           </p>
           <form class="owner">
             <label for="owner_name_up">Name</label>
@@ -85,67 +84,6 @@
 
             <button class="reg-btn" type="submit" id="owner_submit_up">
               Sign Up
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <div class="renter-sign-up" id="renter_sign_up">
-        <img
-          id="reg_logo"
-          class="reg-logo"
-          src="assets/logo-lg.png"
-          alt="logo-lg"
-        />
-
-        <div class="form-container">
-          <h2>Create Account</h2>
-          <p>
-            Already have an account? <button id="renter_btn">Sign In</button>
-          </p>
-          <form class="renter">
-            <label for="renter_name_up">Last Name</label>
-            <input
-              placeholder="Enter your last name"
-              class="renter-input"
-              type="text"
-              id="renter_name_up"
-              name="renter_name"
-              required
-            />
-
-            <label for="renter_first_name_up">First Name</label>
-            <input
-              placeholder="Enter your first name"
-              class="renter-input"
-              type="text"
-              id="renter_first_name_up"
-              name="renter_first_name"
-              required
-            />
-
-            <label for="renter_email_up">Email</label>
-            <input
-              placeholder="Enter your email"
-              class="renter-input"
-              type="email"
-              id="renter_email_up"
-              name="renter_email"
-              required
-            />
-
-            <label for="renter_password_up">Password</label>
-            <input
-              placeholder="Enter your password"
-              class="renter-input"
-              type="password"
-              id="renter_password_up"
-              name="renter_password"
-              required
-            />
-
-            <button class="reg-btn" type="submit" id="renter_submit_up">
-              Create Account
             </button>
           </form>
         </div>

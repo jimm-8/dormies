@@ -17,13 +17,12 @@ setTimeout(() => {
   }, 800);
 }, 3000);
 
-const owner_btn = document.getElementById("owner_btn");
-const renter_btn = document.getElementById("renter_btn");
+const reg_logo = document.getElementById("reg_logo");
 
-owner_btn.addEventListener("click", () => {
-  window.location.href = "/dormies/create/owner_acc.html";
-});
-
-renter_btn.addEventListener("click", () => {
-  window.location.href = "/dormies/create/renter_acc.html";
-});
+if (reg_logo) {
+  reg_logo.addEventListener("click", () => {
+    location.href = "/dormies/";
+  });
+} else {
+  console.error("Element #reg_logo not found in the DOM.");
+}

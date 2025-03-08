@@ -74,17 +74,11 @@
   }
 }
 
-#owner_sign_up,
-#renter_sign_up {
-  display: none;
-}
-
 #main {
   display: none;
-  opacity: 0;
   position: fixed;
-  width: 100vw;
   height: 100vh;
+  width: 100vw;
 }
 
 .renter-sign-up,
@@ -102,24 +96,24 @@
 }
 
 .reg-logo {
-  width: 250px;
+  width: 200px;
   height: auto;
   margin-bottom: 20px;
   animation: fadeInDown 1s ease-in-out;
-  margin-top: 30px;
+  margin-top: -10px;
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: 1.7rem;
   font-weight: bold;
   color: #fff;
   font-family: "Poppins", sans-serif;
   margin-bottom: 20px;
-  margin-top: -40px;
+  margin-top: -25px;
 }
 
 p {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: #fff;
   font-family: "Poppins", sans-serif;
   margin-bottom: 10px;
@@ -128,7 +122,7 @@ p {
 
 .form-container {
   background: linear-gradient(135deg, #ffe745, #3533cd);
-  padding: 50px;
+  padding: 30px;
   border-radius: 40px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -140,7 +134,7 @@ p {
 }
 
 label {
-  font-size: 14px;
+  font-size: 13px;
   text-align: left;
   display: block;
   font-family: "Poppins", sans-serif;
@@ -219,5 +213,67 @@ label {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .renter-sign-up,
+  .owner-sign-up {
+    padding: 20px;
+  }
+
+  .form-container {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .renter-input,
+  .owner-input {
+    width: 90%;
+  }
+
+  .reg-btn {
+    width: 100%;
+  }
+
+  .reg-logo {
+    width: 150px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .renter-input,
+  .owner-input {
+    width: 90%;
+  }
+
+  .reg-btn {
+    width: 100%;
+  }
+
+  .reg-logo {
+    width: 130px;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    margin-top: -10px;
+  }
+
+  p {
+    font-size: 0.75rem;
   }
 }
