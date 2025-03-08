@@ -31,8 +31,8 @@ document.addEventListener("DOMContentLoaded", () => {
   signIn.addEventListener("click", async (event) => {
     event.preventDefault();
 
-    const email = document.getElementById("renter_email").value;
-    const password = document.getElementById("renter_password").value;
+    const email = document.getElementById("owner_email").value;
+    const password = document.getElementById("owner_password").value;
 
     const auth = getAuth(app);
     const db = getFirestore(app);
