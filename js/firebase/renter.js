@@ -40,7 +40,7 @@ signUp.addEventListener("click", (event) => {
         email: email,
         lastname: lastname,
         firstname: firstname,
-        role: "owner",
+        role: "renter",
       };
       const docRef = doc(db, "renters", user.uid);
       setDoc(docRef, userData)
