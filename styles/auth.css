@@ -1,29 +1,29 @@
 :root {
-    --blue: #03045e;
-    --yellow: #ffb703;
-    --black: #151f28;
-  }
+  --blue: #03045e;
+  --yellow: #ffb703;
+  --black: #151f28;
+}
 
 /* Loader CSS */
 .loader {
-    --color: #a5a5b0;
-    --size: 70px;
-    width: 100vw;
-    height: 100vh;
-    background-color: #fff;
-    position: fixed;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 20px; 
-  }
+  --color: #a5a5b0;
+  --size: 70px;
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
+  position: fixed;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
 
 .loader-img {
   width: 300px;
   height: auto;
-  margin-top: -6%; 
+  margin-top: -6%;
 }
 
 .loader div {
@@ -74,10 +74,6 @@
   }
 }
 
-#owner_sign_in, #renter_sign_in {
-  display: none;
-}
-
 #main {
   display: none;
   opacity: 0;
@@ -86,7 +82,8 @@
   height: 100vh;
 }
 
-.renter-sign-in, .owner-sign-in {
+.renter-sign-in,
+.owner-sign-in {
   background-image: url("../assets/bg.png");
   background-size: cover;
   background-position: center;
@@ -104,14 +101,14 @@
   height: auto;
   margin-bottom: 20px;
   animation: fadeInDown 1s ease-in-out;
-  margin-top: 100px;
+  margin-top: -25px;
 }
 
 h2 {
   font-size: 2rem;
   font-weight: bold;
   color: #fff;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   margin-bottom: 20px;
   margin-top: -40px;
 }
@@ -119,7 +116,7 @@ h2 {
 p {
   font-size: 0.8rem;
   color: #fff;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   margin-bottom: 10px;
   margin-top: -25px;
 }
@@ -141,12 +138,13 @@ label {
   font-size: 14px;
   text-align: left;
   display: block;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   color: #fff;
   margin-bottom: -2px;
 }
 
-.renter-input, .owner-input {
+.renter-input,
+.owner-input {
   width: 430px;
   padding: 10px;
   border-radius: 30px;
@@ -158,37 +156,38 @@ label {
   color: var(--black);
 }
 
-.renter, .owner {
+.renter,
+.owner {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
 }
 
-
 .reg-btn {
-border: 3px solid var(--blue);
-border-radius: 30px;
-font-size: 1.2rem;
-cursor: pointer;
-font-family: 'Poppins', sans-serif;
-transition: all 0.3s ease-in-out;
-width: 450px;
-text-align: center;
-background: var(--blue);
-margin-top: 20px;
-height: 50px;
-color: #fff;
-align-items: middle;
+  border: 3px solid var(--blue);
+  border-radius: 30px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  transition: all 0.3s ease-in-out;
+  width: 450px;
+  text-align: center;
+  background: var(--blue);
+  margin-top: 20px;
+  height: 50px;
+  color: #fff;
+  align-items: middle;
 }
 
 .reg-btn:hover {
-background-color: transparent;
-color: white;
-transform: scale(1.05);
+  background-color: transparent;
+  color: white;
+  transform: scale(1.05);
 }
 
-#owner_btn, #renter_btn {
+#owner_btn,
+#renter_btn {
   background-color: transparent;
   border: none;
   color: #fff;
@@ -215,5 +214,67 @@ transform: scale(1.05);
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .renter-sign-in,
+  .owner-sign-in {
+    padding: 20px;
+  }
+
+  .form-container {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .renter-input,
+  .owner-input {
+    width: 90%;
+  }
+
+  .reg-btn {
+    width: 100%;
+  }
+
+  .reg-logo {
+    width: 150px;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .renter-input,
+  .owner-input {
+    width: 90%;
+  }
+
+  .reg-btn {
+    width: 100%;
+  }
+
+  .reg-logo {
+    width: 130px;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+    margin-top: -10px;
+  }
+
+  p {
+    font-size: 0.75rem;
   }
 }

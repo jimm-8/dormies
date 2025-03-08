@@ -11,15 +11,19 @@
         ;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/png" href="assets/logo-sm.png" />
+    <link rel="icon" type="image/png" href="../assets/logo-sm.png" />
     <link rel="stylesheet" href="/dormies/styles/auth.css" />
     <script type="module" src="/dormies/js/auth.js" defer></script>
-    <script type="module" src="/dormies/js/firebase.js" defer></script>
-    <title>Dormies - Login</title>
+    <script
+      type="module"
+      src="/dormies/js/firebase/owner_auth.js"
+      defer
+    ></script>
+    <title>Dormies - Owner Login</title>
   </head>
   <body>
     <div class="loader">
-      <img src="assets/logo-md.png" class="loader-img" alt="logo-md" />
+      <img src="../assets/logo-md.png" class="loader-img" alt="logo-md" />
       <div>
         <span>Find.</span>
         <span>Book.</span>
@@ -29,11 +33,19 @@
 
     <div id="main">
       <div class="owner-sign-in" id="owner_sign_in">
-        <img class="reg-logo" src="assets/logo-lg.png" alt="logo-lg" />
+        <img
+          id="reg_logo"
+          class="reg-logo"
+          src="../assets/logo-lg.png"
+          alt="logo-lg"
+        />
 
         <div class="form-container">
           <h2>Account Login</h2>
-          <p>Don't have an account? <button id="owner_btn">Sign Up</button></p>
+          <p>
+            Don't have an account?
+            <a href="../create/owner_acc.html">Sign Up</a>
+          </p>
           <form class="owner">
             <label for="owner_email">Email</label>
             <input
@@ -42,7 +54,6 @@
               type="email"
               id="owner_email"
               name="owner_email"
-              required
             />
 
             <label for="owner_password">Password</label>
@@ -52,46 +63,9 @@
               type="password"
               id="owner_password"
               name="owner_password"
-              required
             />
 
-            <button class="reg-btn" type="submit" id="owner_submit">
-              Login
-            </button>
-          </form>
-        </div>
-      </div>
-
-      <div class="renter-sign-in" id="renter_sign_in">
-        <img class="reg-logo" src="assets/logo-lg.png" alt="logo-lg" />
-
-        <div class="form-container">
-          <h2>Account Login</h2>
-          <p>Don't have an account? <button id="renter_btn">Sign Up</button></p>
-          <form class="renter">
-            <label for="renter_email">Email</label>
-            <input
-              placeholder="Enter your email"
-              class="renter-input"
-              type="email"
-              id="renter_email"
-              name="renter_email"
-              required
-            />
-
-            <label for="renter_password">Password</label>
-            <input
-              placeholder="Enter your password"
-              class="renter-input"
-              type="password"
-              id="renter_password"
-              name="renter_password"
-              required
-            />
-
-            <button class="reg-btn" type="submit" id="renter_submit">
-              Login
-            </button>
+            <button class="reg-btn" type="submit" id="login_btn">Login</button>
           </form>
         </div>
       </div>
