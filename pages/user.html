@@ -14,32 +14,11 @@
 </head>
 <body>
     <!-- Header -->
-     <!-- In the header section -->
     <header class="header">
         <nav class="nav container">
             <a href="./user.html" class="logo">
                 <img src="../assets/logo-lg.png" alt="Dormies Logo" class="logo-image">
             </a>
-            <!-- <div class="nav-mobile">
-                <ul class="list">
-                    <li class="list-item">
-                        <a href="#" class="list-link current">Home</a>
-                    </li>
-                    <li class="list-item">
-                        <a href="#" class="list-link">Listings</a>
-                    </li>
-                    <li class="list-item">
-                        <a href="#" class="list-link">About Us</a>
-                    </li>
-                    <li class="list-item">
-                        <a href="#" class="list-link">Contact</a>
-                    </li>
-                </ul>  
-                <button class="icon-btn menu-toggle-btn menu-toggle-close place-items-center">
-                    <i class="ri-close-line"></i>
-                </button>
-            </div> -->
-
             <div class="align-right">
                 <button class="icon-btn place-items-center account-btn">
                     <i class="ri-user-3-line"></i>
@@ -58,7 +37,7 @@
         </div>
 
         <!-- Listings Section -->
-        <div class="listings-container">
+        <div class="listings-container" style="display: flex; gap: 1rem; justify-content: center;">
             <!-- Listing 1 -->
             <a href="pages/listing1.html" class="listing-link">
                 <div class="listing-card">
@@ -73,26 +52,30 @@
             </a>
 
             <!-- Listing 2 -->
-            <div class="listing-card">
-                <img src="../assets/dorm2.jpg" alt="Dorm Room" class="listing-image">
-                <div class="verified-badge">
-                    <i class="ri-checkbox-circle-fill"></i> Verified
+            <a href="pages/listing2.html" class="listing-link">
+                <div class="listing-card">
+                    <img src="../assets/dorm2.jpg" alt="Dorm Room" class="listing-image">
+                    <div class="verified-badge">
+                        <i class="ri-checkbox-circle-fill"></i> Verified
+                    </div>
+                    <h3 class="title">Bedspace for Rent: Baxa Residence</h3>
+                    <p class="address">Neptune St., Golden Country Homes, Alangilan</p>
+                    <p class="price-tag">Starts at Php 1,900 monthly</p>
                 </div>
-                <h3 class="title">Bedspace for Rent: Baxa Residence</h3>
-                <p class="address">Neptune St., Golden Country Homes, Alangilan</p>
-                <p class="price-tag">Starts at Php 1,900 monthly</p>
-            </div>
+            </a>
 
             <!-- Listing 3 -->
-            <div class="listing-card">
-                <img src="../assets/dorm3.png" alt="Dorm Room" class="listing-image">
-                <div class="verified-badge">
-                    <i class="ri-checkbox-circle-fill"></i> Verified
+            <a href="pages/listing3.html" class="listing-link">
+                <div class="listing-card">
+                    <img src="../assets/dorm3.png" alt="Dorm Room" class="listing-image">
+                    <div class="verified-badge">
+                        <i class="ri-checkbox-circle-fill"></i> Verified
+                    </div>
+                    <h3 class="title">Bedspace for Rent: Alegre Suites</h3>
+                    <p class="address">Jupiter St., Golden Country Homes, Alangilan</p>
+                    <p class="price-tag">Starts at Php 2,500 monthly</p>
                 </div>
-                <h3 class="title">Bedspace for Rent: Alegre Suites</h3>
-                <p class="address">Jupiter St., Golden Country Homes, Alangilan</p>
-                <p class="price-tag">Starts at Php 2,500 monthly</p>
-            </div>
+            </a>
         </div>
     </main>
 
@@ -110,8 +93,5 @@
             </ul>
         </div>
     </footer>
-
-    <!-- Script -->
-    <!-- <script src="./assets/js/main.js"></script>     -->
 </body>
 </html>
