@@ -16,3 +16,8 @@ setTimeout(() => {
     }, 100);
   }, 800);
 }, 3000);
+
+const back = document.getElementById("back-btn");
+back.addEventListener("click", () => {
+  location.href = "/dormies/pages/owner.html";
+});
