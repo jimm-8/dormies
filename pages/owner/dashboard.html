@@ -1,38 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/dormies/assets/logo-sm.png" />
-    <title>Owner - Dashboard</title>
-    <link rel="stylesheet" href="/dormies/styles/admin.css" />
-    <link rel="stylesheet" href="/dormies/styles/owner/dashboard.css" />
-    <script type="module" src="/dormies/js/admin.js"></script>
-  </head>
-  <body>
-    <!-- Sidebar & Navbar Will Be Loaded Here -->
-    <div id="sidebar-container"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="../styles/main.css" />
+</head>
+<body>
+  <!-- Sidebar & Navbar Will Be Loaded Here -->
+  <div id="sidebar-container"></div>
 
-    <div id="main">
-      <div class="main-content">
-        <div>
-          <h5>Good day!</h5>
-          <h1><span id="owner_name"></span></h1>
-        </div>
+  <main>
+    <h1>Welcome to the Dashboard</h1>
+  </main>
 
-        <div class="main-list">
-          <div class="title">
-            <h3>Your Listings</h3>
-          </div>
-        </div>
-      </div>
-    </div>
+  <script>
+    fetch("/dormies/pages/owner.html")
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("sidebar-container").innerHTML = data;
 
-    <script>
+        // Sidebar toggle menu script
+        document.getElementById("menu-btn").addEventListener("click", () => {
+          document.getElementById("nav-list").classList.toggle("active");
+        });
+
+        // Account button click event
+        document.getElementById("acc_btn").addEventListener("click", () => {
+          location.href = "../pages/owner/account.html";
+        });
+      })
+      .catch(error => console.error("Error loading sidebar:", error));
+      let logo = document.querySelector(".side-logo");
+        if (logo) {
+          logo.src = "/dormies/assets/logo-md.png";
+          console.log("Logo updated:", logo.src);
+        }
+
+        let logoLoader = document.querySelector(".loader-img");
+        if (logoLoader) {
+          logoLoader.src = "/dormies/assets/logo-md.png";
+          console.log("Logo updated:", logoLoader.src);
+        }
+  </script>
+</body>
+</html>
+
+
+    <!-- <script>
       document.addEventListener("DOMContentLoaded", function () {
         console.log("DOM Loaded. Fetching sidebar...");
 
-        // Load sidebar and navbar dynamically
         fetch("/dormies/pages/owner.html")
           .then((response) => response.text())
           .then((data) => {
@@ -45,11 +63,21 @@
 
             sidebarContainer.innerHTML = data;
 
-            // Run initialization AFTER inserting sidebar
             initializeSidebar();
           })
           .catch((error) => console.error("Error loading sidebar:", error));
       });
+      let logo = document.querySelector(".side-logo");
+        if (logo) {
+          logo.src = "/dormies/assets/logo-md.png";
+          console.log("Logo updated:", logo.src);
+        }
+
+        let logoLoader = document.querySelector(".loader-img");
+        if (logoLoader) {
+          logoLoader.src = "/dormies/assets/logo-md.png";
+          console.log("Logo updated:", logoLoader.src);
+        }
 
       function initializeSidebar() {
         console.log("Sidebar Loaded! Running initialization...");
@@ -69,7 +97,6 @@
           });
         }
 
-        // Highlight active sidebar link
         let currentPage = window.location.pathname.split("/").pop();
         document.querySelectorAll(".nav-list-item").forEach((link) => {
           if (link.getAttribute("href").includes(currentPage)) {
@@ -77,7 +104,6 @@
           }
         });
 
-        // Fix logo path dynamically
         let logo = document.querySelector(".side-logo");
         if (logo) {
           logo.src = "/dormies/assets/logo-md.png";
@@ -89,7 +115,7 @@
           logoLoader.src = "/dormies/assets/logo-md.png";
           console.log("Logo updated:", logoLoader.src);
         }
-      }
+      } -->
     </script>
   </body>
 </html>
