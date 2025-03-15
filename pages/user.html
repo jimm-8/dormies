@@ -1,12 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="../assets/logo-sm.png" />
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User</title>
-  </head>
-  <body>
-    WOW
-  </body>
+    <link rel="icon" type="image/png" href="../assets/logo-sm.png">
+    <!-- Remix icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="../styles/user.css">
+  
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <a href="../pages/user.html" class="logo">
+                <img src="../assets/logo-lg.png" alt="Dormies Logo" class="logo-image">
+            </a>
+            <div class="align-right">
+                <a href="../pages/usraccount.html" class="icon-btn place-items-center account-btn" style="text-decoration: none; color: inherit;">
+                    <i class="ri-user-3-line"></i>
+                    <span>Account</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+    
+    
+
+    <!-- Main Content -->
+    <main class="container" style="margin-top: 2rem;">
+        <h1 class="title" style="text-align: center; margin-bottom: 1rem;">Find dorms for rent with Dormies</h1>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Where do you want to stay?">
+        </div>
+
+        <!-- Listings Section -->
+        <div class="listings-container" style="display: flex; gap: 1rem; justify-content: center;">
+            <!-- Listing 1 -->
+            <div class="landing-page-buttons">
+                <a href="../pages/listing1.html" class="listing-link">
+                    <div class="listing-card">
+                        <img src="../assets/dorm1.jpg" alt="Dorm Room" class="listing-image">
+                        <div class="verified-badge">
+                            <i class="ri-checkbox-circle-fill"></i> Verified
+                        </div>
+                        <h3 class="title">Bedspace for Rent: Jose Residencia</h3>
+                        <p class="address">Mars St., Golden Country Homes, Alangilan</p>
+                        <p class="price-tag">Starts at Php 2,500 monthly</p>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Listing 2 -->
+            <a href="../pages/listing2.html" class="listing-link">
+                <div class="listing-card">
+                    <img src="../assets/dorm2.jpg" alt="Dorm Room" class="listing-image">
+                    <div class="verified-badge">
+                        <i class="ri-checkbox-circle-fill"></i> Verified
+                    </div>
+                    <h3 class="title">Bedspace for Rent: Baxa Residence</h3>
+                    <p class="address">Neptune St., Golden Country Homes, Alangilan</p>
+                    <p class="price-tag">Starts at Php 1,900 monthly</p>
+                </div>
+            </a>
+
+            <!-- Listing 3 -->
+            <a href="../pages/listing3.html" class="listing-link">
+                <div class="listing-card">
+                    <img src="../assets/dorm3.png" alt="Dorm Room" class="listing-image">
+                    <div class="verified-badge">
+                        <i class="ri-checkbox-circle-fill"></i> Verified
+                    </div>
+                    <h3 class="title">Bedspace for Rent: Alegre Suites</h3>
+                    <p class="address">Jupiter St., Golden Country Homes, Alangilan</p>
+                    <p class="price-tag">Starts at Php 2,500 monthly</p>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container container">
+            <span class="copyright-information">&copy; 2025 Dormies</span>
+            <ul class="list">
+                <li class="list-item">
+                    <a href="#" class="list-link">Terms and Conditions</a>
+                </li>
+                <li class="list-item">
+                    <a href="#" class="list-link">Privacy Policy</a>
+                </li>
+            </ul>
+        </div>
+    </footer>
+</body>
 </html>
