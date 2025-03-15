@@ -20,22 +20,64 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-document.addEventListener("DOMContentLoaded", () => {
-  const signIn = document.getElementById("login_btn");
+function showMessageBox(message, callback = null) {
+  const messageBox = document.getElementById("messageBox");
+  const messageText = document.getElementById("messageText");
 
-  if (!signIn) {
+  messageText.innerText = message;
+  messageBox.classList.remove("hide"); // Remove hide animation if it's there
+  messageBox.classList.add("show"); // Apply slide-down animation
+  messageBox.style.display = "block"; // Ensure it is visible
+
+  if (callback) {
+    setTimeout(() => {
+      closeMessageBox();
+      callback();
+    }, 2000);
+  }
+}
+
+function closeMessageBox() {
+  const messageBox = document.getElementById("messageBox");
+  messageBox.classList.remove("show"); // Remove slide-down animation
+  messageBox.classList.add("hide"); // Apply slide-up animation
+
+  setTimeout(() => {
+    messageBox.style.display = "none"; // Hide after animation completes
+  }, 500); // Wait for animation to finish
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const closeBtn = document.getElementById("closeMessageBox");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeMessageBox);
+  } else {
+    console.error("Close button not found.");
+  }
+
+  const loginBtn = document.getElementById("login_btn");
+
+  if (!loginBtn) {
     console.error("Button with ID 'login_btn' not found.");
     return;
   }
 
-  signIn.addEventListener("click", async (event) => {
+  loginBtn.addEventListener("click", async (event) => {
     event.preventDefault();
 
     const email = document.getElementById("renter_email").value;
     const password = document.getElementById("renter_password").value;
 
+    if (!email || !password) {
+      showMessageBox("Please fill in both email and password.");
+      return;
+    }
+
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+    loginBtn.innerText = "Logging in...";
+    loginBtn.disabled = true;
 
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -50,19 +92,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const ownerDocSnap = await getDoc(ownerDocRef);
 
       if (ownerDocSnap.exists()) {
-        alert("Login successful");
+        showMessageBox("Login successful");
         localStorage.setItem("loggedInUserId", user.uid);
         window.location.href = "/dormies/pages/user.html";
       } else {
-        alert("Unauthorized access. This account is not an owner.");
+        showMessageBox("Unauthorized access. This account is not an owner.");
       }
     } catch (error) {
       const errorCode = error.code;
       if (errorCode === "auth/invalid-credential") {
-        alert("Incorrect email or password");
+        showMessageBox("Incorrect email or password");
       } else {
-        alert("Account does not exist");
+        showMessageBox("Account does not exist");
       }
+    } finally {
+      loginBtn.innerText = "Login";
+      loginBtn.disabled = false;
     }
   });
 });
