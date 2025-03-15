@@ -122,6 +122,7 @@ i {
   color: var(--black);
   display: inline-block;
   margin-right: 10px;
+  cursor: pointer;
 }
 
 /* Footer */
