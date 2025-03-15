@@ -2,7 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
 import {
   getAuth,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import {
   getFirestore,
@@ -21,43 +20,105 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-const signUp = document.getElementById("renter_submit");
-signUp.addEventListener("click", (event) => {
-  event.preventDefault();
+function showMessageBox(message, callback = null) {
+  const messageBox = document.getElementById("messageBox");
+  const messageText = document.getElementById("messageText");
 
-  const lastname = document.getElementById("renter_lname").value;
-  const firstname = document.getElementById("renter_fname").value;
-  const email = document.getElementById("renter_remail").value;
-  const password = document.getElementById("renter_rpassword").value;
+  messageText.innerText = message;
+  messageBox.classList.remove("hide"); // Remove hide animation if it's there
+  messageBox.classList.add("show"); // Apply slide-down animation
+  messageBox.style.display = "block"; // Ensure it is visible
 
-  const auth = getAuth();
-  const db = getFirestore();
+  if (callback) {
+    setTimeout(() => {
+      closeMessageBox();
+      callback();
+    }, 2000);
+  }
+}
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+function closeMessageBox() {
+  const messageBox = document.getElementById("messageBox");
+  messageBox.classList.remove("show"); // Remove slide-down animation
+  messageBox.classList.add("hide"); // Apply slide-up animation
+
+  setTimeout(() => {
+    messageBox.style.display = "none"; // Hide after animation completes
+  }, 500); // Wait for animation to finish
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const closeBtn = document.getElementById("closeMessageBox");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeMessageBox);
+  } else {
+    console.error("Close button not found.");
+  }
+
+  const signUp = document.getElementById("renter_submit");
+
+  if (!signUp) {
+    console.error("Button with ID 'renter_submit' not found.");
+    return;
+  }
+
+  signUp.addEventListener("click", async (event) => {
+    event.preventDefault();
+
+    const lastname = document.getElementById("renter_lname").value.trim();
+    const firstname = document.getElementById("renter_fname").value.trim();
+    const email = document.getElementById("renter_remail").value.trim();
+    const password = document.getElementById("renter_rpassword").value.trim();
+
+    if (!lastname || !firstname || !email || !password) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Start loading
+    signUp.innerText = "Creating account...";
+    signUp.disabled = true;
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
+
       const userData = {
         email: email,
         lastname: lastname,
         firstname: firstname,
-        role: "owner",
+        role: "renter",
       };
-      const docRef = doc(db, "renters", user.uid);
-      setDoc(docRef, userData)
-        .then(() => {
-          alert("Account created successfully");
+
+      await setDoc(doc(db, "renters", user.uid), userData);
+
+      showMessageBox(
+        "Account created successfully! Redirecting to Login...",
+        () => {
           window.location.href = "/dormies/auth/renter_auth.html";
-        })
-        .catch((error) => {
-          console.error("Error adding document: ", error);
-        });
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      if (errorCode == "auth/email-already-in-use") {
-        alert("Email already in use");
+        }
+      );
+    } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        showMessageBox("Email already in use.");
+      } else if (error.code === "auth/weak-password") {
+        showMessageBox("Password should be at least 6 characters.");
       } else {
-        alert("Error creating account");
+        showMessageBox("Error creating account: " + error.message);
       }
-    });
+    } finally {
+      // Reset button regardless of success or failure
+      setTimeout(() => {
+        signUp.innerText = "Sign Up";
+        signUp.disabled = false;
+      }, 4000);
+    }
+  });
 });
