@@ -13,9 +13,18 @@
   --black: #151f28;
 }
 
+#main {
+  display: none;
+  opacity: 0;
+  position: fixed;
+  width: 100vw;
+  min-height: 100vh;
+}
+
 .main-content {
   margin-left: 330px;
   margin-top: 80px;
+  z-index: 1000;
 }
 
 h5 {
