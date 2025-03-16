@@ -102,22 +102,23 @@ body {
     background: white;
     border-radius: 0px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-bottom: 3px solid #dad700;
-    border-top: 3px solid #dad700;
+    border-bottom: 4px solid #dad700;
+    border-top: 4px solid #dad700;
 }
 .title-container h1 {
-    margin-bottom: 0.75rem; /* Space between title and verified badge */
+    margin-bottom: 5rem; /* Space between title and verified badge */
 }
 
 .verified-badge {
-    margin-bottom: 1rem; /* Space between badge and address */
     background: #0527a4;
     color: white;
-    padding: 8px 16px;
     border-radius: 20px;
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    margin-bottom: 0;
 }
 .title-badge-container {
     display: flex;
@@ -129,12 +130,6 @@ body {
 .title-container h1 {
     margin-bottom: 0;
     font-size: 1.8rem;
-}
-
-.verified-badge {
-    padding: 6px 12px;
-    font-size: 0.9rem;
-    margin-bottom: 0;
 }
 
 .price-section {
@@ -159,7 +154,7 @@ body {
 
 .details-grid {
     display: grid;
-    grid-template-columns: 1.8fr 0.7fr; /* Adjust ratio as needed */
+    grid-template-columns: minmax(0, 1fr) 300px; /* Explicit right column width */
     gap: 3rem;
     align-items: start;
     margin: 2rem 0;
@@ -167,11 +162,46 @@ body {
 
 .details-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Equal columns */
     gap: 1.5rem;
-    padding-bottom: 2rem;
-    margin-bottom: 1rem;
-    border-bottom: 3px solid #dad700;
+    width: 100%;
+    padding-bottom: 2rem; 
+    min-width: 0; /* Crucial for grid containment */
+    border-bottom: 4px solid #dad700;
+}
+
+.inclusion_payment-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.1rem;
+    width: 100%; /* Add this */
+}
+.inclusion_payment-item p {
+    margin: 0;
+    margin-bottom: 0.1rem;
+    font-size: 1.1rem;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+} 
+
+.inclusion_payment-item i {
+    font-size: 1.4rem;
+    padding: 0rem 0;
+    gap: 0.1rem;
+    color: #0527a4;
+    min-width: 30px;
+    flex-shrink: 0; 
+}
+
+.grid-wrapper {
+    min-width: 0;
+}
+
+.payment-terms {
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .inquire-section {
@@ -180,10 +210,12 @@ body {
     border-radius: 40px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     width: 100%; 
+    height: fit-content;
     max-width: 270px; 
     position: sticky;
     top: 20px;
     margin-left: auto;
+    flex-shrink: 0;
     border: 4px solid #0527a4;
 }
 
@@ -215,9 +247,9 @@ textarea {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: auto;     /* Pushes to bottom */
-    width: 100%;          /* Full container width */
-    max-width: none;      /* Remove max-width constraint */
+    margin-top: auto;   
+    width: 100%;          
+    max-width: none;      
     align-self: center;
 }
 
@@ -228,8 +260,9 @@ textarea {
 
 .tab-container {
     display: flex;
-    border-bottom: 2px solid #eee;
     margin-bottom: 1rem;
+    gap: 5px; 
+    padding: 1px; 
 }
 
 .tab-button {
@@ -240,15 +273,15 @@ textarea {
     cursor: pointer;
     font-weight: 500;
     transition: all 0.3s ease;
+    border-radius: 50px;
+    border: 3px solid #0527a4;
 }
 
 .tab-button.active {
-    background: white;
-    border-bottom: 3px solid #dad700;
+    background: #dad700;
+    border: 3px solid #0527a4;
     font-weight: 700;
 }
-
-
 
 .schedule-form.active,
 .inquire-form.active {
@@ -273,6 +306,108 @@ textarea {
     border: 1px solid #ddd;
     border-radius: 6px;
 }
+
+/* Reviews Section */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.reviews-container {
+    margin: -5rem 0;
+    padding: 1rem;
+    background: #ffffff;
+    border-radius: 10px;
+}
+.reviews-container h2 {
+    margin-right: auto; 
+    color: #0527a4;
+    font-size: 1.8rem;
+    margin: 0;
+    font-size: 1.6rem;
+    line-height: 1.3;
+}
+
+.reviews-list {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.review-card {
+    background: #F0efe7;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.user-info i {
+    font-size: 1.4rem;
+    color: #3498db;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #dad700;
+    font-weight: 600;
+}
+
+.review-text {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.review-date {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+.feedback-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background-color: #0527a4;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    margin-right: 21rem;
+}
+
+
+.feedback-button:hover {
+    background-color: #dad700;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.feedback-button i {
+    font-size: 1rem;
+}
+
 
 .footer {
     background-color: #171721;

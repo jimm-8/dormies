@@ -19,7 +19,7 @@ setTimeout(() => {
 
 const back = document.getElementById("back-btn");
 back.addEventListener("click", () => {
-  location.href = "/dormies/pages/owner.html";
+  location.href = "/dormies/pages/owner/dashboard.html";
 });
 
 document.addEventListener("DOMContentLoaded", function () {

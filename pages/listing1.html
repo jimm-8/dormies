@@ -7,7 +7,7 @@
     <title>User</title>
     <link rel="icon" type="image/png" href="../assets/logo-sm.png">
     <!-- Remix icons -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <!-- Stylesheets -->
     <link rel="stylesheet" href="../styles/listing.css">
   
@@ -58,21 +58,51 @@
 
         <div class="details-grid">
             <!-- Left Column Container -->
-            <div class="details-container">
-                <section class="inclusions">
-                    <h2>INCLUSIONS</h2>
-                    <p>2 double deck with mattress</p>
-                    <p>Refrigerator</p>
-                    <p>Kitchen</p>
-                </section>
-        
-                <section class="payment-terms">
-                    <h2>PAYMENT TERMS</h2>
-                    <p>Advance Payments: ₱4,000 (2 months)</p>
-                    <p>Minimum Stay: 6 months</p>
-                    <p>Electricity Bills: Not Included</p>
-                    <p>Water Bills: Not Included</p>
-                </section>
+            <div class="grid-wrapper">
+                <div class="details-container">
+                    <section class="inclusions">
+                        <h2>INCLUSIONS</h2>
+                        <div class="inclusion_payment-item">
+                            <i class="ri-women-line"></i>
+                            <p>Female only</p>
+                        </div>
+                        <div class="inclusion_payment-item">
+                            <i class="ri-hotel-bed-line"></i>
+                            <p>2 Double Deck with Mattress</p>
+                        </div>
+                        <div class="inclusion_payment-item">
+                            <i class="ri-fridge-line"></i>
+                            <p>Refrigerator</p>
+                        </div>
+                        <div class="inclusion_payment-item">
+                            <i class="ri-home-smile-line"></i>
+                            <p>Kitchen</p>
+                        </div>
+                        <div class="inclusion_payment-item">
+                            <i class="ri-user-shared-line"></i>
+                            <p>Shared Bathroom</p>
+                        </div>
+                    </section>
+                    <section class="payment-terms">
+                        <h2>PAYMENT TERMS</h2>
+                        <div class="inclusion_payment-item">
+                            <i class="ri-currency-line"></i>
+                            <p>Advance Payments: ₱4,000 (2 months)</p>
+                        </div>
+                        <div class="inclusion_payment-item">
+                            <i class="ri-home-heart-line"></i>
+                            <p>Minimum Stay: 6 months</p>
+                        </div>
+                        <div class="inclusion_payment-item">
+                            <i class="ri-lightbulb-flash-line"></i>
+                            <p>Electricity Bills: Not Included</p>
+                        </div>
+                        <div class="inclusion_payment-item">
+                            <i class="ri-water-flash-line"></i>
+                            <p>Water Bills: Not Included</p>
+                        </div>
+                    </section>
+                </div>
             </div>
         
             <!-- Right Column -->
@@ -102,7 +132,57 @@
                 </form>
             </section>
         </div>
-    
+
+            <!-- Reviews and Feedback-->
+            <section class="reviews-container container">
+                <div class="section-header">
+                    <h2>Tenant Reviews & Feedback</h2>
+                    <a href="feedback.html" class="feedback-button">
+                        <i class="ri-edit-2-line"></i>
+                        Write a Review
+                    </a>
+                </div>
+
+                <!-- Reviews List -->
+                <div class="reviews-list">
+                    <!-- Review 1 -->
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="user-info">
+                                <i class="ri-user-3-fill"></i>
+                                <span class="user-name">E**c *a**n</span>
+                            </div>
+                            <div class="rating">
+                                <i class="ri-star-fill"></i>
+                                <span>4.5</span>
+                            </div>
+                        </div>
+                        <p class="review-text">
+                            "Great location and friendly housemates. The kitchen facilities are well-maintained."
+                        </p>
+                        <span class="review-date">Posted on March 15, 2025</span>
+                    </div>
+        
+                    <!-- Review 2 -->
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="user-info">
+                                <i class="ri-user-3-fill"></i>
+                                <span class="user-name">E*me*g**d A*d**</span>
+                            </div>
+                            <div class="rating">
+                                <i class="ri-star-fill"></i>
+                                <span>5.0</span>
+                            </div>
+                        </div>
+                        <p class="review-text">
+                            "Ang pogi ng kasama sa room."
+                        </p>
+                        <span class="review-date">Posted on February 28, 2025</span>
+                    </div>
+                </div> 
+        
+            </section>
     </main> 
 
     <!-- Footer -->
@@ -119,6 +199,7 @@
             </ul>
         </div>
     </footer>
+
     <script>
         const tabs = document.querySelectorAll('.tab-button');
         
