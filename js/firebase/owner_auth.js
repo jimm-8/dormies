@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (ownerDocSnap.exists()) {
         showMessageBox("Login successful. Redirecting...");
         localStorage.setItem("loggedInUserId", user.uid);
-        window.location.href = "/dormies/pages/owner.html";
+        window.location.href = "/dormies/pages/owner/dashboard.html";
       } else {
         showMessageBox("Unauthorized access. This account is not an owner.");
       }
@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showMessageBox("Incorrect email or password");
       } else {
         showMessageBox("Account does not exist");
-      }
+      } 
     } finally {
       // Reset button after login attempt
       loginBtn.innerText = "Login";

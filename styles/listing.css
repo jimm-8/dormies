@@ -102,11 +102,11 @@ body {
     background: white;
     border-radius: 0px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    border-bottom: 3px solid #dad700;
-    border-top: 3px solid #dad700;
+    border-bottom: 4px solid #dad700;
+    border-top: 4px solid #dad700;
 }
 .title-container h1 {
-    margin-bottom: 0.75rem; /* Space between title and verified badge */
+    margin-bottom: 5rem; /* Space between title and verified badge */
 }
 
 .verified-badge {
@@ -159,7 +159,7 @@ body {
 
 .details-grid {
     display: grid;
-    grid-template-columns: 1.8fr 0.7fr; /* Adjust ratio as needed */
+    grid-template-columns: minmax(0, 1fr) 300px; /* Explicit right column width */
     gap: 3rem;
     align-items: start;
     margin: 2rem 0;
@@ -167,11 +167,48 @@ body {
 
 .details-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Equal columns */
     gap: 1.5rem;
-    padding-bottom: 2rem;
-    margin-bottom: 1rem;
-    border-bottom: 3px solid #dad700;
+    width: 100%;
+    padding-bottom: 2rem; 
+    min-width: 0; /* Crucial for grid containment */
+    border-bottom: 4px solid #dad700;
+}
+
+.inclusion_payment-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.1rem;
+    width: 100%; /* Add this */
+}
+.inclusion_payment-item p {
+    margin: 0;
+    margin-bottom: 0.1rem;
+    font-size: 1.1rem;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+} 
+
+.inclusion_payment-item i {
+    font-size: 1.4rem;
+    padding: 0rem 0;
+    gap: 0.1rem;
+    color: #0527a4;
+    min-width: 30px;
+    flex-shrink: 0; /* Prevent icon from shrinking */
+}
+
+/* Ensure grid containment */
+.grid-wrapper {
+    min-width: 0;
+}
+
+/* Payment terms specific fix */
+.payment-terms {
+    min-width: 0;
+    overflow-wrap: anywhere;
 }
 
 .inquire-section {
@@ -180,12 +217,15 @@ body {
     border-radius: 40px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     width: 100%; 
+    height: fit-content;
     max-width: 270px; 
     position: sticky;
     top: 20px;
     margin-left: auto;
+    flex-shrink: 0;
     border: 4px solid #0527a4;
 }
+
 
 .message-form {
     display: none;
@@ -228,8 +268,9 @@ textarea {
 
 .tab-container {
     display: flex;
-    border-bottom: 2px solid #eee;
     margin-bottom: 1rem;
+    gap: 5px; 
+    padding: 1px; 
 }
 
 .tab-button {
@@ -240,15 +281,16 @@ textarea {
     cursor: pointer;
     font-weight: 500;
     transition: all 0.3s ease;
+    border-radius: 50px;
+    border: 3px solid #0527a4;
 }
+
 
 .tab-button.active {
-    background: white;
-    border-bottom: 3px solid #dad700;
+    background: #dad700;
+    border: 3px solid #0527a4;
     font-weight: 700;
 }
-
-
 
 .schedule-form.active,
 .inquire-form.active {
