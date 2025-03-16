@@ -122,6 +122,59 @@ i {
   color: var(--black);
   display: inline-block;
   margin-right: 10px;
+  cursor: pointer;
+}
+
+.tabs {
+  max-width: 1200px;
+  margin: 70px auto;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+/* Tab Buttons */
+.tab-buttons {
+  display: flex;
+  justify-content: space-around;
+  font-size: small;
+  width: 500px;
+}
+
+hr {
+  background-color: #ddd;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+  outline: none;
+}
+
+.tab-button:hover {
+  background: var(--yellow);
+  border-radius: 5px 5px 0 0;
+}
+
+.tab-button.active {
+  font-weight: bold;
+  color: white;
+  background: var(--blue);
+  border-radius: 5px 5px 0 0;
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+  padding: 20px;
+}
+
+.tab-content.active {
+  display: block;
 }
 
 /* Footer */
