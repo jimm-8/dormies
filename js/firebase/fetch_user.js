@@ -5,8 +5,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import {
   getFirestore,
+  collection,
   doc,
   getDoc,
+  query,
+  where,
+  getDocs,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 // Firebase Config
@@ -28,28 +32,68 @@ const db = getFirestore(app);
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log("User signed in:", user.uid);
-    fetchOwnerData(user.uid);
+    await fetchUserData(user.uid, user.email);
   } else {
     console.log("No user is signed in.");
   }
 });
 
-// Function to fetch owner data from Firestore
-async function fetchOwnerData(userId) {
+// Function to fetch user data (checks both Owners & Renters)
+async function fetchUserData(userId, userEmail) {
   try {
-    const docRef = doc(db, "owners", userId); // Using userId as the document ID
-    const docSnap = await getDoc(docRef);
+    // Check if the user is an Owner
+    const ownerRef = doc(db, "owners", userId);
+    const ownerSnap = await getDoc(ownerRef);
 
-    if (docSnap.exists()) {
-      const ownerData = docSnap.data();
+    if (ownerSnap.exists()) {
+      const ownerData = ownerSnap.data();
       console.log("Fetched Owner Data:", ownerData);
 
-      // Set the name in the HTML
+      // Set owner name in the HTML
       document.getElementById("owner_name").textContent = ownerData.name;
-    } else {
-      console.log("No such document found!");
+
+      // Generate initials for avatar
+      if (typeof generateAvatar === "function") {
+        generateAvatar(ownerData.name);
+      }
+
+      // Show owner-specific button if needed
+      document.getElementById("acc_btn").style.visibility = "visible";
+      return;
     }
+
+    // If not an owner, check if the user is a Renter
+    const rentersRef = collection(db, "renters");
+    const renterQuery = query(rentersRef, where("email", "==", userEmail));
+    const renterSnap = await getDocs(renterQuery);
+
+    if (!renterSnap.empty) {
+      renterSnap.forEach((doc) => {
+        const renterData = doc.data();
+        console.log("Fetched Renter Data:", renterData);
+
+        // Set renter's full name in the HTML
+        const fullName = `${renterData.firstname} ${renterData.lastname}`;
+        document.getElementById("renter_name").textContent = fullName;
+
+        const email = renterData.email;
+        document.getElementById("renter_email").textContent = email;
+
+        // Generate initials for avatar
+        if (typeof generateAvatar === "function") {
+          generateAvatar(fullName);
+        }
+
+        // If the user is a renter, make the button visible
+        if (renterData.role === "renter") {
+          document.getElementById("acc_btn").style.visibility = "visible";
+        }
+      });
+      return;
+    }
+
+    console.log("User is not found in Owners or Renters collection.");
   } catch (error) {
-    console.error("Error fetching owner data:", error);
+    console.error("Error fetching user data:", error);
   }
 }
