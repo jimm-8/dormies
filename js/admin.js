@@ -12,12 +12,11 @@ document.addEventListener("DOMContentLoaded", function () {
 const links = document.querySelectorAll(".nav-list-item");
 const currentPage = window.location.pathname.split("/").pop();
 
-links.forEach((link) => { // ✅ Remove `.array`
-  if (link.getAttribute("href") === currentPage) { // ✅ Fix `.getAtribute` typo
+links.forEach((link) => {
+  if (link.getAttribute("href") === currentPage) {
     link.classList.add("active");
   }
 });
-
 
 const accBtn = document.getElementById("acc_btn");
 if (accBtn) {
