@@ -1,0 +1,114 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: url('/dormies/assets/bg.png') no-repeat center center/cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.logo {
+    position: absolute; /* Position it above the gradient container */
+    top: 90px; /* Adjust this to control vertical spacing */
+    left: 50%;
+    transform: translateX(-50%); /* Center the logo horizontally */
+}
+
+.logo img {
+    width: 150px;
+    margin-bottom: 20px;
+}
+
+.container {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.8), rgba(30, 58, 138, 0.8));;
+    padding: 30px;  
+    border-radius: 35px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 500px;  
+    height: 480px;  
+    position: relative; 
+    overflow: visible; 
+    padding-top: 60px; 
+}
+
+/* Positioning the "Schedule Visit" at the top center */
+h2 {
+    color: #ffffff;
+    font-size: 37px; /* Customize the font size */
+    letter-spacing: 0px; /* Adjust letter spacing */
+    position: absolute; /* Position it within the container */
+    top: 20px; /* Adjust this value for vertical position */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Ensure it is perfectly centered */
+    margin: 0; /* Remove default margin */
+}
+
+/* Schedule text styling */
+.schedule-text {
+    font-size: 18px;
+    color: white;
+    position: absolute;
+    top: 150px; /* Adjust vertical position */
+    left: 27%; /* Center horizontally */
+    transform: translateX(-50%);
+    margin: 0; /* Remove margin */
+}
+
+/* Position the location text */
+.location {
+    text-align: justify;
+    font-weight: bold;
+    font-size: 22px;
+    color: white;
+    letter-spacing: 1px;
+    position: absolute; /* Position relative to container */
+    top: 170px; /* Adjust vertical position */
+    left: 41%; /* Center horizontally */
+    transform: translateX(-50%); /* Center text horizontally */
+}
+
+/* Positioning the form elements */
+form {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    gap: 10px;
+    position: absolute;
+    top: 290px; /* Adjust vertical position of form */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%);
+    width: 78%; /* Adjust the width of the form container */
+}
+
+/* Input field styles */
+input {
+    padding: 10px;
+    height: 96px; /* Adjust the height of the input fields (the height of the white bar) */
+    background-color: white; /* White background for the input fields */
+    border-radius: 25px;
+    border: 1px solid #ccc; /* Border for the input fields */
+    outline: none;
+    font-size: 16px;
+    flex: 1; /* Ensures equal width for both fields */
+}
+
+/* Button styles */
+button {
+    background: #1E3A8A;
+    color: white;
+    font-size: 16px;
+    height: 50px;
+    padding: 10px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Hover effect for the button */
+button:hover {
+    background: #ecebe2;
+    color: #1E3A8A;
+}
