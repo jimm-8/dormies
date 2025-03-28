@@ -188,7 +188,48 @@ imageUpload.addEventListener("change", function (event) {
 saveImageBtn.addEventListener("click", () => {
   if (croppedImageData) {
     avatar.style.backgroundImage = `url(${croppedImageData})`;
-    avatar.textContent = ""; // Remove initials when an image is uploaded
-    imageModal.classList.remove("show"); // Close modal
+    avatar.textContent = "";
+    imageModal.classList.remove("show");
+  }
+});
+
+document.getElementById("name-edit").addEventListener("click", function () {
+  let inputField = document.getElementById("renter_name_input");
+  if (inputField.style.pointerEvents === "none") {
+    inputField.style.pointerEvents = "auto";
+    inputField.style.backgroundColor = "#fff";
+    this.style.color = "red";
+  } else {
+    inputField.style.pointerEvents = "none";
+    inputField.style.backgroundColor = "#f0f0f0";
+    this.style.color = "#000";
+  }
+});
+
+document.getElementById("email-edit").addEventListener("click", function () {
+  let inputField = document.getElementById("renter_email_input");
+
+  if (inputField.style.pointerEvents === "none") {
+    inputField.style.pointerEvents = "auto";
+    inputField.style.backgroundColor = "#fff";
+    this.style.color = "red";
+  } else {
+    inputField.style.pointerEvents = "none";
+    inputField.style.backgroundColor = "#f0f0f0";
+    this.style.color = "#000";
+  }
+});
+
+document.getElementById("pass-edit").addEventListener("click", function () {
+  let inputField = document.getElementById("renter_new_password");
+
+  if (inputField.style.pointerEvents === "none") {
+    inputField.style.pointerEvents = "auto";
+    inputField.style.backgroundColor = "#fff";
+    this.style.color = "red";
+  } else {
+    inputField.style.pointerEvents = "none";
+    inputField.style.backgroundColor = "#f0f0f0";
+    this.style.color = "#000";
   }
 });
