@@ -247,6 +247,24 @@ i {
   font-size: 1.8rem;
 }
 
+input#renter_name_input {
+  pointer-events: none;
+  background-color: #f0f0f0;
+  color: #888;
+}
+
+input#renter_email_input {
+  pointer-events: none;
+  background-color: #f0f0f0;
+  color: #888;
+}
+
+input#renter_new_password {
+  pointer-events: none;
+  background-color: #f0f0f0;
+  color: #888;
+}
+
 #name {
   font-size: 1.5rem;
   font-weight: bold;
@@ -294,7 +312,7 @@ label {
 }
 
 input {
-  width: 100%;
+  width: 85%;
   height: 40px;
   padding: 10px 40px 10px 10px;
   border: 1px solid #ccc;
@@ -308,12 +326,13 @@ input {
 .input-container i {
   position: absolute;
   right: 5px;
-  top: 65%;
+  top: 60%;
   height: 24px;
-  transform: translateY(-50%);
+  transform: translateY(-45%);
   color: var(--black);
   cursor: pointer;
   margin-top: 4px;
+  font-size: 1.8rem;
 }
 
 .input-container i:hover {

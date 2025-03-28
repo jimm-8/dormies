@@ -76,6 +76,12 @@ async function fetchUserData(userId, userEmail) {
         const fullName = `${renterData.firstname} ${renterData.lastname}`;
         document.getElementById("renter_name").textContent = fullName;
 
+        const inputName = `${renterData.firstname} ${renterData.lastname}`;
+        document.getElementById("renter_name_input").value = inputName;
+
+        const inputEmail = renterData.email;
+        document.getElementById("renter_email_input").value = inputEmail;
+
         const email = renterData.email;
         document.getElementById("renter_email").textContent = email;
 
@@ -95,5 +101,35 @@ async function fetchUserData(userId, userEmail) {
     console.log("User is not found in Owners or Renters collection.");
   } catch (error) {
     console.error("Error fetching user data:", error);
+  }
+}
+
+async function updateUserProfile(user) {
+  const newName = document.getElementById("renter_name_input").value;
+  const newEmail = document.getElementById("renter_email_input").value;
+  const newPassword = document.getElementById("renter_new_password").value;
+
+  try {
+    // Update Firestore (User's Name)
+    const userDocRef = doc(db, "renters", user.uid);
+    await updateDoc(userDocRef, { firstname: newName });
+    console.log("Name updated in Firestore");
+
+    // Update Firebase Auth Email
+    if (newEmail !== user.email) {
+      await updateEmail(user, newEmail);
+      console.log("Email updated in Firebase Auth");
+    }
+
+    // Update Firebase Auth Password (Only if a new password is provided)
+    if (newPassword.trim() !== "") {
+      await updatePassword(user, newPassword);
+      console.log("Password updated in Firebase Auth");
+    }
+
+    alert("Profile updated successfully!");
+  } catch (error) {
+    console.error("Error updating profile:", error.message);
+    alert("Error: " + error.message);
   }
 }
