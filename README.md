@@ -22,6 +22,3 @@ To get a local copy up and running, follow these simple steps:
    ```sh
    git clone https://github.com/jimm-8/dormies.git
    ```
-
-## WELCOME
-hi im zy
