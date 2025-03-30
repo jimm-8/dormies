@@ -1,0 +1,41 @@
+function generateAvatar(name) {
+  console.log("Generating avatar for:", name);
+
+  if (!name || name.trim() === "") {
+    console.warn("No name provided for avatar generation!");
+    avatar.textContent = "?";
+    return;
+  }
+
+  // If an image is already uploaded, do not overwrite it with initials
+  if (avatar.style.backgroundImage && avatar.style.backgroundImage !== "none") {
+    console.log("Avatar has an image, skipping initials.");
+    return;
+  }
+
+  // Extract initials (first letters of first & last name)
+  const words = name.trim().split(" ");
+  const initials =
+    words.length > 1
+      ? words[0].charAt(0).toUpperCase() + words[1].charAt(0).toUpperCase()
+      : words[0].charAt(0).toUpperCase();
+
+  console.log("Generated initials:", initials);
+
+  // Generate a random color
+  const randomColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`;
+
+  // Update avatar element
+  avatar.textContent = initials;
+  avatar.style.backgroundColor = randomColor;
+  avatar.style.color = "#fff"; // Ensure text is visible
+  console.log("Avatar updated with color:", randomColor);
+}
+
+// Ensure initials return if the image is removed
+avatar.addEventListener("dblclick", () => {
+  avatar.style.backgroundImage = "none";
+  generateAvatar("User Name"); // Replace "User Name" with the actual name
+});
+
+///// THIS IT TO BRING BACK THE INIITALS WHEN THE IMAGE IS REMOVED

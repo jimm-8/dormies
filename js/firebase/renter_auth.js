@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (ownerDocSnap.exists()) {
         showMessageBox("Login successful");
         localStorage.setItem("loggedInUserId", user.uid);
-        window.location.href = "/dormies/pages/user.html";
+        window.location.href = "/dormies/pages/renter/home.html";
       } else {
         showMessageBox("Unauthorized access. This account is not an owner.");
       }
