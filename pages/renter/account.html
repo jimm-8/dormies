@@ -82,23 +82,30 @@
 
               <div class="input-container">
                 <label for="name">Name:</label>
-                <i class="fa-solid fa-pen-to-square"></i>
-                <input type="text" id="name" name="name" />
+                <i id="name-edit" class="fa-solid fa-pen-to-square"></i>
+                <input type="text" id="renter_name_input" name="name" />
               </div>
 
               <div class="input-container">
                 <label for="email">Email:</label>
-                <i class="fa-solid fa-pen-to-square"></i>
-                <input type="email" id="email" name="email" />
+                <i id="email-edit" class="fa-solid fa-pen-to-square"></i>
+                <input type="email" id="renter_email_input" name="email" />
               </div>
 
               <div class="input-container">
-                <label for="phone">Password:</label>
-                <i class="fa-solid fa-pen-to-square"></i>
-                <input type="tel" id="phone" name="phone" />
+                <label for="phone">New Password:</label>
+                <i id="pass-edit" class="fa-solid fa-pen-to-square"></i>
+                <input
+                  type="tel"
+                  placeholder="Enter new password"
+                  id="renter_new_password"
+                  name="phone"
+                />
               </div>
 
-              <button type="submit">Submit</button>
+              <button id="save-changes-btn" type="submit" disabled>
+                Save Changes
+              </button>
             </fieldset>
           </div>
         </div>
