@@ -1,0 +1,414 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+:root {
+  --blue: #03045e;
+  --yellow: #ffb703;
+  --black: #151f28;
+}
+
+.loader {
+  --color: #a5a5b0;
+  --size: 70px;
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
+  position: fixed;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.loader-img {
+  width: 300px;
+  height: auto;
+  margin-top: -6%;
+}
+
+.loader div {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  font-family: "Poppins", sans-serif;
+  margin-top: -2%;
+}
+
+.loader div span {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in forwards, resetFade 0.5s ease-in 1s forwards;
+}
+
+.loader div span:nth-child(1) {
+  animation-delay: 0.3s, 1.8s;
+}
+.loader div span:nth-child(2) {
+  animation-delay: 0.6s, 2.1s;
+}
+.loader div span:nth-child(3) {
+  animation-delay: 0.9s, 2.4s;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes resetFade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+#main {
+  display: none;
+  opacity: 0;
+  position: fixed;
+  width: 100vw;
+  min-height: 100vh;
+}
+
+/* Navbar Styling */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 10px 0;
+}
+
+/* Navbar container */
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+h6 {
+  font-size: x-large;
+  font-weight: normal;
+}
+
+i {
+  font-size: 20px;
+  color: var(--black);
+  display: inline-block;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.address {
+    display: flex;
+    gap: 20px; /* Adjust spacing between the fields */
+}
+
+.address div {
+    flex: 1; /* Makes both fields take equal width */
+}
+
+.container {
+    background: white;
+    padding: 50px;
+    padding-top: 60px;
+    width: 100%;
+    max-width: 1000px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1000px;
+    gap: 20px; /* Ensures spacing between sections */
+}
+
+.form-section {
+    width: 60%;
+}
+
+/* Ensures the "Listing Title" input is below the label */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: block; /* Ensures input fields are below labels */
+    margin-bottom: 10px;
+}
+
+/* Styles for Street and Blk No. fields */
+.address {
+    display: flex;
+    gap: 20px; /* Space between Street and Blk No. */
+}
+
+.address-field {
+    flex: 1; /* Makes both fields take equal width */
+}
+
+/* Aligns the preview section to the right */
+.content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    gap: 20px;
+}
+
+.form-section {
+    width: 60%;
+}
+
+.preview-section {
+    width: 35%;
+    background: #fff;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    position: absolute;
+    right: 10px; /* Moves it to the right */
+    top: 100px;
+}
+
+.preview-section img {
+    width: 100%;
+    border-radius: 5px;
+}
+
+.support {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}
+
+.support a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.example {
+    font-size: 12px;
+    color: #777;
+    margin-top: 5px;
+}
+
+/* Sub-Listings & Pricing */
+.sub-listings {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.sub-listing-box {
+  border: 2px dashed blue;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.sub-listing-content i {
+  font-size: 24px;
+  color: blue;
+}
+
+.add-listing-btn {
+  margin-top: 10px;
+  padding: 10px;
+  border: none;
+  background: blue;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  margin: 10% auto;
+  width: 50%;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.close {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  margin: 5% auto;
+  width: 60%;
+  border-radius: 10px;
+}
+
+.close {
+  float: right;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-weight: bold;
+  color: #555;
+}
+
+.tab.active {
+  border-bottom: 3px solid blue;
+  color: black;
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Form Fields */
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+textarea {
+  height: 60px;
+}
+
+/* Floor Area Controls */
+.floor-area {
+  display: flex;
+  align-items: center;
+}
+
+.floor-area button {
+  padding: 5px 10px;
+  border: none;
+  background: blue;
+  color: white;
+  cursor: pointer;
+}
+
+.floor-area input {
+  width: 60px;
+  text-align: center;
+  margin: 0 5px;
+}
+
+/* Buttons */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.undo, .done {
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.undo {
+  background: lightgray;
+}
+
+.done {
+  background: green;
+  color: white;
+}
