@@ -38,8 +38,7 @@
                     <p>Public name and Location</p>
 
                     <label for="listing-title">Listing Title</label>
-                    <input type="text" id="listing-title" placeholder="My Listing">
-                    <p class="example">Sample title: Blue Residences for rent in venue street</p>
+                    <input type="text" id="listing-title" placeholder="e.g. Blue Residences">
 
                     <h3>Address - Where is your property located?</h3>
                     <div class="address">
@@ -47,8 +46,18 @@
                             <label for="street">Street</label>
                             <select id="street">
                                 <option value="" disabled selected>Select Street</option>
-                                <option value="Main Street">Main Street</option>
-                                <option value="2nd Avenue">2nd Avenue</option>
+                                <option value="Mecury Street">Mecury Street</option>
+                                <option value="Venus Street">Venus Street</option>
+                                <option value="Earth Street">Earth Street</option>
+                                <option value="Mars Street">Mars Street</option>
+                                <option value="Jupiter Street">Jupiter Street</option>
+                                <option value="Saturn Street">Saturn Street</option>
+                                <option value="Uranus Street">Uranus Street</option>
+                                <option value="Neptune Street">Neptune Street</option>
+                                <option value="Venus Street">Venus Street</option>
+                                <option value="Galaxy Street">Galaxy Street</option>
+                                <option value="Universe 1 Street">Universe 1 Street</option>
+                                <option value="Universe 2 Street">Universe 2 Street</option>
                             </select>
                         </div>
                         <div class="address-field">
@@ -64,7 +73,7 @@
                 <!-- Right Section: Preview -->
                 <div class="preview-section">
                     <h3>Preview</h3>
-                    <img src="preview.jpg" alt="Preview Image">
+                    <img id="preview-image" src="preview.jpg" alt="Preview Image">
                     <p><strong>Listing Name:</strong> <span id="listing-name">Not Yet Provided</span></p>
                     
                     <div class="support">
@@ -79,97 +88,125 @@
             <div class="sub-listings">
                 <h3>Sub-Listings & Pricing</h3>
                 <p>Customize your pricing and contract terms for each rental space.</p>
-
-                <div id="sub-listing-box" class="sub-listing-box">
-                    <div class="sub-listing-content">
-                        <i class="fa fa-plus"></i>
-                        <p>*click to add</p>
-                    </div>
+    
+                <!-- Basic Information Form -->
+                <div id="basic-info" class="tab-content active">
+    
+                    <label for="description">Description</label>
+                    <textarea id="description" maxlength="250" placeholder="This is a new offer"></textarea>
+    
+                    <label for="rental-space">Type of Rental Space</label>
+                    <select id="rental-space">
+                        <option value="" disabled selected>Select</option>
+                        <option value="room">Room</option>
+                        <option value="apartment">Apartment</option>
+                    </select>
+    
+                    <label for="furnish-status">Room Furnish</label>
+                    <select id="furnish-status">
+                        <option value="" disabled selected>Select</option>
+                        <option value="fully-furnished">Fully Furnished</option>
+                        <option value="semi-furnished">Semi-Furnished</option>
+                        <option value="bare">Bare</option>
+                    </select>
+    
+                    <label for="room-type">Room Type</label>
+                    <select id="room-type">
+                        <option value="" disabled selected>Select</option>
+                        <option value="studio">Studio</option>
+                        <option value="1-bedroom">1 Bedroom</option>
+                        <option value="2-bedroom">2 Bedroom</option>
+                    </select>
+    
+                    <label for="room-privacy">Room Privacy</label>
+                    <select id="room-privacy">
+                        <option value="" disabled selected>Select</option>
+                        <option value="private">Private Room</option>
+                        <option value="shared">Shared Room</option>
+                    </select>
+    
+                    <label for="bathroom">Bathroom Privacy</label>
+                    <select id="bathroom">
+                        <option value="" disabled selected>Select</option>
+                        <option value="private">Private Bathroom</option>
+                        <option value="shared">Shared Bathroom</option>
+                    </select>
+    
+                    <label for="gender">Allowed Gender</label>
+                    <select id="gender">
+                        <option value="" disabled selected>Select</option>
+                        <option value="all">Welcome to All Genders</option>
+                        <option value="male-only">Male Only</option>
+                        <option value="female-only">Female Only</option>
+                    </select>
                 </div>
 
-                <button id="add-listing-btn" class="add-listing-btn">
-                    <i class="fa fa-plus"></i> Add
-                </button>
+                <label>Pricing & Payment Terms</label>
+                <div class="pricing-section">
+                  <div class="pricing-item">
+                    <label for="rent-amount">Rent Amount:</label>
+                    <input type="number" id="rent-amount" name="rent-amount" placeholder="Enter Rent Amount" required>
+                  </div>
+                
+                  <div class="pricing-item">
+                    <label for="rent-period">Rent Period:</label>
+                    <select id="rent-period" name="rent-period">
+                      <option value="" disabled selected>Select</option>
+                      <option value="day">Per Day</option>
+                      <option value="month">Per Month</option>
+                      <option value="year">Per Year</option>
+                    </select>
+                  </div>
+                </div>
+            
+                <label>Contract Inclusions</label>
+                <div class="contract-inclusions">
+                  <div class="contract-item">
+                    <label for="water-bill">Water Bill Included:</label>
+                    <select id="water-bill" name="water-bill">
+                      <option value="" disabled selected>Select</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+            
+                  <div class="contract-item">
+                    <label for="electric-bill">Electric Bill Included:</label>
+                    <select id="electric-bill" name="electric-bill">
+                      <option value="" disabled selected>Select</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+
+                  <div class="contract-item">
+                    <label for="wifi-bill">Wifi Bill Included:</label>
+                    <select id="wifi-bill" name="wifi-bill">
+                      <option value="" disabled selected>Select</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+                </div>
+
+                <label>Upload Photos of the Rental Space</label>
+                <div class="photo-upload-section">
+                  <div class="upload-container">
+                    <input type="file" id="upload-photos" name="upload-photos" accept="image/*" multiple onchange="previewImages(event)">
+                    <span>Choose Images (you can upload multiple)</span>
+                  </div>
+                
+                  <div class="image-preview" id="image-preview"></div>
+                </div>                
+              </div>
+    
+                <!-- Buttons -->
+                <div class="modal-buttons">
+                    <button id="save-listing-btn" class="done"><i class="fa fa-check"></i> Done</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span id="close-modal" class="close">&times;</span>
-            <h2>New Offer!</h2>
-            <p class="available-room"><i class="fa fa-circle" style="color: green;"></i> available room</p>
-
-            <!-- Tabs -->
-            <div class="tabs">
-                <button class="tab active" data-tab="basic-info"><i class="fa fa-info-circle"></i> Basic Information</button>
-                <button class="tab" data-tab="pricing"><i class="fa fa-dollar-sign"></i> Pricing & Payment Terms</button>
-                <button class="tab" data-tab="contract"><i class="fa fa-file-contract"></i> Contract Inclusions</button>
-            </div>
-
-            <!-- Basic Information Form -->
-            <div id="basic-info" class="tab-content active">
-                <label for="property-name">Name of Property Listing</label>
-                <input type="text" id="property-name" placeholder="New Offer!">
-
-                <label for="description">Description</label>
-                <textarea id="description" maxlength="250" placeholder="This is a new offer"></textarea>
-
-                <label for="rental-space">Type of Rental Space</label>
-                <select id="rental-space">
-                    <option value="room">Room</option>
-                    <option value="apartment">Apartment</option>
-                </select>
-
-                <label for="furnish-status">Room Furnish</label>
-                <select id="furnish-status">
-                    <option value="fully-furnished">Fully Furnished</option>
-                    <option value="semi-furnished">Semi-Furnished</option>
-                    <option value="bare">Bare</option>
-                </select>
-
-                <label for="room-type">Room Type</label>
-                <select id="room-type">
-                    <option value="studio">Studio</option>
-                    <option value="1-bedroom">1 Bedroom</option>
-                    <option value="2-bedroom">2 Bedroom</option>
-                </select>
-
-                <label for="room-privacy">Room Privacy</label>
-                <select id="room-privacy">
-                    <option value="private">Private Room</option>
-                    <option value="shared">Shared Room</option>
-                </select>
-
-                <label for="floor-area">Floor Area (sqm)</label>
-                <div class="floor-area">
-                    <button id="decrease-area">-</button>
-                    <input type="number" id="floor-area" value="1" min="1">
-                    <button id="increase-area">+</button>
-                </div>
-                <input type="checkbox" id="unknown-area"> <label for="unknown-area">I don't know the floor area</label>
-
-                <label for="bathroom">Bathroom Privacy</label>
-                <select id="bathroom">
-                    <option value="private">Private Bathroom</option>
-                    <option value="shared">Shared Bathroom</option>
-                </select>
-
-                <label for="gender">Allowed Gender</label>
-                <select id="gender">
-                    <option value="all">Welcome to All Genders</option>
-                    <option value="male-only">Male Only</option>
-                    <option value="female-only">Female Only</option>
-                </select>
-            </div>
-
-            <!-- Buttons -->
-            <div class="modal-buttons">
-                <button id="undo-changes" class="undo"><i class="fa fa-undo"></i> Undo Changes</button>
-                <button id="save-listing-btn" class="done"><i class="fa fa-check"></i> Done</button>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
