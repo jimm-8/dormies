@@ -82,12 +82,22 @@
   }
 }
 
+/* Make the body take up full height */
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto; /* Allow vertical scrolling for the entire page */
+}
+
 #main {
-  display: none;
-  opacity: 0;
-  position: fixed;
-  width: 100vw;
+  display: block;
+  opacity: 1;
+  position: relative;
+  width: 100%;
   min-height: 100vh;
+  padding: 20px;
+  overflow-y: auto; /* Allow vertical scrolling */
 }
 
 /* Navbar Styling */
@@ -139,13 +149,8 @@ i {
     padding: 50px;
     padding-top: 60px;
     width: 100%;
-    max-width: 1000px;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 1150px;
+    margin: 0 auto; /* Center the content */
     border-radius: 8px;
 }
 
@@ -157,10 +162,12 @@ i {
     width: 100%;
     max-width: 1000px;
     gap: 20px; /* Ensures spacing between sections */
+    flex-wrap: wrap; /* Allow items to wrap if they overflow */
 }
 
 .form-section {
     width: 60%;
+    padding: 20px;
 }
 
 /* Ensures the "Listing Title" input is below the label */
@@ -209,15 +216,65 @@ input, select {
     text-align: center;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    position: absolute;
-    right: 10px; /* Moves it to the right */
-    top: 100px;
 }
 
 .preview-section img {
-    width: 100%;
-    border-radius: 5px;
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  border-radius: 5px;
+  object-fit: cover;
+  margin-bottom: 10px;
 }
+
+.contract-inclusions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 50px; /* Space between the two dropdowns */
+}
+
+.contract-item {
+  display: flex;
+  align-items: column;
+  gap: 5px; /* Space between label and dropdown */
+}
+
+.contract-item label {
+  font-weight: bold;
+}
+
+.contract-item select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 120px; /* Set a consistent width */
+}
+
+.pricing-section {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px; /* Controls the space between the input fields */
+  margin-top: 20px;
+}
+
+.pricing-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Adds space between the label and input/select */
+  width: 45%; /* Adjust the width to balance space between the fields */
+}
+
+.pricing-item label {
+  font-weight: bold;
+}
+
+.pricing-item input, .pricing-item select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%; /* Makes sure input/select takes the full width */
+}
+
 
 .support {
     margin-top: 10px;
@@ -240,9 +297,9 @@ input, select {
 .sub-listings {
   margin-top: 20px;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
   background: #fff;
+  max-height: none; /* Optional, you can limit the height of sub-listings */
+  overflow-y: auto; /* Allows scrolling for sub-listings */
 }
 
 .sub-listing-box {
@@ -411,4 +468,41 @@ textarea {
 .done {
   background: green;
   color: white;
+}
+
+.photo-upload-section {
+  margin-top: 20px;
+}
+
+.upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.upload-container input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.upload-container span {
+  font-size: 14px;
+  color: #555;
+}
+
+.image-preview {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.image-preview img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }

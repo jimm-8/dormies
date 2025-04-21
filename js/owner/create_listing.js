@@ -20,26 +20,6 @@ setTimeout(() => {
     location.href = "/dormies/pages/owner/dashboard.html";
   });
   
-  // Modal Functionality
-  const modal = document.getElementById("modal");
-  const addListingBtn = document.getElementById("add-listing-btn");
-  const subListingBox = document.getElementById("sub-listing-box");
-  const closeModal = document.getElementById("close-modal");
-  
-  // Open modal
-  addListingBtn.addEventListener("click", () => {
-    modal.style.display = "block";
-  });
-  
-  subListingBox.addEventListener("click", () => {
-    modal.style.display = "block";
-  });
-  
-  // Close modal
-  closeModal.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-  
   // Save button (can be extended)
   document.getElementById("save-listing-btn").addEventListener("click", () => {
     alert("Sub-listing details saved!");
@@ -67,26 +47,33 @@ setTimeout(() => {
     });
   });
   
-  // Floor Area Controls
-  const floorAreaInput = document.getElementById("floor-area");
-  document.getElementById("increase-area").addEventListener("click", () => {
-    floorAreaInput.value = parseInt(floorAreaInput.value) + 1;
-  });
-  
-  document.getElementById("decrease-area").addEventListener("click", () => {
-    if (floorAreaInput.value > 1) {
-        floorAreaInput.value = parseInt(floorAreaInput.value) - 1;
-    }
-  });
-  
-  // "I Don't Know Floor Area" Checkbox
-  document.getElementById("unknown-area").addEventListener("change", (event) => {
-    floorAreaInput.disabled = event.target.checked;
-  });
-  
   // Save Button (Placeholder Alert)
   document.getElementById("save-listing-btn").addEventListener("click", () => {
     alert("Sub-listing details saved!");
     document.getElementById("modal").style.display = "none";
   });
+
+  function previewImages(event) {
+    const files = event.target.files;
+    const preview = document.getElementById("image-preview");
+    const previewImage = document.getElementById("preview-image");
+    preview.innerHTML = ""; // Clear previous images
   
+    // Loop through the selected files and display them
+    Array.from(files).forEach(file => {
+      const reader = new FileReader();
+  
+      reader.onload = function (e) {
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        preview.appendChild(img);
+
+        // If this is the first image, also set it to the preview image in the right section
+        if (index === 0) {
+          previewImage.src = e.target.result;  // Update the preview image on the right section
+        }        
+      };
+  
+      reader.readAsDataURL(file); // Convert the file to a data URL
+    });
+  }
