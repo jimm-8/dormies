@@ -48,8 +48,8 @@ function initNavbarEvents() {
 
 // Load Navbar and Footer
 document.addEventListener("DOMContentLoaded", function () {
-  loadComponent("navbar", "/dormies/pages/navbar.html", initNavbarEvents);
-  loadComponent("footer", "/dormies/pages/footer.html");
+  loadComponent("navbar", "./navbar.html", initNavbarEvents);
+  loadComponent("footer", "./footer.html");
 });
 
 let logoLoader = document.querySelector(".loader-img");
