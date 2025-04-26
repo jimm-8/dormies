@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/assets/logo-sm.png">
+    <link rel="stylesheet" href="/styles/owner/create_listing.css">
+    <script type="module" src="/js/owner/create_listing.js"></script>
+    <script type="module" src="/js/firebase/post.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <title>Create Listing</title>
+</head>
+<body>
+    <div class="loader">
+        <img src="/assets/logo-md.png" class="loader-img" alt="logo-md">
+        <div>
+            <span>Find.</span>
+            <span>Book.</span>
+            <span>Move In.</span>
+        </div>
+    </div>   
+    <div id="main">
+        <!-- Navbar -->
+        <div class="navbar">
+            <div class="nav-container">
+                <h6>
+                    <span><i id="back-btn" class="fa fa-arrow-left"></i></span>
+                    Create Listing
+                </h6>
+            </div>
+        </div>
+
+        <!-- Main Content Wrapper -->
+        <div class="container">
+            <div class="content-wrapper">
+                <!-- Left Section: Form -->
+                <div class="form-section">
+                    <h2>Basic Information</h2>
+                    <p>Public name and Location</p>
+
+                    <label for="listing-title">Listing Title</label>
+                    <input type="text" id="listing-title" placeholder="e.g. Blue Residences">
+
+                    <h3>Address - Where is your property located?</h3>
+                    <div class="address">
+                        <div class="address-field">
+                            <label for="street">Street</label>
+                            <select id="street">
+                                <option value="" disabled selected>Select Street</option>
+                                <option value="Mecury Street">Mecury Street</option>
+                                <option value="Venus Street">Venus Street</option>
+                                <option value="Earth Street">Earth Street</option>
+                                <option value="Mars Street">Mars Street</option>
+                                <option value="Jupiter Street">Jupiter Street</option>
+                                <option value="Saturn Street">Saturn Street</option>
+                                <option value="Uranus Street">Uranus Street</option>
+                                <option value="Neptune Street">Neptune Street</option>
+                                <option value="Venus Street">Venus Street</option>
+                                <option value="Galaxy Street">Galaxy Street</option>
+                                <option value="Universe 1 Street">Universe 1 Street</option>
+                                <option value="Universe 2 Street">Universe 2 Street</option>
+                            </select>
+                        </div>
+                        <div class="address-field">
+                            <label for="blk-no">Blk No.</label>
+                            <input type="text" id="blk-no" placeholder="Enter Blk Number">
+                        </div>
+                    </div>
+
+                    <label for="landmark">Landmark</label>
+                    <input type="text" id="landmark" placeholder="Enter Landmark">
+                </div>
+
+                <!-- Right Section: Preview -->
+                <div class="preview-section">
+                    <h3>Preview</h3>
+                    <img id="image-preview" alt="Preview Image">
+                    <p><strong>Listing Name:</strong> <span id="listing-name">Not Yet Provided</span></p>
+                    
+                    <div class="support">
+                        <p><strong>Need Help?</strong></p>
+                        <p>Contact Support if you have any issues.<br>We are happy to help!</p>
+                        <p>Email: <a href="mailto:dormies@gmail.com">dormies@gmail.com</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-Listings & Pricing -->
+            <div class="sub-listings">
+                <h3>Sub-Listings & Pricing</h3>
+                <p>Customize your pricing and contract terms for each rental space.</p>
+    
+                <!-- Basic Information Form -->
+                <div id="basic-info" class="tab-content active">
+    
+                    <label for="description">Description</label>
+                    <textarea id="description" maxlength="250" placeholder="This is a new offer"></textarea>
+    
+                    <label for="rental-space">Type of Rental Space</label>
+                    <select id="rental-space">
+                        <option value="" disabled selected>Select</option>
+                        <option value="room">Room</option>
+                        <option value="apartment">Apartment</option>
+                    </select>
+    
+                    <label for="furnish-status">Room Furnish</label>
+                    <select id="furnish-status">
+                        <option value="" disabled selected>Select</option>
+                        <option value="fully-furnished">Fully Furnished</option>
+                        <option value="semi-furnished">Semi-Furnished</option>
+                        <option value="bare">Bare</option>
+                    </select>
+    
+                    <label for="room-type">Room Type</label>
+                    <select id="room-type">
+                        <option value="" disabled selected>Select</option>
+                        <option value="studio">Studio</option>
+                        <option value="1-bedroom">1 Bedroom</option>
+                        <option value="2-bedroom">2 Bedroom</option>
+                    </select>
+    
+                    <label for="room-privacy">Room Privacy</label>
+                    <select id="room-privacy">
+                        <option value="" disabled selected>Select</option>
+                        <option value="private">Private Room</option>
+                        <option value="shared">Shared Room</option>
+                    </select>
+    
+                    <label for="bathroom">Bathroom Privacy</label>
+                    <select id="bathroom">
+                        <option value="" disabled selected>Select</option>
+                        <option value="private">Private Bathroom</option>
+                        <option value="shared">Shared Bathroom</option>
+                    </select>
+    
+                    <label for="gender">Allowed Gender</label>
+                    <select id="gender">
+                        <option value="" disabled selected>Select</option>
+                        <option value="all">Welcome to All Genders</option>
+                        <option value="male-only">Male Only</option>
+                        <option value="female-only">Female Only</option>
+                    </select>
+                </div>
+
+                <label>Pricing & Payment Terms</label>
+                <div class="pricing-section">
+                  <div class="pricing-item">
+                    <label for="rent-amount">Rent Amount:</label>
+                    <input type="number" id="rent-amount" name="rent-amount" placeholder="Enter Rent Amount" required>
+                  </div>
+                
+                  <div class="pricing-item">
+                    <label for="rent-period">Rent Period:</label>
+                    <select id="rent-period" name="rent-period">
+                      <option value="" disabled selected>Select</option>
+                      <option value="day">Per Day</option>
+                      <option value="month">Per Month</option>
+                      <option value="year">Per Year</option>
+                    </select>
+                  </div>
+                </div>
+            
+                <label>Contract Inclusions</label>
+                <div class="contract-inclusions">
+                  <div class="contract-item">
+                    <label for="water-bill">Water Bill Included:</label>
+                    <select id="water-bill" name="water-bill">
+                      <option value="" disabled selected>Select</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+            
+                  <div class="contract-item">
+                    <label for="electric-bill">Electric Bill Included:</label>
+                    <select id="electric-bill" name="electric-bill">
+                      <option value="" disabled selected>Select</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+
+                  <div class="contract-item">
+                    <label for="wifi-bill">Wifi Bill Included:</label>
+                    <select id="wifi-bill" name="wifi-bill">
+                      <option value="" disabled selected>Select</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+                </div>
+
+                <label>Upload Photos of the Rental Space</label>
+                <div class="photo-upload-section">
+                  <div class="upload-container">
+                    <input type="file" id="upload-photos" name="upload-photos" accept="image/*" multiple onchange="previewImages(event)">
+                    <span>Choose Images (you can upload multiple)</span>
+                  </div>
+                
+                  <div class="image-preview" id="image-preview"></div>
+                </div>                
+              </div>
+    
+                <!-- Buttons -->
+                <div class="modal-buttons">
+                    <button id="save-listing-btn" class="done"><i class="fa fa-check"></i> Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
