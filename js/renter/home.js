@@ -34,14 +34,14 @@ function initNavbarEvents() {
   const menuButton = document.getElementById("acc_btn");
   if (menuButton) {
     menuButton.addEventListener("click", function () {
-      location.href = "/dormies/pages/login-landing.html";
+      location.href = "./../pages/renter/login-landing.html";
     });
   }
 
   const imgBtn = document.getElementById("nav_logo");
   if (imgBtn) {
     imgBtn.addEventListener("click", () => {
-      location.href = "/dormies/pages/renter/home.html";
+      location.href = "./../pages/renter/home.html";
     });
   }
 }
@@ -54,6 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let logoLoader = document.querySelector(".loader-img");
 if (logoLoader) {
-  logoLoader.src = "/dormies/assets/logo-md.png";
+  logoLoader.src = "./assets/logo-md.png";
   console.log("Logo updated:", logoLoader.src);
 }
