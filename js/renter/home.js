@@ -34,14 +34,14 @@ function initNavbarEvents() {
   const menuButton = document.getElementById("acc_btn");
   if (menuButton) {
     menuButton.addEventListener("click", function () {
-      location.href = "./../pages/renter/login-landing.html";
+      location.href = "./pages/renter/login-landing.html";
     });
   }
 
   const imgBtn = document.getElementById("nav_logo");
   if (imgBtn) {
     imgBtn.addEventListener("click", () => {
-      location.href = "./../pages/renter/home.html";
+      location.href = "./index.html";
     });
   }
 }
