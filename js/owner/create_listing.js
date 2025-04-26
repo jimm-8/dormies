@@ -1,79 +1,127 @@
 // Loader
 setTimeout(() => {
-    const loader = document.querySelector(".loader");
-    const main = document.getElementById("main");
-  
-    loader.style.opacity = "0";
-    loader.style.transition = "opacity 0.8s ease-out";
-  
-    setTimeout(() => {
-        loader.style.display = "none";
-        main.style.display = "block";
-        main.style.opacity = "1";
-        main.style.transition = "opacity 0.8s ease-in";
-    }, 800);
-  }, 3000);
-  
-  // Back Button
-  const back = document.getElementById("back-btn");
-  back.addEventListener("click", () => {
-    location.href = "/dormies/pages/owner/dashboard.html";
-  });
-  
-  // Save button (can be extended)
-  document.getElementById("save-listing-btn").addEventListener("click", () => {
-    alert("Sub-listing details saved!");
-    modal.style.display = "none";
-  });
-  
-  // Show Modal
-  document.getElementById("add-listing-btn").addEventListener("click", () => {
-    document.getElementById("modal").style.display = "block";
-  });
-  
-  // Hide Modal
-  document.getElementById("close-modal").addEventListener("click", () => {
-    document.getElementById("modal").style.display = "none";
-  });
-  
-  // Tab Switching
-  document.querySelectorAll(".tab").forEach(tab => {
-    tab.addEventListener("click", () => {
-        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-        document.querySelectorAll(".tab-content").forEach(content => content.classList.remove("active"));
-  
-        tab.classList.add("active");
-        document.getElementById(tab.dataset.tab).classList.add("active");
-    });
-  });
-  
-  // Save Button (Placeholder Alert)
-  document.getElementById("save-listing-btn").addEventListener("click", () => {
-    alert("Sub-listing details saved!");
-    document.getElementById("modal").style.display = "none";
-  });
+  const loader = document.querySelector(".loader");
+  const main = document.getElementById("main");
 
-  function previewImages(event) {
-    const files = event.target.files;
-    const preview = document.getElementById("image-preview");
-    const previewImage = document.getElementById("preview-image");
-    preview.innerHTML = ""; // Clear previous images
-  
-    // Loop through the selected files and display them
-    Array.from(files).forEach(file => {
-      const reader = new FileReader();
-  
-      reader.onload = function (e) {
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        preview.appendChild(img);
+  loader.style.opacity = "0";
+  loader.style.transition = "opacity 0.8s ease-out";
 
-        // If this is the first image, also set it to the preview image in the right section
-        if (index === 0) {
-          previewImage.src = e.target.result;  // Update the preview image on the right section
-        }        
+  setTimeout(() => {
+    loader.style.display = "none";
+    main.style.display = "block";
+    main.style.opacity = "1";
+    main.style.transition = "opacity 0.8s ease-in";
+  }, 800);
+}, 3000);
+
+// Back Button
+const back = document.getElementById("back-btn");
+back.addEventListener("click", () => {
+  location.href = "/dormies/pages/owner/dashboard.html";
+});
+
+import {
+  getFirestore,
+  doc,
+  collection,
+  addDoc,
+  setDoc,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+import { app } from "/dormies/js/firebaseConfig.js"; // adjust if different
+
+const db = getFirestore(app);
+const auth = getAuth(app);
+const storage = getStorage(app);
+
+document
+  .getElementById("save-listing-btn")
+  .addEventListener("click", async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("User not logged in");
+
+      const ownerId = user.uid;
+
+      // Collect input values
+      const title = document.getElementById("listing-title").value.trim();
+      const street = document.getElementById("street").value;
+      const blkNo = document.getElementById("blk-no").value.trim();
+      const landmark = document.getElementById("landmark").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const rentalSpace = document.getElementById("rental-space").value;
+      const furnishStatus = document.getElementById("furnish-status").value;
+      const roomType = document.getElementById("room-type").value;
+      const roomPrivacy = document.getElementById("room-privacy").value;
+      const bathroomPrivacy = document.getElementById("bathroom").value;
+      const allowedGender = document.getElementById("gender").value;
+      const rentAmount = document.getElementById("rent-amount").value;
+      const rentPeriod = document.getElementById("rent-period").value;
+      const waterBill = document.getElementById("water-bill").value;
+      const electricBill = document.getElementById("electric-bill").value;
+      const wifiBill = document.getElementById("wifi-bill").value;
+
+      const listingData = {
+        title,
+        address: {
+          street,
+          blkNo,
+          landmark,
+        },
+        description,
+        rentalSpace,
+        furnishStatus,
+        roomType,
+        roomPrivacy,
+        bathroomPrivacy,
+        allowedGender,
+        pricing: {
+          rentAmount: parseFloat(rentAmount),
+          rentPeriod,
+        },
+        inclusions: {
+          waterBill,
+          electricBill,
+          wifiBill,
+        },
+        createdAt: new Date(),
       };
-  
-      reader.readAsDataURL(file); // Convert the file to a data URL
-    });
-  }
+
+      // Save listing document first to get its ID
+      const newListingRef = await addDoc(
+        collection(db, "owners", ownerId, "listings"),
+        listingData
+      );
+
+      // Handle image uploads
+      const fileInput = document.getElementById("upload-photos");
+      const files = fileInput.files;
+      const uploadedURLs = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const imageRef = ref(
+          storage,
+          `owners/${ownerId}/listings/${newListingRef.id}/photo_${i + 1}.jpg`
+        );
+        await uploadBytes(imageRef, file);
+        const downloadURL = await getDownloadURL(imageRef);
+        uploadedURLs.push(downloadURL);
+      }
+
+      // Update Firestore document to include image URLs
+      await setDoc(newListingRef, { ...listingData, imageUrls: uploadedURLs });
+
+      alert("Listing saved successfully!");
+      window.location.href = "/dormies/pages/owner/dashboard.html"; // Optional redirect
+    } catch (error) {
+      console.error("Error saving listing:", error);
+      alert("Failed to save listing. Please try again.");
+    }
+  });
