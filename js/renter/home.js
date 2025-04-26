@@ -34,7 +34,7 @@ function initNavbarEvents() {
   const menuButton = document.getElementById("acc_btn");
   if (menuButton) {
     menuButton.addEventListener("click", function () {
-      location.href = "/dormies/pages/renter/account.html";
+      location.href = "/dormies/pages/login-landing.html";
     });
   }
 
