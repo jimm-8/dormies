@@ -7,14 +7,12 @@ import {
   getFirestore,
   collection,
   doc,
-  getDoc,
-  query,
-  where,
-  getDocs,
   addDoc,
-  setDoc,
   updateDoc,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import fs from "fs";
+import path from "path";
+import multer from "multer"; // You will need to install multer to handle file uploads
 
 const firebaseConfig = {
   apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
@@ -30,7 +28,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Initialize ImageKit with your provided details
+// Initialize ImageKit
 const imagekit = new ImageKit({
   publicKey: "public_4etKUvIw7NzEO6bFb0WfzecVFKo=",
   urlEndpoint: "https://ik.imagekit.io/jamnwgicn",
@@ -38,79 +36,25 @@ const imagekit = new ImageKit({
     "https://imagekit-auth-serverless-b5cwnfygq-jims-projects-154aa221.vercel.app/api/auth", // This is your new endpoint
 });
 
-// Function to preview images before upload
-function previewImages(event) {
-  const previewContainer = document.getElementById("image-preview"); // Updated to match your HTML
-  // Clear any existing previews
-  previewContainer.innerHTML = "";
-
-  const files = event.target.files;
-
-  if (files.length > 0) {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-
-      // Only process image files
-      if (!file.type.match("image.*")) {
-        continue;
-      }
-
-      const reader = new FileReader();
-
-      reader.onload = function (e) {
-        const previewDiv = document.createElement("div");
-        previewDiv.className = "preview-image-container";
-
-        const img = document.createElement("img");
-        img.src = e.target.result;
-        img.className = "preview-image";
-        img.style.width = "100px";
-        img.style.height = "100px";
-        img.style.objectFit = "cover";
-        img.style.margin = "5px";
-
-        previewDiv.appendChild(img);
-        previewContainer.appendChild(previewDiv);
-      };
-
-      reader.readAsDataURL(file);
+// Multer for file handling and saving to Vercel's /tmp directory
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // Temporary folder on Vercel's /tmp directory
+    const tmpFolderPath = path.join("/tmp", "uploads");
+    if (!fs.existsSync(tmpFolderPath)) {
+      fs.mkdirSync(tmpFolderPath, { recursive: true });
     }
-
-    console.log(`${files.length} images ready for upload`);
-  }
-}
-
-// Update preview listing name when title is typed
-document.addEventListener("DOMContentLoaded", () => {
-  // Set up the listing name preview
-  const titleInput = document.getElementById("listing-title");
-  const listingNamePreview = document.getElementById("listing-name");
-
-  if (titleInput && listingNamePreview) {
-    titleInput.addEventListener("input", function () {
-      listingNamePreview.textContent = this.value || "Not Yet Provided";
-    });
-  }
-
-  // Set up back button
-  const backBtn = document.getElementById("back-btn");
-  if (backBtn) {
-    backBtn.addEventListener("click", () => {
-      window.history.back();
-    });
-  }
-
-  // Check authentication status
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      console.log("User not logged in");
-      // Redirect to login page if needed
-      // window.location.href = "/pages/login.html";
-    }
-  });
+    cb(null, tmpFolderPath);
+  },
+  filename: (req, file, cb) => {
+    const fileName = `${Date.now()}_${file.originalname}`;
+    cb(null, fileName);
+  },
 });
 
-// Function to upload an image to ImageKit.io using the SDK
+const upload = multer({ storage: storage });
+
+// Function to upload images to ImageKit
 function uploadToImageKit(file, folderPath) {
   return new Promise((resolve, reject) => {
     const fileName = `${Date.now()}_${file.name.replace(/\s+/g, "_")}`;
@@ -135,6 +79,7 @@ function uploadToImageKit(file, folderPath) {
   });
 }
 
+// Function to handle form submission
 document
   .getElementById("save-listing-btn")
   .addEventListener("click", async () => {
@@ -142,19 +87,17 @@ document
       const user = auth.currentUser;
       if (!user) {
         alert("You must be logged in to save a listing");
-        // Redirect to login page
-        // window.location.href = "/pages/login.html";
         return;
       }
 
       const ownerId = user.uid;
 
-      // Add a loading state to the button to prevent multiple clicks
+      // Disable the button to prevent multiple clicks
       const saveButton = document.getElementById("save-listing-btn");
       saveButton.disabled = true;
       saveButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Saving...';
 
-      // Validate required fields
+      // Collect form data
       const title = document.getElementById("listing-title").value.trim();
       if (!title) {
         alert("Please enter a title for your listing");
@@ -163,64 +106,20 @@ document
         return;
       }
 
-      // Collect input values
-      const street = document.getElementById("street").value;
-      const blkNo = document.getElementById("blk-no").value.trim();
-      const landmark = document.getElementById("landmark").value.trim();
-      const description = document.getElementById("description").value.trim();
-      const rentalSpace = document.getElementById("rental-space").value;
-      const furnishStatus = document.getElementById("furnish-status").value;
-      const roomType = document.getElementById("room-type").value;
-      const roomPrivacy = document.getElementById("room-privacy").value;
-      const bathroomPrivacy = document.getElementById("bathroom").value;
-      const allowedGender = document.getElementById("gender").value;
-      const rentAmount = document.getElementById("rent-amount").value;
-      const rentPeriod = document.getElementById("rent-period").value;
-      const waterBill = document.getElementById("water-bill").value;
-      const electricBill = document.getElementById("electric-bill").value;
-      const wifiBill = document.getElementById("wifi-bill").value;
-
-      console.log("Preparing listing data...");
-
       const listingData = {
         title,
-        address: {
-          street,
-          blkNo,
-          landmark,
-        },
-        description,
-        rentalSpace,
-        furnishStatus,
-        roomType,
-        roomPrivacy,
-        bathroomPrivacy,
-        allowedGender,
-        pricing: {
-          rentAmount: parseFloat(rentAmount),
-          rentPeriod,
-        },
-        inclusions: {
-          waterBill,
-          electricBill,
-          wifiBill,
-        },
         createdAt: new Date(),
         status: "active", // Add a status field for easier filtering
         owner: {
           id: ownerId,
-          // Add other owner details if needed
         },
       };
 
-      console.log("Saving listing data to Firestore...");
-
-      // Save listing document first to get its ID
+      // Save listing data to Firestore
       const newListingRef = await addDoc(
         collection(db, "owners", ownerId, "listings"),
         listingData
       );
-
       console.log("Listing saved with ID:", newListingRef.id);
 
       // Handle image uploads
@@ -228,68 +127,32 @@ document
       const files = fileInput.files;
       const uploadedURLs = [];
 
-      // Add validation and better error handling
-      if (!files || files.length === 0) {
-        console.log("No images selected for upload");
-        // Continue without images
-      } else {
-        console.log(`Starting upload of ${files.length} images to ImageKit.io`);
+      if (files && files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
 
-        try {
-          for (let i = 0; i < files.length; i++) {
-            const file = files[i];
+          // Save the image to the temporary folder
+          const tmpFilePath = path.join("/tmp", "uploads", file.name);
+          fs.writeFileSync(tmpFilePath, file); // Save to /tmp
 
-            // Add size validation (5MB limit)
-            if (file.size > 5 * 1024 * 1024) {
-              console.warn(
-                `File ${file.name} exceeds 5MB size limit, skipping`
-              );
-              continue;
+          // Upload the image from /tmp to ImageKit
+          const folderPath = `dormies/owners/${ownerId}/listings/${newListingRef.id}`;
+          const imageUrl = await uploadToImageKit(tmpFilePath, folderPath);
+          uploadedURLs.push(imageUrl);
+        }
+
+        // Update the listing with image URLs
+        if (uploadedURLs.length > 0) {
+          await updateDoc(
+            doc(db, "owners", ownerId, "listings", newListingRef.id),
+            {
+              imageUrls: uploadedURLs,
             }
-
-            // Define folder path for better organization in ImageKit
-            const folderPath = `dormies/owners/${ownerId}/listings/${newListingRef.id}`;
-
-            console.log(
-              `Uploading file ${i + 1}/${files.length}: ${
-                file.name
-              } to ImageKit.io`
-            );
-
-            // Upload the file to ImageKit
-            const imageUrl = await uploadToImageKit(file, folderPath);
-            console.log(`File ${i + 1} uploaded successfully: ${imageUrl}`);
-            uploadedURLs.push(imageUrl);
-          }
-
-          // Update the listing with image URLs if any were uploaded
-          if (uploadedURLs.length > 0) {
-            console.log(
-              `Updating listing with ${uploadedURLs.length} image URLs`
-            );
-            await updateDoc(
-              doc(db, "owners", ownerId, "listings", newListingRef.id),
-              {
-                imageUrls: uploadedURLs,
-              }
-            );
-            console.log("Image URLs saved to document");
-          }
-        } catch (error) {
-          console.error("Error in image upload process:", error);
-          alert(
-            "Your listing was saved, but there was an issue with image uploads: " +
-              error.message
           );
-          saveButton.disabled = false;
-          saveButton.innerHTML = '<i class="fa fa-check"></i> Done';
-          // Still redirect since the basic listing was saved
-          window.location.href = "/pages/owner/dashboard.html";
-          return;
         }
       }
 
-      console.log("Listing process complete");
+      console.log("Listing saved successfully with images!");
       alert("Listing saved successfully!");
       window.location.href = "/pages/owner/dashboard.html";
     } catch (error) {
@@ -297,8 +160,6 @@ document
       alert(
         "Failed to save listing. Please try again. Error: " + error.message
       );
-
-      // Reset button state
       const saveButton = document.getElementById("save-listing-btn");
       saveButton.disabled = false;
       saveButton.innerHTML = '<i class="fa fa-check"></i> Done';
