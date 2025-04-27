@@ -13,14 +13,8 @@ import {
   getDocs,
   addDoc,
   setDoc,
+  updateDoc,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-storage.js";
-import { updateDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
@@ -35,7 +29,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const storage = getStorage(app);
+
+// Initialize ImageKit with your provided details
+const imagekit = new ImageKit({
+  publicKey: "public_4etKUvIw7NzEO6bFb0WfzecVFKo=",
+  urlEndpoint: "https://ik.imagekit.io/jamnwgicn",
+  authenticationEndpoint: "http://www.yourserver.com/auth", // Replace with your actual auth endpoint
+});
 
 // Function to preview images before upload
 function previewImages(event) {
@@ -108,6 +108,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// Function to upload an image to ImageKit.io using the SDK
+function uploadToImageKit(file, folderPath) {
+  return new Promise((resolve, reject) => {
+    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, "_")}`;
+
+    imagekit.upload(
+      {
+        file: file,
+        fileName: fileName,
+        folder: folderPath,
+        tags: ["dormies", "listing"],
+      },
+      function (err, result) {
+        if (err) {
+          console.error("ImageKit upload error:", err);
+          reject(err);
+        } else {
+          console.log("ImageKit upload success:", result);
+          resolve(result.url); // Return the URL of the uploaded image
+        }
+      }
+    );
+  });
+}
 
 document
   .getElementById("save-listing-btn")
@@ -207,7 +232,7 @@ document
         console.log("No images selected for upload");
         // Continue without images
       } else {
-        console.log(`Starting upload of ${files.length} images`);
+        console.log(`Starting upload of ${files.length} images to ImageKit.io`);
 
         try {
           for (let i = 0; i < files.length; i++) {
@@ -221,25 +246,19 @@ document
               continue;
             }
 
-            // Generate a unique filename with timestamp
-            const timestamp = new Date().getTime();
-            const imageRef = ref(
-              storage,
-              `owners/${ownerId}/listings/${newListingRef.id}/photo_${timestamp}_${i}.jpg`
-            );
+            // Define folder path for better organization in ImageKit
+            const folderPath = `dormies/owners/${ownerId}/listings/${newListingRef.id}`;
 
             console.log(
-              `Uploading file ${i + 1}/${files.length}: ${file.name}`
+              `Uploading file ${i + 1}/${files.length}: ${
+                file.name
+              } to ImageKit.io`
             );
 
-            // Upload the file
-            const uploadTask = await uploadBytes(imageRef, file);
-            console.log(`File ${i + 1} uploaded successfully`);
-
-            // Get the download URL
-            const downloadURL = await getDownloadURL(imageRef);
-            console.log(`Got download URL for file ${i + 1}: ${downloadURL}`);
-            uploadedURLs.push(downloadURL);
+            // Upload the file to ImageKit
+            const imageUrl = await uploadToImageKit(file, folderPath);
+            console.log(`File ${i + 1} uploaded successfully: ${imageUrl}`);
+            uploadedURLs.push(imageUrl);
           }
 
           // Update the listing with image URLs if any were uploaded
