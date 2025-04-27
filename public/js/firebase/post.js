@@ -28,14 +28,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Initialize ImageKit
-const imagekit = new ImageKit({
-  publicKey: "public_4etKUvIw7NzEO6bFb0WfzecVFKo=",
-  urlEndpoint: "https://ik.imagekit.io/jamnwgicn",
-  authenticationEndpoint:
-    "https://imagekit-auth-serverless-b5cwnfygq-jims-projects-154aa221.vercel.app/api/auth", // This is your new endpoint
-});
-
 // Multer for file handling and saving to Vercel's /tmp directory
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -53,31 +45,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
-// Function to upload images to ImageKit
-function uploadToImageKit(file, folderPath) {
-  return new Promise((resolve, reject) => {
-    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, "_")}`;
-
-    imagekit.upload(
-      {
-        file: file,
-        fileName: fileName,
-        folder: folderPath,
-        tags: ["dormies", "listing"],
-      },
-      function (err, result) {
-        if (err) {
-          console.error("ImageKit upload error:", err);
-          reject(err);
-        } else {
-          console.log("ImageKit upload success:", result);
-          resolve(result.url); // Return the URL of the uploaded image
-        }
-      }
-    );
-  });
-}
 
 // Function to handle form submission
 document
@@ -99,6 +66,22 @@ document
 
       // Collect form data
       const title = document.getElementById("listing-title").value.trim();
+      const street = document.getElementById("street").value.trim();
+      const blkNo = document.getElementById("blk-no").value.trim();
+      const landmark = document.getElementById("landmark").value.trim();
+      const description = document.getElementById("description").value.trim();
+      const rentalSpace = document.getElementById("rental-space").value;
+      const furnishStatus = document.getElementById("furnish-status").value;
+      const roomType = document.getElementById("room-type").value;
+      const roomPrivacy = document.getElementById("room-privacy").value;
+      const bathroomPrivacy = document.getElementById("bathroom").value;
+      const allowedGender = document.getElementById("gender").value;
+      const rentAmount = document.getElementById("rent-amount").value;
+      const rentPeriod = document.getElementById("rent-period").value;
+      const waterBill = document.getElementById("water-bill").value;
+      const electricBill = document.getElementById("electric-bill").value;
+      const wifiBill = document.getElementById("wifi-bill").value;
+
       if (!title) {
         alert("Please enter a title for your listing");
         saveButton.disabled = false;
@@ -106,8 +89,31 @@ document
         return;
       }
 
+      console.log("Preparing listing data...");
+
       const listingData = {
         title,
+        address: {
+          street,
+          blkNo,
+          landmark,
+        },
+        description,
+        rentalSpace,
+        furnishStatus,
+        roomType,
+        roomPrivacy,
+        bathroomPrivacy,
+        allowedGender,
+        pricing: {
+          rentAmount: parseFloat(rentAmount),
+          rentPeriod,
+        },
+        inclusions: {
+          waterBill,
+          electricBill,
+          wifiBill,
+        },
         createdAt: new Date(),
         status: "active", // Add a status field for easier filtering
         owner: {
@@ -135,10 +141,8 @@ document
           const tmpFilePath = path.join("/tmp", "uploads", file.name);
           fs.writeFileSync(tmpFilePath, file); // Save to /tmp
 
-          // Upload the image from /tmp to ImageKit
-          const folderPath = `dormies/owners/${ownerId}/listings/${newListingRef.id}`;
-          const imageUrl = await uploadToImageKit(tmpFilePath, folderPath);
-          uploadedURLs.push(imageUrl);
+          // The image file is now in the temporary folder, you can save the file's URL or path in Firestore
+          uploadedURLs.push(`/tmp/uploads/${file.name}`);
         }
 
         // Update the listing with image URLs
