@@ -1,0 +1,8 @@
+{
+    "name": "imagekit-auth-serverless",
+    "version": "1.0.0",
+    "dependencies": {
+      "imagekit": "^1.3.9"
+    }
+  }
+  

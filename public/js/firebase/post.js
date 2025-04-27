@@ -34,7 +34,8 @@ const db = getFirestore(app);
 const imagekit = new ImageKit({
   publicKey: "public_4etKUvIw7NzEO6bFb0WfzecVFKo=",
   urlEndpoint: "https://ik.imagekit.io/jamnwgicn",
-  authenticationEndpoint: "http://www.yourserver.com/auth", // Replace with your actual auth endpoint
+  authenticationEndpoint:
+    "https://imagekit-auth-serverless-b5cwnfygq-jims-projects-154aa221.vercel.app/api/auth", // This is your new endpoint
 });
 
 // Function to preview images before upload
