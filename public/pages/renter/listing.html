@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="/assets/logo-sm.png" type="image/png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <script type="module" src="/js/firebase/fetch_post.js"></script>
+    <script type="module" src="/js/firebase/listing_deets.js"></script>
+    <link rel="stylesheet" href="/styles/renter/listing.css" />
+    <title></title>
+  </head>
+  <body>
+    <div id="main">
+      <div id="navbar"></div>
+
+      <main class="container">
+        <!-- Property Details -->
+        <div class="property-header">
+          <div class="title-container">
+            <div class="title-badge-container">
+              <h1></h1>
+              <div class="verified-badge">
+                <i class="ri-checkbox-circle-fill"></i> VERIFIED
+              </div>
+            </div>
+            <p class="address"></p>
+          </div>
+
+          <div class="price-section">
+            <div class="price-tag"></div>
+          </div>
+        </div>
+
+        <div class="details-grid">
+          <!-- Left Column Container -->
+          <div class="grid-wrapper">
+            <div class="details-container">
+              <section class="inclusions">
+                <h2>INCLUSIONS</h2>
+                <!-- Content will be populated dynamically -->
+              </section>
+              <section class="payment-terms">
+                <h2>PAYMENT TERMS</h2>
+                <!-- Content will be populated dynamically -->
+              </section>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <section class="inquire-section">
+            <div class="tab-container">
+              <button class="tab-button active" data-tab="inquire">
+                Inquire
+              </button>
+              <button class="tab-button" data-tab="schedule">Schedule</button>
+            </div>
+
+            <!-- Inquire Form -->
+            <form class="message-form inquire-form active">
+              <textarea
+                placeholder="Type your message to the owner here..."
+                rows="4"
+              ></textarea>
+              <button type="submit" class="send-button">
+                Send Private Message
+              </button>
+            </form>
+
+            <!-- Schedule Form -->
+            <form class="message-form schedule-form">
+              <div class="schedule-options">
+                <label>Preferred Date:</label>
+                <input type="date" required />
+
+                <label>Preferred Time:</label>
+                <input type="time" required />
+              </div>
+              <button type="submit" class="send-button">
+                Request Schedule
+              </button>
+            </form>
+          </section>
+        </div>
+
+        <!-- Reviews and Feedback-->
+        <section class="reviews-container container">
+          <div class="section-header">
+            <h2>Tenant Reviews & Feedback</h2>
+            <a href="feedback.html" class="feedback-button">
+              <i class="ri-edit-2-line"></i>
+              Write a Review
+            </a>
+          </div>
+
+          <!-- Reviews List -->
+          <div class="reviews-list">
+            <!-- Reviews will be populated dynamically if needed -->
+          </div>
+        </section>
+      </main>
+
+      <div id="footer"></div>
+    </div>
+  </body>
+</html>

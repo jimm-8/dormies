@@ -104,7 +104,7 @@ async function fetchAllListings() {
 
 function createListingElement(listing) {
   const listingCard = document.createElement("a");
-  listingCard.href = `/pages/listing-details.html?ownerId=${listing.ownerId}&listingId=${listing.id}`;
+  listingCard.href = `/pages/renter/listing.html?ownerId=${listing.ownerId}&listingId=${listing.id}`;
   listingCard.className = "listing-card";
 
   // Format the address
