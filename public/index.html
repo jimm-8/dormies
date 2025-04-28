@@ -3,13 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="/assets/logo-sm.png" type="image/png" />
     <link
-        rel="shortcut icon"
-        href="/assets/logo-sm.png"
-        type="image/png"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <script type="module" src="/js/firebase/fetch_post.js"></script>
     <script type="module" src="/js/renter/home.js"></script>
     <link rel="stylesheet" href="/styles/renter/home.css" />
     <link rel="stylesheet" href="/styles/renter.css" />
@@ -33,108 +36,24 @@
           <h1>Find dorms for rent with <span class="title">DORMIES</span>!</h1>
           <div class="search-bar">
             <div class="search-container">
-                <input
-                    type="text"
-                    placeholder="Where do you want to stay?"
-                    class="search-input"
-                />
-                <i class="fas fa-search"></i>
+              <input
+                type="text"
+                placeholder="Where do you want to stay?"
+                class="search-input"
+              />
+              <i class="fas fa-search"></i>
             </div>
           </div>
         </div>
 
         <div class="listings-container">
-          <!-- Listing Items -->
-          <a href="/pages/listing1.html" class="listing-card">
-              <div class="image-container">
-                  <img src="/assets/dorm1.jpg" alt="Dorm Room" class="listing-image">
-                  <div class="verified-badge">
-                      <i class="ri-checkbox-circle-fill"></i> Verified
-                  </div>
-              </div>
-              <div class="listing-info">
-                  <h3 class="title">Bedspace for Rent: Jose Residencia</h3>
-                  <p class="address">Mars St., Golden Country Homes, Alangilan</p>
-                  <p class="price-tag">Starts at Php 2,500 monthly</p>
-              </div>
-          </a>
-          <!-- Listing 2 -->
-          <a href="/pages/listing2.html" class="listing-card">
-              <div class="image-container">
-                  <img src="/assets/dorm2.jpg" alt="Dorm Room" class="listing-image">
-                  <div class="verified-badge">
-                      <i class="ri-checkbox-circle-fill"></i> Verified
-                  </div>
-              </div>
-              <div class="listing-info">
-                  <h3 class="title">Bedspace for Rent: Baxa Residencia</h3>
-                  <p class="address">Neptune St., Golden Country Homes, Alangilan</p>
-                  <p class="price-tag">Starts at Php 1,900 monthly</p>
-              </div>
-          </a>
-
-          <!-- Listing 3 -->
-          <a href="/pages/listing3.html" class="listing-card">
-              <div class="image-container">
-                  <img src="/assets/dorm3.png" alt="Dorm Room" class="listing-image">
-                  <div class="verified-badge">
-                      <i class="ri-checkbox-circle-fill"></i> Verified
-                  </div>
-              </div>
-              <div class="listing-info">
-                  <h3 class="title">Bedspace for Rent: Alegre Suites</h3>
-                  <p class="address">Jupiter St., Golden Country Homes, Alangilan</p>
-                  <p class="price-tag">Starts at Php 1,900 monthly</p>
-              </div>
-          </a>
-          
-           <!-- Listing 4 -->
-           <a href="/pages/listing3.html" class="listing-card">
-              <div class="image-container">
-                  <img src="/assets/dorm3.png" alt="Dorm Room" class="listing-image">
-                  <div class="verified-badge">
-                      <i class="ri-checkbox-circle-fill"></i> Verified
-                  </div>
-              </div>
-              <div class="listing-info">
-                  <h3 class="title">Bedspace for Rent: Alegre Suites</h3>
-                  <p class="address">Jupiter St., Golden Country Homes, Alangilan</p>
-                  <p class="price-tag">Starts at Php 1,900 monthly</p>
-              </div>
-          </a>
-
-           <!-- Listing 5 -->
-           <a href="/pages/listing3.html" class="listing-card">
-              <div class="image-container">
-                  <img src="/assets/dorm3.png" alt="Dorm Room" class="listing-image">
-                  <div class="verified-badge">
-                      <i class="ri-checkbox-circle-fill"></i> Verified
-                  </div>
-              </div>
-              <div class="listing-info">
-                  <h3 class="title">Bedspace for Rent: Alegre Suites</h3>
-                  <p class="address">Jupiter St., Golden Country Homes, Alangilan</p>
-                  <p class="price-tag">Starts at Php 1,900 monthly</p>
-              </div>
-          </a>
-
-           <!-- Listing 6 -->
-           <a href="/pages/listing3.html" class="listing-card">
-              <div class="image-container">
-                  <img src="/assets/dorm3.png" alt="Dorm Room" class="listing-image">
-                  <div class="verified-badge">
-                      <i class="ri-checkbox-circle-fill"></i> Verified
-                  </div>
-              </div>
-              <div class="listing-info">
-                  <h3 class="title">Bedspace for Rent: Alegre Suites</h3>
-                  <p class="address">Jupiter St., Golden Country Homes, Alangilan</p>
-                  <p class="price-tag">Starts at Php 1,900 monthly</p>
-              </div>
-          </a>
+          <!-- Listings will be dynamically populated here by fetch_post.js -->
+        </div>
       </div>
-
-      <div id="footer"></div>
+      <!-- Closing tag for "content" div -->
     </div>
+    <!-- Closing tag for "main" div -->
+
+    <div id="footer"></div>
   </body>
 </html>
