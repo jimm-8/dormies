@@ -16,9 +16,9 @@ body {
 
 .container {
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 21px auto;
   padding: 20px;
-  height: 500px;
+  height: calc(100vh - 2 * 1.35rem);
   overflow-y: auto;
   overflow-x: hidden;
 }
