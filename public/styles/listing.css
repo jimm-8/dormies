@@ -30,10 +30,24 @@ body {
   border-bottom: 3px solid #dad700;
 }
 
-.nav {
+/* Navbar Styling */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  padding: 10px 0;
+}
+
+/* Navbar container */
+.nav-container {
   max-width: 1200px;
   margin: 0 auto;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 0 20px;
 }
