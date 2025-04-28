@@ -230,17 +230,13 @@ select {
 }
 
 .contract-inclusions {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, auto);
-  gap: 20px;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .contract-item {
   display: flex;
   align-items: column;
-  padding: 10px;
-  width: 380px;
   gap: 5px; /* Space between label and dropdown */
 }
 
