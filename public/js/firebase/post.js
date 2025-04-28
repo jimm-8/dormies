@@ -1,13 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-import {
-  getAuth,
-  onAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import {
   getFirestore,
   collection,
   addDoc,
-  setDoc,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -32,7 +28,7 @@ document
 
       const ownerId = user.uid;
 
-      // Collect input values
+      // 🧹 Collect input values
       const title = document.getElementById("listing-title").value.trim();
       const street = document.getElementById("street").value;
       const blkNo = document.getElementById("blk-no").value.trim();
@@ -76,14 +72,18 @@ document
         createdAt: new Date(),
       };
 
-      // Save listing document first to get its ID
-      const newListingRef = await addDoc(
-        collection(db, "owners", ownerId, "listings"),
-        listingData
-      );
+      // 🔥 Log everything to console
+      console.log("===== USER INFO =====");
+      console.log({
+        uid: user.uid,
+        email: user.email,
+      });
 
-      // No image upload handling, just save listing
-      await setDoc(newListingRef, listingData);
+      console.log("===== LISTING DATA =====");
+      console.log(listingData);
+
+      // 🛠 Save listing
+      await addDoc(collection(db, "owners", ownerId, "listings"), listingData);
 
       alert("Listing saved successfully!");
       window.location.href = "/dormies/pages/owner/dashboard.html"; // Optional redirect
