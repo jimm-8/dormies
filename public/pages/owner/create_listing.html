@@ -6,7 +6,6 @@
     <link rel="icon" type="image/png" href="/assets/logo-sm.png">
     <link rel="stylesheet" href="/styles/owner/create_listing.css">
     <script type="module" src="/js/owner/create_listing.js"></script>
-    <script type="module" src="/js/firebase/post.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <title>Create Listing</title>
 </head>
@@ -74,7 +73,7 @@
                 <!-- Right Section: Preview -->
                 <div class="preview-section">
                     <h3>Preview</h3>
-                    <img id="image-preview" alt="Preview Image">
+                    <div id="preview-image-container"></div>
                     <p><strong>Listing Name:</strong> <span id="listing-name">Not Yet Provided</span></p>
                     
                     <div class="support">
@@ -209,5 +208,45 @@
         </div>
     </div>
 
+    <script>
+        // This function will be accessible globally for the onchange event
+        function previewImages(event) {
+            const preview = document.getElementById('image-preview');
+            const files = event.target.files;
+            
+            // Clear existing previews
+            preview.innerHTML = '';
+            
+            if (files && files.length > 0) {
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const imgContainer = document.createElement('div');
+                        imgContainer.className = 'preview-image-container';
+                        
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'preview-image';
+                        
+                        imgContainer.appendChild(img);
+                        preview.appendChild(imgContainer);
+                    }
+                    
+                    reader.readAsDataURL(file);
+                });
+            }
+        }
+
+        // Also update the listing name in preview when title changes
+        document.getElementById('listing-title').addEventListener('input', function() {
+            document.getElementById('listing-name').textContent = this.value || "Not Yet Provided";
+        });
+
+        // Back button functionality
+        document.getElementById('back-btn').addEventListener('click', function() {
+            window.history.back();
+        });
+    </script>
 </body>
 </html>
