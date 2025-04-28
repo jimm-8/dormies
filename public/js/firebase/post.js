@@ -94,7 +94,6 @@ async function handleSaveListingClick() {
     }
 
     // Prepare listing data
-    console.log("Preparing listing data...");
     const listingData = {
       title,
       address: {
@@ -133,9 +132,6 @@ async function handleSaveListingClick() {
     console.log("Listing saved with ID:", newListingRef.id);
 
     // Handle image uploads using Vercel Blob
-    // In the handleSaveListingClick function, replace the direct Blob upload part with:
-
-    // Handle image uploads using Vercel Blob API route
     const fileInput = document.getElementById("upload-photos");
     const files = fileInput.files;
     const uploadedURLs = [];
@@ -143,23 +139,29 @@ async function handleSaveListingClick() {
     if (files && files.length > 0) {
       console.log(`Processing ${files.length} images...`);
 
+      // Validate image files before uploading
+      const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
+      for (let i = 0; i < files.length; i++) {
+        if (!validImageTypes.includes(files[i].type)) {
+          alert(
+            `Invalid file type: ${files[i].type}. Only images are allowed.`
+          );
+          return;
+        }
+      }
+
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
 
         try {
-          // Create a unique filename for the blob
           const filename = `listings/${ownerId}/${
             newListingRef.id
           }/${Date.now()}-${file.name}`;
 
-          console.log(`Uploading image ${i + 1}/${files.length}: ${filename}`);
-
-          // Create a FormData object to send the file
           const formData = new FormData();
           formData.append("file", file);
           formData.append("filename", filename);
 
-          // Send to your API route
           const response = await fetch("/api/upload-blob", {
             method: "POST",
             body: formData,
@@ -179,7 +181,6 @@ async function handleSaveListingClick() {
         }
       }
 
-      // Update the listing with image URLs if any were uploaded successfully
       if (uploadedURLs.length > 0) {
         await updateDoc(
           doc(db, "owners", ownerId, "listings", newListingRef.id),
