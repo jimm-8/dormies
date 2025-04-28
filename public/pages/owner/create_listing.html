@@ -90,51 +90,67 @@
     
                     <label for="description">Description</label>
                     <textarea id="description" maxlength="250" placeholder="This is a new offer"></textarea>
-    
-                    <label for="rental-space">Type of Rental Space</label>
-                    <select id="rental-space">
-                        <option value="" disabled selected>Select</option>
-                        <option value="room">Room</option>
-                        <option value="apartment">Apartment</option>
-                    </select>
-    
-                    <label for="furnish-status">Room Furnish</label>
-                    <select id="furnish-status">
-                        <option value="" disabled selected>Select</option>
-                        <option value="fully-furnished">Fully Furnished</option>
-                        <option value="semi-furnished">Semi-Furnished</option>
-                        <option value="bare">Bare</option>
-                    </select>
-    
-                    <label for="room-type">Room Type</label>
-                    <select id="room-type">
-                        <option value="" disabled selected>Select</option>
-                        <option value="studio">Studio</option>
-                        <option value="1-bedroom">1 Bedroom</option>
-                        <option value="2-bedroom">2 Bedroom</option>
-                    </select>
-    
-                    <label for="room-privacy">Room Privacy</label>
-                    <select id="room-privacy">
-                        <option value="" disabled selected>Select</option>
-                        <option value="private">Private Room</option>
-                        <option value="shared">Shared Room</option>
-                    </select>
-    
-                    <label for="bathroom">Bathroom Privacy</label>
-                    <select id="bathroom">
-                        <option value="" disabled selected>Select</option>
-                        <option value="private">Private Bathroom</option>
-                        <option value="shared">Shared Bathroom</option>
-                    </select>
-    
-                    <label for="gender">Allowed Gender</label>
-                    <select id="gender">
-                        <option value="" disabled selected>Select</option>
-                        <option value="all">Welcome to All Genders</option>
-                        <option value="male-only">Male Only</option>
-                        <option value="female-only">Female Only</option>
-                    </select>
+
+                    <div class="form-grid">
+                      <!-- First Row -->
+                      <div class="form-group">
+                          <label for="rental-space">Type of Rental Space</label>
+                          <select id="rental-space">
+                              <option value="" disabled selected>Select</option>
+                              <option value="room">Room</option>
+                              <option value="apartment">Apartment</option>
+                          </select>
+                      </div>
+                      
+                      <div class="form-group">
+                          <label for="furnish-status">Room Furnish</label>
+                          <select id="furnish-status">
+                              <option value="" disabled selected>Select</option>
+                              <option value="fully-furnished">Fully Furnished</option>
+                              <option value="semi-furnished">Semi-Furnished</option>
+                              <option value="bare">Bare</option>
+                          </select>
+                      </div>
+                      
+                      <div class="form-group">
+                          <label for="room-type">Room Type</label>
+                          <select id="room-type">
+                              <option value="" disabled selected>Select</option>
+                              <option value="studio">Studio</option>
+                              <option value="1-bedroom">1 Bedroom</option>
+                              <option value="2-bedroom">2 Bedroom</option>
+                          </select>
+                      </div>
+                      
+                      <!-- Second Row -->
+                      <div class="form-group">
+                          <label for="room-privacy">Room Privacy</label>
+                          <select id="room-privacy">
+                              <option value="" disabled selected>Select</option>
+                              <option value="private">Private Room</option>
+                              <option value="shared">Shared Room</option>
+                          </select>
+                      </div>
+                      
+                      <div class="form-group">
+                          <label for="bathroom">Bathroom Privacy</label>
+                          <select id="bathroom">
+                              <option value="" disabled selected>Select</option>
+                              <option value="private">Private Bathroom</option>
+                              <option value="shared">Shared Bathroom</option>
+                          </select>
+                      </div>
+                      
+                      <div class="form-group">
+                          <label for="gender">Allowed Gender</label>
+                          <select id="gender">
+                              <option value="" disabled selected>Select</option>
+                              <option value="all">Welcome to All Genders</option>
+                              <option value="male-only">Male Only</option>
+                              <option value="female-only">Female Only</option>
+                          </select>
+                      </div>
+                  </div>
                 </div>
 
                 <label>Pricing & Payment Terms</label>
@@ -145,7 +161,7 @@
                   </div>
                 
                   <div class="pricing-item">
-                    <label for="rent-period">Rent Period:</label>
+                    <label for="rent-period">Payment Period:</label>
                     <select id="rent-period" name="rent-period">
                       <option value="" disabled selected>Select</option>
                       <option value="day">Per Day</option>
@@ -158,8 +174,19 @@
                 <label>Contract Inclusions</label>
                 <div class="contract-inclusions">
                   <div class="contract-item">
-                    <label for="water-bill">Water Bill Included:</label>
+                    <label for="water-bill">Advance Payments:</label>
                     <select id="water-bill" name="water-bill">
+                      <option value="" disabled selected>Select</option>
+                      <option value="yes">1 Month Advance, 1 Month Deposit</option>
+                      <option value="no">2 Month Advance, 1 Month Deposit</option>
+                      <option value="no">2 Month Advance, 2 Month Deposit</option>
+                      <option value="no">1 Month Advance, 2 Month Deposit</option>
+                    </select>
+                  </div>
+
+                  <div class="contract-item">
+                    <label for="water-bill">Water Bill Included:</label>
+                    <select id="water-bill" name="water-bill">  
                       <option value="" disabled selected>Select</option>
                       <option value="yes">Yes</option>
                       <option value="no">No</option>

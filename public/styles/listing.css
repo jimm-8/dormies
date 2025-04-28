@@ -117,7 +117,7 @@ h6 {
   justify-content: space-between;
   align-items: flex-start;
   gap: 2rem;
-  margin: 2rem 0;
+  margin: 1rem 0;
   padding: 20px;
   background: white;
   border-radius: 0px;
@@ -136,8 +136,8 @@ h6 {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
-  font-size: 0.9rem;
+  padding: 4px 8px;
+  font-size: 0.5rem;
   margin-bottom: 0;
 }
 .title-badge-container {
@@ -232,7 +232,7 @@ h6 {
   height: fit-content;
   max-width: 270px;
   position: sticky;
-  top: 20px;
+  top: 16px;
   margin-left: auto;
   flex-shrink: 0;
   border: 4px solid #0527a4;
@@ -336,11 +336,12 @@ textarea {
 }
 
 .reviews-container {
-  margin: -5rem 0;
+  margin: 1rem 0;
   padding: 1rem;
   background: #ffffff;
   border-radius: 10px;
 }
+
 .reviews-container h2 {
   margin-right: auto;
   color: #0527a4;
