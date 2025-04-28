@@ -237,7 +237,7 @@ select {
 .contract-item {
   display: flex;
   align-items: column;
-  gap: 5px; /* Space between label and dropdown */
+  gap: 20px; /* Space between label and dropdown */
 }
 
 .contract-item label {
