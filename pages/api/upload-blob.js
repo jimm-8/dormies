@@ -1,5 +1,5 @@
-// File: pages/api/upload-blob.js
-import { put } from "@vercel/blob";
+import fs from "fs";
+import { put } from "@vercel/blob"; // Make sure it's installed
 import formidable from "formidable";
 
 // Disable the default body parser to handle file uploads
@@ -29,10 +29,14 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Missing file or filename" });
       }
 
+      // Log files and fields for debugging
+      console.log("Parsed fields:", fields);
+      console.log("Parsed files:", files);
+
       // Read the file content
       const fileData = await fs.promises.readFile(file.filepath);
 
-      // Upload to Vercel Blob
+      // Upload to Vercel Blob (ensure 'put' method is valid)
       const blob = await put(filename, fileData, {
         access: "public",
         contentType: file.mimetype,
