@@ -52,6 +52,11 @@ body {
   padding: 0 20px;
 }
 
+h6 {
+  font-size: x-large;
+  font-weight: normal;
+}
+
 .logo {
   height: 60px;
   margin-left: -3cm; /* Added 2cm left margin */
