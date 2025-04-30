@@ -200,7 +200,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background-color: var(--success-color);
+  background-color: var(#ffb703);
   color: white;
   padding: 5px 12px;
   border-radius: 20px;
