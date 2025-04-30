@@ -81,10 +81,31 @@ document
           landmark: document.getElementById("landmark").value.trim(),
         },
         description: document.getElementById("description").value.trim(),
-        rentalSpace: document.getElementById("rental-space").value,
+        features: {
+          bedrooms: document.getElementById("room-privacy").value,
+          bathrooms: document.getElementById("bathroom").value,
+          propertyType: document.getElementById("rental-space").value,
+          unitCondition: document.getElementById("furnish-status").value,
+          gender: document.getElementById("gender").value,
+        },
         pricing: {
           rentAmount: parseFloat(document.getElementById("rent-amount").value),
+        },
+        contractTerms: {
+          advanceAmount: parseFloat(
+            document.getElementById("advance-payment").value
+          ),
+          depositAmount: parseFloat(
+            document.getElementById("deposit-payment").value
+          ),
           rentPeriod: document.getElementById("rent-period").value,
+          rentMethod: document.getElementById("rent-method").value,
+          contractTerm: document.getElementById("contract-term").value,
+        },
+        inclusions: {
+          waterBill: document.getElementById("water-bill").value,
+          electricBill: document.getElementById("electric-bill").value,
+          wifiBill: document.getElementById("wifi-bill").value,
         },
         createdAt: new Date(),
         owner: { id: ownerId },

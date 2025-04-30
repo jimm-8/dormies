@@ -26,6 +26,7 @@
   justify-content: center;
   align-items: center;
   gap: 20px;
+  z-index: 2000;
 }
 
 .loader-img {
@@ -148,7 +149,6 @@ i {
 .container {
   background: white;
   padding: 50px;
-  padding-top: 60px;
   width: 100%;
   max-width: 1150px;
   margin: 0 auto; /* Center the content */
@@ -229,26 +229,36 @@ select {
   margin-bottom: 10px;
 }
 
-.contract-inclusions {
+/* Improved Contract Inclusions Layout */
+.contract-inclusions-container {
+  width: 100%;
   display: flex;
-  justify-content: flex-start;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.contract-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .contract-item {
-  display: flex;
-  align-items: column;
-  gap: 20px; /* Space between label and dropdown */
+  min-width: 200px;
+  flex: 1;
 }
 
 .contract-item label {
   font-weight: bold;
+  margin-bottom: 8px;
 }
 
 .contract-item select {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 120px; /* Set a consistent width */
+  width: 100%;
 }
 
 .pricing-section {
@@ -256,6 +266,7 @@ select {
   justify-content: space-between;
   gap: 20px; /* Controls the space between the input fields */
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .pricing-item {
@@ -263,6 +274,16 @@ select {
   flex-direction: column;
   gap: 5px; /* Adds space between the label and input/select */
   width: 45%; /* Adjust the width to balance space between the fields */
+}
+
+p {
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 13px;
+}
+
+label {
+  margin-bottom: 20px;
 }
 
 .pricing-item label {
@@ -298,9 +319,17 @@ select {
 .sub-listings {
   margin-top: 10px;
   padding: 20px;
-  background: #fff;
-  max-height: none; /* Optional, you can limit the height of sub-listings */
-  overflow-y: auto; /* Allows scrolling for sub-listings */
+  max-height: none;
+  overflow-y: auto;
+}
+
+.sub-listings h3 {
+  margin-bottom: 10px;
+}
+
+.sub-listings p {
+  margin-bottom: 20px;
+  color: #666;
 }
 
 .sub-listing-box {
@@ -330,6 +359,49 @@ select {
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, auto);
   gap: 20px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .content-wrapper {
+    flex-direction: column;
+  }
+
+  .form-section,
+  .preview-section {
+    width: 100%;
+  }
+
+  .contract-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pricing-section {
+    flex-direction: column;
+  }
+
+  .pricing-item {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    padding: 20px;
+  }
+
+  .form-section {
+    padding: 10px;
+  }
 }
 
 .form-group {
@@ -372,6 +444,7 @@ select {
   font-size: 24px;
   cursor: pointer;
 }
+
 /* Modal */
 .modal {
   display: none;
@@ -390,6 +463,12 @@ select {
   margin: 5% auto;
   width: 60%;
   border-radius: 10px;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    width: 90%;
+  }
 }
 
 .close {
@@ -430,24 +509,14 @@ select {
 }
 
 /* Form Fields */
-label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-input,
-select,
 textarea {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
-}
-
-textarea {
   height: 60px;
+  margin-bottom: 20px;
 }
 
 /* Floor Area Controls */
@@ -473,24 +542,26 @@ textarea {
 /* Buttons */
 .modal-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 20px;
 }
 
 .undo,
 .done {
-  padding: 10px 15px;
+  padding: 10px 20px;
   border: none;
   cursor: pointer;
   border-radius: 5px;
+  font-weight: bold;
 }
 
 .undo {
   background: lightgray;
+  margin-right: 10px;
 }
 
 .done {
-  background: green;
+  background: #4caf50;
   color: white;
 }
 
