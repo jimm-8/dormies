@@ -139,11 +139,10 @@ function updateListingDetails(listing) {
       inclusions.push(...listing.inclusions);
     } else {
       // Check for specific inclusion fields
-      if (listing.inclusions.waterBill === "included")
-        inclusions.push("Water Bill");
-      if (listing.inclusions.electricBill === "included")
+      if (listing.inclusions.waterBill === "yes") inclusions.push("Water Bill");
+      if (listing.inclusions.electricBill === "yes")
         inclusions.push("Electricity Bill");
-      if (listing.inclusions.wifiBill === "included")
+      if (listing.inclusions.wifiBill === "yes")
         inclusions.push("Internet Bill");
     }
   }
@@ -284,7 +283,7 @@ function updatePaymentTerms(listing) {
   if (terms.rentPeriod) {
     paymentTerms.push({
       icon: "fa fa-calendar-alt",
-      text: `${capitalizeFirstLetter(terms.rentPeriod)} Payment`,
+      text: `${capitalizeFirstLetter(terms.rentPeriod)}ly Payment`,
     });
   }
 
@@ -292,7 +291,9 @@ function updatePaymentTerms(listing) {
   if (terms.contractTerm) {
     paymentTerms.push({
       icon: "fa fa-file-contract",
-      text: terms.contractTerm,
+      text:
+        terms.contractTerm.charAt(0).toUpperCase() +
+        terms.contractTerm.slice(1).toLowerCase(),
     });
   }
 
