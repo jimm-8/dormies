@@ -272,13 +272,16 @@ body {
 }
 
 .detail-list {
-  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* optional spacing */
   padding: 0;
   margin: 0;
+  list-style: none;
 }
 
 .detail-item {
-  display: block;
+  display: flex;
   align-items: center;
   margin-bottom: 10px;
   color: var(--text-medium);
