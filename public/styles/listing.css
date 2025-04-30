@@ -273,13 +273,14 @@ body {
 
 .detail-list {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .detail-item {
-  display: flex;
+  display: block;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   color: var(--text-medium);
 }
 
