@@ -200,7 +200,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background-color: var(#ffb703);
+  background-color: #ffb703;
   color: white;
   padding: 5px 12px;
   border-radius: 20px;
@@ -464,8 +464,14 @@ body {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  object-fit: cover;
   border: 2px solid var(--primary-color);
+  background-color: var(--primary-color); /* optional: for better contrast */
+  color: #fff; /* text color */
+  font-weight: 600;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .owner-info {
