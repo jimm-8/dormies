@@ -381,7 +381,7 @@ function setupBackButton() {
   if (backBtn) {
     backBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      window.location.href = "/pages/renter/browse.html";
+      window.location.href = "/index.html";
     });
   }
 }
@@ -533,6 +533,20 @@ function formatDate(timestamp) {
   return new Intl.DateTimeFormat("en-US", options).format(timestamp);
 }
 
+function showNotice(message, duration = 3000) {
+  const noticeBox = document.getElementById("noticeBox");
+  const noticeText = document.getElementById("noticeText");
+
+  noticeText.textContent = message;
+  noticeBox.classList.remove("hide");
+  noticeBox.classList.add("show");
+
+  setTimeout(() => {
+    noticeBox.classList.remove("show");
+    noticeBox.classList.add("hide");
+  }, duration);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const writeReviewButton = document.getElementById("writeReviewButton");
   const reviewModal = document.getElementById("reviewModal");
@@ -543,27 +557,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Check if user is logged in
   if (!user) {
-    // If user is not logged in, disable the review button and show an alert
     writeReviewButton.disabled = true;
     writeReviewButton.title = "You must be logged in to leave a review";
 
-    // Optionally, show a message to inform the user to log in
     writeReviewButton.addEventListener("click", () => {
-      alert("Please log in to write a review.");
+      showNotice("Please log in to write a review.");
     });
   } else {
-    // If user is logged in, allow them to open the modal
     writeReviewButton.addEventListener("click", () => {
       reviewModal.style.display = "block";
     });
   }
 
-  // Close modal when the "X" button is clicked
   closeReview.addEventListener("click", () => {
     reviewModal.style.display = "none";
   });
 
-  // Optionally, close modal if user clicks outside the modal
   window.addEventListener("click", (event) => {
     if (event.target === reviewModal) {
       reviewModal.style.display = "none";
