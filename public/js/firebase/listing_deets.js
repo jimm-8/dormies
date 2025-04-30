@@ -532,3 +532,41 @@ function formatDate(timestamp) {
   const options = { year: "numeric", month: "long" };
   return new Intl.DateTimeFormat("en-US", options).format(timestamp);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const writeReviewButton = document.getElementById("writeReviewButton");
+  const reviewModal = document.getElementById("reviewModal");
+  const closeReview = document.getElementById("closeReview");
+
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  // Check if user is logged in
+  if (!user) {
+    // If user is not logged in, disable the review button and show an alert
+    writeReviewButton.disabled = true;
+    writeReviewButton.title = "You must be logged in to leave a review";
+
+    // Optionally, show a message to inform the user to log in
+    writeReviewButton.addEventListener("click", () => {
+      alert("Please log in to write a review.");
+    });
+  } else {
+    // If user is logged in, allow them to open the modal
+    writeReviewButton.addEventListener("click", () => {
+      reviewModal.style.display = "block";
+    });
+  }
+
+  // Close modal when the "X" button is clicked
+  closeReview.addEventListener("click", () => {
+    reviewModal.style.display = "none";
+  });
+
+  // Optionally, close modal if user clicks outside the modal
+  window.addEventListener("click", (event) => {
+    if (event.target === reviewModal) {
+      reviewModal.style.display = "none";
+    }
+  });
+});
