@@ -161,13 +161,23 @@
             </div>
           </section>
 
-          <!-- Reviews and Feedback-->
+          <!-- Reviews and Feedback -->
           <section class="reviews-container">
             <div class="section-header">
               <h2>Tenant Reviews & Feedback</h2>
-              <a href="#" class="feedback-button">
+              <a id="writeReviewButton" class="feedback-button">
                 <i class="ri-edit-2-line"></i> Write a Review
               </a>
+            </div>
+
+            <!-- Review Modal -->
+            <div id="reviewModal" class="modal">
+              <div class="modal-content">
+                <span id="closeReview" class="close-button">&times;</span>
+                <h3>Write a Review</h3>
+                <textarea placeholder="Your review here..."></textarea>
+                <button>Submit</button>
+              </div>
             </div>
 
             <!-- Reviews List -->
