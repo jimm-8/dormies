@@ -142,7 +142,6 @@ function createListingElement(listing) {
 }
 
 function getImageSrc(listing) {
-  // Return default image if no images are available
   return "/assets/dorm1.jpg";
 }
 

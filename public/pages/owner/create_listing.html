@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/styles/owner/create_listing.css">
     <script type="module" src="/js/firebase/post.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="/styles/owner/create_listing.css">
     <title>Create Listing</title>
 </head>
 <body>
@@ -40,7 +41,8 @@
                     <label for="listing-title">Listing Title</label>
                     <input type="text" id="listing-title" placeholder="e.g. Blue Residences">
 
-                    <h3>Address - Where is your property located?</h3>
+                    <h3>Address</h3>
+                    <p>Where is your property located?</p>
                     <div class="address">
                         <div class="address-field">
                             <label for="street">Street</label>
@@ -169,47 +171,81 @@
                       <option value="year">Per Year</option>
                     </select>
                   </div>
+
+                  <div class="pricing-item">
+                    <label for="rent-method">Payment Method:</label>
+                    <select id="rent-method" name="rent-method">
+                      <option value="" disabled selected>Select</option>
+                      <option value="cash">Cash Only</option>
+                      <option value="gcash">GCash Only</option>
+                      <option value="cashgcash">Cash and GCash Accepted</option>
+                    </select>
+                  </div>
                 </div>
             
                 <label>Contract Inclusions</label>
-                <label for="water-bill">Advance Payments:</label>
-                  <select id="water-bill" name="water-bill">
-                    <option value="" disabled selected>Select</option>
-                    <option value="yes">1 Month Advance, 1 Month Deposit</option>
-                    <option value="no">2 Month Advance, 1 Month Deposit</option>
-                    <option value="no">2 Month Advance, 2 Month Deposit</option>
-                    <option value="no">1 Month Advance, 2 Month Deposit</option>
-                  </select>
-                <div class="contract-inclusions">
-          
-                  <div class="contract-item">
-                    <label for="water-bill">Water Bill Included:</label>
-                    <select id="water-bill" name="water-bill">  
-                      <option value="" disabled selected>Select</option>
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                    </select>
-                  </div>
-            
-                  <div class="contract-item">
-                    <label for="electric-bill">Electric Bill Included:</label>
-                    <select id="electric-bill" name="electric-bill">
-                      <option value="" disabled selected>Select</option>
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                    </select>
-                  </div>
+                <div class="contract-inclusions-container">
+                  <div class="contract-row">
+                    <div class="contract-item">
+                      <label for="advance-payment">Advance Payments:</label>
+                      <select id="advance-payment" name="advance-payment">
+                        <option value="" disabled selected>Select</option>
+                        <option value="1-month">1 Month Advance</option>
+                        <option value="2-month">2 Month Advance</option>
+                      </select>
+                    </div>
 
-                  <div class="contract-item">
-                    <label for="wifi-bill">Wifi Bill Included:</label>
-                    <select id="wifi-bill" name="wifi-bill">
-                      <option value="" disabled selected>Select</option>
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                    </select>
+                    <div class="contract-item">
+                      <label for="deposit-payment">Deposit Payments:</label>
+                      <select id="deposit-payment" name="deposit-payment">
+                        <option value="" disabled selected>Select</option>
+                        <option value="1-month">1 Month Deposit</option>
+                        <option value="2-month">2 Month Deposit</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="contract-row">
+                    <div class="contract-item">
+                      <label for="contract-term">Contract Term:</label>
+                      <select id="contract-term" name="contract-term">  
+                        <option value="" disabled selected>Select</option>
+                        <option value="flexible">Flexible Term</option>
+                        <option value="semester">1 Semester</option>
+                        <option value="year">1 Year</option>
+                      </select>
+                    </div>
+
+                    <div class="contract-item">
+                      <label for="water-bill">Water Bill Included:</label>
+                      <select id="water-bill" name="water-bill">  
+                        <option value="" disabled selected>Select</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+              
+                    <div class="contract-item">
+                      <label for="electric-bill">Electric Bill Included:</label>
+                      <select id="electric-bill" name="electric-bill">
+                        <option value="" disabled selected>Select</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
+
+                    <div class="contract-item">
+                      <label for="wifi-bill">Wifi Bill Included:</label>
+                      <select id="wifi-bill" name="wifi-bill">
+                        <option value="" disabled selected>Select</option>
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
-<!-- 
+
+                <!-- Photo upload section (commented out in original) 
                 <label>Upload Photos of the Rental Space</label>
                 <div class="photo-upload-section">
                   <div class="upload-container">

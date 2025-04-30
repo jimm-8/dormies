@@ -4,6 +4,10 @@ import {
   doc,
   getDoc,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
@@ -17,6 +21,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -42,8 +47,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
+    // Fetch owner details
+    const ownerDetails = await fetchOwnerDetails(ownerId);
+
     // Update the page with listing details
     updateListingDetails(listing);
+
+    // Update owner information
+    if (ownerDetails) {
+      updateOwnerInfo(ownerDetails);
+    }
+
+    // Set up the back button
+    setupBackButton();
+
+    // Set up tab switching
+    setupTabs();
 
     // Set up the forms' submit events
     setupFormSubmitHandlers(ownerId, listingId);
@@ -68,9 +87,23 @@ async function fetchListingDetails(ownerId, listingId) {
   return null;
 }
 
+async function fetchOwnerDetails(ownerId) {
+  const ownerRef = doc(db, "owners", ownerId);
+  const ownerSnapshot = await getDoc(ownerRef);
+
+  if (ownerSnapshot.exists()) {
+    return {
+      id: ownerSnapshot.id,
+      ...ownerSnapshot.data(),
+    };
+  }
+
+  return null;
+}
+
 function updateListingDetails(listing) {
   // Set page title
-  document.title = listing.title;
+  document.title = listing.title || "Property Details";
 
   // Update property header
   const titleElement = document.querySelector(".title-badge-container h1");
@@ -80,37 +113,61 @@ function updateListingDetails(listing) {
   const addressElement = document.querySelector(".address");
   if (addressElement) {
     const formattedAddress = formatAddress(listing.address);
-    addressElement.textContent = formattedAddress;
+    addressElement.innerHTML = `<i class="fa fa-map-marker-alt"></i> ${formattedAddress}`;
   }
 
   // Update price tag
   const priceElement = document.querySelector(".price-tag");
   if (priceElement) {
     const formattedPrice = formatPrice(
-      listing.pricing.rentAmount,
-      listing.pricing.rentPeriod
+      listing.pricing?.rentAmount || listing.contractTerms?.rentAmount || 0,
+      listing.pricing?.rentPeriod ||
+        listing.contractTerms?.rentPeriod ||
+        "monthly"
     );
     priceElement.textContent = formattedPrice;
   }
 
+  // Update features
+  updateFeatures(listing.features);
+
   // Update inclusions
-  updateInclusions(listing.inclusions || []);
+  const inclusions = [];
+  if (listing.inclusions) {
+    // Direct inclusions array if available
+    if (Array.isArray(listing.inclusions)) {
+      inclusions.push(...listing.inclusions);
+    } else {
+      // Check for specific inclusion fields
+      if (listing.inclusions.waterBill === "included")
+        inclusions.push("Water Bill");
+      if (listing.inclusions.electricBill === "included")
+        inclusions.push("Electricity Bill");
+      if (listing.inclusions.wifiBill === "included")
+        inclusions.push("Internet Bill");
+    }
+  }
+  updateInclusions(inclusions);
 
   // Update payment terms
   updatePaymentTerms(listing);
 }
 
 function formatAddress(address) {
+  if (!address) return "Address not specified";
+
   const parts = [
     address.street || "",
     address.blkNo ? `Blk ${address.blkNo}` : "",
-    address.landmark || "",
+    address.landmark ? `Near ${address.landmark}` : "",
   ].filter(Boolean);
 
   return parts.join(", ");
 }
 
 function formatPrice(amount, period) {
+  if (!amount) return "Price not specified";
+
   // Format currency
   const formattedAmount = new Intl.NumberFormat("en-PH", {
     style: "currency",
@@ -125,207 +182,206 @@ function formatPrice(amount, period) {
   return `Php ${amountWithoutCurrencySymbol} ${period.toLowerCase()}`;
 }
 
+function updateFeatures(features) {
+  if (!features) return;
+
+  // Update bedrooms
+  const bedroomValue = document.querySelector(
+    ".feature-item:nth-child(1) .feature-value"
+  );
+  if (bedroomValue)
+    bedroomValue.textContent = features.bedrooms || "Not specified";
+
+  // Update bathrooms
+  const bathroomValue = document.querySelector(
+    ".feature-item:nth-child(2) .feature-value"
+  );
+  if (bathroomValue)
+    bathroomValue.textContent = features.bathrooms || "Not specified";
+
+  // Update property type
+  const propertyTypeValue = document.querySelector(
+    ".feature-item:nth-child(3) .feature-value"
+  );
+  if (propertyTypeValue)
+    propertyTypeValue.textContent = features.propertyType || "Not specified";
+
+  // Update unit condition
+  const unitConditionValue = document.querySelector(
+    ".feature-item:nth-child(4) .feature-value"
+  );
+  if (unitConditionValue)
+    unitConditionValue.textContent = features.unitCondition || "Not specified";
+
+  // Update gender
+  const genderValue = document.querySelector(
+    ".feature-item:nth-child(5) .feature-value"
+  );
+  if (genderValue) genderValue.textContent = features.gender || "Not specified";
+}
+
 function updateInclusions(inclusions) {
-  const inclusionsSection = document.querySelector("section.inclusions");
-  if (!inclusionsSection) return;
+  const inclusionsList = document.querySelector(
+    ".detail-section:nth-child(1) .detail-list"
+  );
+  if (!inclusionsList) return;
 
-  // Keep the heading
-  const heading = inclusionsSection.querySelector("h2");
-  inclusionsSection.innerHTML = "";
-  inclusionsSection.appendChild(heading);
+  // Clear existing inclusions
+  inclusionsList.innerHTML = "";
 
-  // Map of inclusion types to icons
-  const inclusionIcons = {
-    female: "ri-women-line",
-    male: "ri-men-line",
-    mixed: "ri-user-5-line",
-    bed: "ri-hotel-bed-line",
-    refrigerator: "ri-fridge-line",
-    kitchen: "ri-home-smile-line",
-    bathroom: "ri-user-shared-line",
-    wifi: "ri-wifi-line",
-    aircon: "ri-temp-cold-line",
-    fan: "ri-windy-line",
-    furniture: "ri-sofa-line",
-    // Add more mappings as needed
-  };
-
-  // Add each inclusion with appropriate icon
+  // Add each inclusion
   if (inclusions.length === 0) {
-    // If no inclusions are specified
-    addInclusionItem(
-      inclusionsSection,
-      "ri-close-circle-line",
-      "No inclusions specified"
-    );
+    const li = document.createElement("li");
+    li.className = "detail-item";
+    li.innerHTML = `<i class="fa fa-times-circle"></i> No inclusions specified`;
+    inclusionsList.appendChild(li);
     return;
   }
 
-  // Add gender restriction if specified
-  if (listing.restrictions && listing.restrictions.gender) {
-    const gender = listing.restrictions.gender.toLowerCase();
-    const genderIcon = inclusionIcons[gender] || "ri-user-line";
-    const genderText =
-      gender === "female"
-        ? "Female only"
-        : gender === "male"
-        ? "Male only"
-        : "Mixed gender";
-    addInclusionItem(inclusionsSection, genderIcon, genderText);
-  }
-
-  // Process inclusions
   inclusions.forEach((inclusion) => {
-    const iconClass = getIconForInclusion(inclusion, inclusionIcons);
-    addInclusionItem(inclusionsSection, iconClass, inclusion);
+    const li = document.createElement("li");
+    li.className = "detail-item";
+    li.innerHTML = `<i class="fa fa-check-circle"></i> ${inclusion}`;
+    inclusionsList.appendChild(li);
   });
 }
 
-function getIconForInclusion(inclusion, iconMap) {
-  // Lowercase and trim the inclusion for matching
-  const normalizedInclusion = inclusion.toLowerCase().trim();
-
-  // Check for various keywords in the inclusion text
-  for (const [key, icon] of Object.entries(iconMap)) {
-    if (normalizedInclusion.includes(key)) {
-      return icon;
-    }
-  }
-
-  // Default icon if no match
-  return "ri-checkbox-circle-line";
-}
-
-function addInclusionItem(container, iconClass, text) {
-  const item = document.createElement("div");
-  item.className = "inclusion_payment-item";
-  item.innerHTML = `
-    <i class="${iconClass}"></i>
-    <p>${text}</p>
-  `;
-  container.appendChild(item);
-}
-
 function updatePaymentTerms(listing) {
-  const paymentSection = document.querySelector("section.payment-terms");
-  if (!paymentSection) return;
+  const paymentTermsList = document.querySelector(
+    ".detail-section:nth-child(2) .detail-list"
+  );
+  if (!paymentTermsList) return;
 
-  // Keep the heading
-  const heading = paymentSection.querySelector("h2");
-  paymentSection.innerHTML = "";
-  paymentSection.appendChild(heading);
+  // Clear existing payment terms
+  paymentTermsList.innerHTML = "";
 
-  // Add advance payment if specified
-  if (listing.pricing.advancePayment) {
-    const advanceMonths = listing.pricing.advancePayment.months || 2;
-    const advanceAmount = listing.pricing.rentAmount * advanceMonths;
-    const formattedAdvance = new Intl.NumberFormat("en-PH", {
-      style: "currency",
-      currency: "PHP",
-      minimumFractionDigits: 0,
-    }).format(advanceAmount);
+  const paymentTerms = [];
 
-    addPaymentTermItem(
-      paymentSection,
-      "ri-currency-line",
-      `Advance Payments: ${formattedAdvance
-        .replace(/PHP|₱/, "Php")
-        .trim()} (${advanceMonths} months)`
-    );
-  } else {
-    addPaymentTermItem(
-      paymentSection,
-      "ri-currency-line",
-      "Advance Payments: Not specified"
-    );
+  // Check for contractTerms or fall back to other structures
+  const terms = listing.contractTerms || {};
+
+  // Add advance payment
+  if (terms.advanceAmount) {
+    paymentTerms.push({
+      icon: "fa fa-credit-card",
+      text: `${terms.advanceAmount} Month${
+        terms.advanceAmount > 1 ? "s" : ""
+      } Advance`,
+    });
   }
 
-  // Add minimum stay if specified
-  if (listing.pricing.minimumStay) {
-    addPaymentTermItem(
-      paymentSection,
-      "ri-home-heart-line",
-      `Minimum Stay: ${listing.pricing.minimumStay} months`
-    );
+  // Add deposit
+  if (terms.depositAmount) {
+    paymentTerms.push({
+      icon: "fa fa-shield-alt",
+      text: `${terms.depositAmount} Month${
+        terms.depositAmount > 1 ? "s" : ""
+      } Deposit`,
+    });
   }
 
-  // Add utilities information
-  const electricityIncluded =
-    listing.utilities && listing.utilities.electricity === "included";
-  addPaymentTermItem(
-    paymentSection,
-    "ri-lightbulb-flash-line",
-    `Electricity Bills: ${electricityIncluded ? "Included" : "Not Included"}`
-  );
+  // Add rent period
+  if (terms.rentPeriod) {
+    paymentTerms.push({
+      icon: "fa fa-calendar-alt",
+      text: `${capitalizeFirstLetter(terms.rentPeriod)} Payment`,
+    });
+  }
 
-  const waterIncluded =
-    listing.utilities && listing.utilities.water === "included";
-  addPaymentTermItem(
-    paymentSection,
-    "ri-water-flash-line",
-    `Water Bills: ${waterIncluded ? "Included" : "Not Included"}`
-  );
+  // Add contract term
+  if (terms.contractTerm) {
+    paymentTerms.push({
+      icon: "fa fa-file-contract",
+      text: terms.contractTerm,
+    });
+  }
+
+  // Add payment method
+  if (terms.rentMethod) {
+    paymentTerms.push({
+      icon: "fa fa-money-bill-wave",
+      text: `Accept ${terms.rentMethod}`,
+    });
+  }
+
+  // If no payment terms, add a default message
+  if (paymentTerms.length === 0) {
+    paymentTerms.push({
+      icon: "fa fa-info-circle",
+      text: "Payment terms not specified",
+    });
+  }
+
+  // Add payment terms to the list
+  paymentTerms.forEach((term) => {
+    const li = document.createElement("li");
+    li.className = "detail-item";
+    li.innerHTML = `<i class="${term.icon}"></i> ${term.text}`;
+    paymentTermsList.appendChild(li);
+  });
 }
 
-function addPaymentTermItem(container, iconClass, text) {
-  const item = document.createElement("div");
-  item.className = "inclusion_payment-item";
-  item.innerHTML = `
-    <i class="${iconClass}"></i>
-    <p>${text}</p>
+function updateOwnerInfo(owner) {
+  const ownerSection = document.querySelector(".owner-section");
+  if (!ownerSection) return;
+
+  // Get user's first name and last initial
+  const firstName = owner.firstName || owner.name?.split(" ")[0] || "Owner";
+  let lastName = owner.lastName || "";
+  if (lastName) lastName = lastName.charAt(0) + ".";
+
+  const ownerName = lastName ? `${firstName} ${lastName}` : firstName;
+  const ownerInitials = (
+    firstName.charAt(0) + (lastName.charAt(0) || "")
+  ).toUpperCase();
+  const memberSince = owner.createdAt ? formatDate(owner.createdAt) : "Unknown";
+
+  // Create owner info HTML
+  ownerSection.innerHTML = `
+    <h3 class="owner-header">Property Owner</h3>
+    <div class="owner-card">
+      <div class="owner-avatar">${ownerInitials}</div>
+      <div class="owner-details">
+        <h4>${ownerName}</h4>
+        <p class="owner-since">Member since ${memberSince}</p>
+        <div class="owner-stats">
+          <div class="stat">
+            <i class="fa fa-home"></i>
+            <span>${owner.listingsCount || 1} Listing${
+    owner.listingsCount !== 1 ? "s" : ""
+  }</span>
+          </div>
+          <div class="stat">
+            <i class="fa fa-star"></i>
+            <span>${owner.rating || "N/A"}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="owner-verification">
+      <div class="verification-badge">
+        <i class="fa fa-check-circle"></i>
+        <span>Verified Owner</span>
+      </div>
+      <div class="response-time">
+        <i class="fa fa-clock"></i>
+        <span>Typically responds within 24 hours</span>
+      </div>
+    </div>
   `;
-  container.appendChild(item);
 }
 
-function setupFormSubmitHandlers(ownerId, listingId) {
-  // Set up inquire form submit handler
-  const inquireForm = document.querySelector(".inquire-form");
-  if (inquireForm) {
-    inquireForm.addEventListener("submit", async (e) => {
+function setupBackButton() {
+  const backBtn = document.querySelector(".back-btn");
+  if (backBtn) {
+    backBtn.addEventListener("click", (e) => {
       e.preventDefault();
-      const messageText = inquireForm.querySelector("textarea").value.trim();
-
-      if (!messageText) {
-        alert("Please enter a message.");
-        return;
-      }
-
-      try {
-        // Here you would send the inquiry to Firebase
-        alert("Your message has been sent to the owner!");
-        inquireForm.reset();
-      } catch (error) {
-        console.error("Error sending inquiry:", error);
-        alert("Failed to send your message. Please try again later.");
-      }
+      window.location.href = "/pages/renter/browse.html";
     });
   }
+}
 
-  // Set up schedule form submit handler
-  const scheduleForm = document.querySelector(".schedule-form");
-  if (scheduleForm) {
-    scheduleForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const dateInput = scheduleForm.querySelector('input[type="date"]').value;
-      const timeInput = scheduleForm.querySelector('input[type="time"]').value;
-
-      if (!dateInput || !timeInput) {
-        alert("Please select both date and time.");
-        return;
-      }
-
-      try {
-        // Here you would send the schedule request to Firebase
-        alert("Your viewing request has been sent!");
-        scheduleForm.reset();
-      } catch (error) {
-        console.error("Error scheduling viewing:", error);
-        alert("Failed to schedule viewing. Please try again later.");
-      }
-    });
-  }
-
-  // Set up tab switching
+function setupTabs() {
   const tabButtons = document.querySelectorAll(".tab-button");
   const forms = document.querySelectorAll(".message-form");
 
@@ -349,12 +405,94 @@ function setupFormSubmitHandlers(ownerId, listingId) {
   });
 }
 
+function setupFormSubmitHandlers(ownerId, listingId) {
+  // Check if user is logged in
+  onAuthStateChanged(auth, (user) => {
+    const isLoggedIn = !!user;
+
+    // Set up inquire form submit handler
+    const inquireForm = document.querySelector(".inquire-form");
+    if (inquireForm) {
+      inquireForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!isLoggedIn) {
+          alert("Please log in to send a message to the owner.");
+          window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
+            window.location.href
+          )}`;
+          return;
+        }
+
+        const messageText = inquireForm.querySelector("textarea").value.trim();
+
+        if (!messageText) {
+          alert("Please enter a message.");
+          return;
+        }
+
+        try {
+          // Here you would send the inquiry to Firebase
+          // Could implement this later
+          alert("Your message has been sent to the owner!");
+          inquireForm.reset();
+        } catch (error) {
+          console.error("Error sending inquiry:", error);
+          alert("Failed to send your message. Please try again later.");
+        }
+      });
+    }
+
+    // Set up schedule form submit handler
+    const scheduleForm = document.querySelector(".schedule-form");
+    if (scheduleForm) {
+      scheduleForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!isLoggedIn) {
+          alert("Please log in to schedule a viewing.");
+          window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
+            window.location.href
+          )}`;
+          return;
+        }
+
+        const dateInput =
+          scheduleForm.querySelector('input[type="date"]').value;
+        const timeInput =
+          scheduleForm.querySelector('input[type="time"]').value;
+        const nameInput = scheduleForm
+          .querySelector('input[type="text"]')
+          .value.trim();
+        const phoneInput = scheduleForm
+          .querySelector('input[type="tel"]')
+          .value.trim();
+
+        if (!dateInput || !timeInput || !nameInput || !phoneInput) {
+          alert("Please fill in all required fields.");
+          return;
+        }
+
+        try {
+          // Here you would send the schedule request to Firebase
+          // Could implement this later
+          alert("Your viewing request has been sent!");
+          scheduleForm.reset();
+        } catch (error) {
+          console.error("Error scheduling viewing:", error);
+          alert("Failed to schedule viewing. Please try again later.");
+        }
+      });
+    }
+  });
+}
+
 function showError(message) {
   const container = document.querySelector("main.container");
   if (container) {
     container.innerHTML = `
       <div class="error-message" style="text-align: center; padding: 2rem; margin: 2rem 0;">
-        <i class="ri-error-warning-fill" style="font-size: 3rem; color: #f44336;"></i>
+        <i class="fa fa-exclamation-triangle" style="font-size: 3rem; color: #f44336;"></i>
         <h2 style="margin: 1rem 0;">Oops!</h2>
         <p>${message}</p>
         <a href="/pages/renter/browse.html" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">
@@ -363,4 +501,29 @@ function showError(message) {
       </div>
     `;
   }
+}
+
+// Helper functions
+function capitalizeFirstLetter(string) {
+  if (!string) return "";
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+function formatDate(timestamp) {
+  if (!timestamp) return "Unknown";
+
+  // If timestamp is a Firebase timestamp
+  if (timestamp.toDate && typeof timestamp.toDate === "function") {
+    timestamp = timestamp.toDate();
+  } else if (typeof timestamp === "string") {
+    // If timestamp is a string, convert to Date
+    timestamp = new Date(timestamp);
+  } else if (typeof timestamp === "object" && timestamp.seconds) {
+    // If timestamp is a Firebase timestamp object
+    timestamp = new Date(timestamp.seconds * 1000);
+  }
+
+  // Return formatted date
+  const options = { year: "numeric", month: "long" };
+  return new Intl.DateTimeFormat("en-US", options).format(timestamp);
 }
