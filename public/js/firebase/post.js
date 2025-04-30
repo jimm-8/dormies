@@ -50,13 +50,27 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+function showNotice(message, duration = 4000) {
+  const noticeBox = document.getElementById("noticeBox");
+  if (!noticeBox) return;
+
+  noticeBox.textContent = message;
+  noticeBox.classList.remove("hidden");
+  noticeBox.classList.add("show");
+
+  setTimeout(() => {
+    noticeBox.classList.remove("show");
+    noticeBox.classList.add("hidden");
+  }, duration);
+}
+
 document
   .getElementById("save-listing-btn")
   .addEventListener("click", async () => {
     try {
       const user = auth.currentUser;
       if (!user) {
-        alert("You must be logged in to save a listing");
+        showNotice("You must be logged in to save a listing");
         return;
       }
 
@@ -67,7 +81,7 @@ document
 
       const title = document.getElementById("listing-title").value.trim();
       if (!title) {
-        alert("Please enter a title for your listing");
+        showNotice("Please enter a title for your listing");
         saveButton.disabled = false;
         saveButton.innerHTML = '<i class="fa fa-check"></i> Done';
         return;
@@ -118,13 +132,11 @@ document
       );
       console.log("Listing saved with ID:", newListingRef.id);
 
-      alert("Listing saved successfully!");
+      showNotice("Listing saved successfully!");
       window.location.href = "/pages/owner/dashboard.html";
     } catch (error) {
       console.error("Error saving listing:", error);
-      alert(
-        "Failed to save listing. Please try again. Error: " + error.message
-      );
+      showNotice("Failed to save listing. Error: " + error.message);
       const saveButton = document.getElementById("save-listing-btn");
       saveButton.disabled = false;
       saveButton.innerHTML = '<i class="fa fa-check"></i> Done';
