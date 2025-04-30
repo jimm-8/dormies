@@ -326,15 +326,19 @@ function updateOwnerInfo(owner) {
   const ownerSection = document.querySelector(".owner-section");
   if (!ownerSection) return;
 
-  // Get user's first name and last initial
-  const firstName = owner.firstName || owner.name?.split(" ")[0] || "Owner";
-  let lastName = owner.lastName || "";
+  const fullName = owner.name || "Owner";
+  const nameParts = fullName.trim().split(" ");
+
+  const firstName = nameParts[0]; // e.g., "Juan"
+  let lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : ""; // e.g., "Cruz"
+
   if (lastName) lastName = lastName.charAt(0) + ".";
 
   const ownerName = lastName ? `${firstName} ${lastName}` : firstName;
   const ownerInitials = (
     firstName.charAt(0) + (lastName.charAt(0) || "")
   ).toUpperCase();
+
   const memberSince = owner.createdAt ? formatDate(owner.createdAt) : "Unknown";
 
   // Create owner info HTML
