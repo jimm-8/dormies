@@ -158,7 +158,7 @@ function formatAddress(address) {
   const parts = [
     address.street || "",
     address.blkNo ? `Blk ${address.blkNo}` : "",
-    address.landmark ? `Near ${address.landmark}` : "",
+    address.landmark ? `${address.landmark}` : "",
   ].filter(Boolean);
 
   return parts.join(", ");

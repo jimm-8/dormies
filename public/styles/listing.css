@@ -249,9 +249,8 @@ body {
 }
 
 .details-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0;
+  display: block; /* Changed from grid to block for a simpler layout */
+  width: 100%;
 }
 
 .detail-section {
@@ -278,8 +277,7 @@ body {
 }
 
 .detail-item {
-  display: block;
-  align-items: center;
+  display: block; /* Ensures items are displayed block-wise */
   margin-bottom: 10px;
   color: var(--text-medium);
 }
@@ -287,6 +285,7 @@ body {
 .detail-item i {
   color: var(--primary-color);
   font-size: 18px;
+  margin-right: 10px; /* Add space between icon and text */
 }
 
 /* Property Features */
