@@ -6,7 +6,6 @@ import {
   query,
   where,
   orderBy,
-  limit,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -24,16 +23,10 @@ const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    // Show loader while fetching data
     const loader = document.querySelector(".loader");
-
-    // Get the container where listings will be displayed
     const listingsContainer = document.querySelector(".listings-container");
-
-    // Clear any example listings
     listingsContainer.innerHTML = "";
 
-    // Fetch all listings from all owners
     const listings = await fetchAllListings();
 
     if (listings.length === 0) {
@@ -43,20 +36,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
       `;
     } else {
-      // Display each listing
       listings.forEach((listing) => {
         const listingElement = createListingElement(listing);
         listingsContainer.appendChild(listingElement);
       });
     }
 
-    // Set up search functionality
     setupSearch(listings, listingsContainer);
 
-    // Hide loader once everything is loaded
-    if (loader) {
-      loader.style.display = "none";
-    }
+    if (loader) loader.style.display = "none";
   } catch (error) {
     console.error("Error fetching listings:", error);
     const listingsContainer = document.querySelector(".listings-container");
@@ -65,21 +53,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         <p>Failed to load listings. Please try again later.</p>
       </div>
     `;
-
-    // Hide loader on error
     const loader = document.querySelector(".loader");
-    if (loader) {
-      loader.style.display = "none";
-    }
+    if (loader) loader.style.display = "none";
   }
 });
 
 async function fetchAllListings() {
-  // Get all owners
   const ownersSnapshot = await getDocs(collection(db, "owners"));
   const allListings = [];
 
-  // For each owner, get their listings
   for (const ownerDoc of ownersSnapshot.docs) {
     const ownerId = ownerDoc.id;
     const listingsQuery = query(
@@ -89,7 +71,6 @@ async function fetchAllListings() {
     );
 
     const listingsSnapshot = await getDocs(listingsQuery);
-
     listingsSnapshot.forEach((doc) => {
       allListings.push({
         id: doc.id,
@@ -107,19 +88,17 @@ function createListingElement(listing) {
   listingCard.href = `/pages/renter/listing.html?ownerId=${listing.ownerId}&listingId=${listing.id}`;
   listingCard.className = "listing-card";
 
-  // Format the address
   const address = [
-    listing.address.street || "",
-    listing.address.blkNo ? `Blk ${listing.address.blkNo}` : "",
-    listing.address.landmark || "",
+    listing.address?.street || "",
+    listing.address?.blkNo ? `Blk ${listing.address.blkNo}` : "",
+    listing.address?.landmark || "",
   ]
     .filter(Boolean)
     .join(", ");
 
-  // Format the rent amount and period
   const formattedPrice = formatPrice(
-    listing.pricing.rentAmount,
-    listing.pricing.rentPeriod
+    listing.pricing?.rentAmount ?? 0,
+    listing.contractTerms?.rentPeriod ?? ""
   );
 
   listingCard.innerHTML = `
@@ -132,7 +111,7 @@ function createListingElement(listing) {
       </div>
     </div>
     <div class="listing-info">
-      <h3 class="title">${listing.title}</h3>
+      <h3 class="title">${listing.title ?? "No Title Provided"}</h3>
       <p class="address">${address}</p>
       <p class="price-tag">Starts at ${formattedPrice}</p>
     </div>
@@ -145,37 +124,20 @@ function getImageSrc(listing) {
   return "/assets/dorm1.jpg";
 }
 
-function formatPrice(amount, period) {
-  // Format currency
-  const formattedAmount = new Intl.NumberFormat("en-PH", {
-    style: "currency",
-    currency: "PHP",
-    minimumFractionDigits: 0,
-  }).format(amount);
+function formatPrice(price, period) {
+  if (!period || typeof period !== "string")
+    return `₱${(price || 0).toLocaleString()}`;
 
-  // Determine period text
-  let periodText;
   switch (period.toLowerCase()) {
     case "daily":
-      periodText = "daily";
-      break;
+      return `₱${price.toLocaleString()} / day`;
     case "weekly":
-      periodText = "weekly";
-      break;
+      return `₱${price.toLocaleString()} / week`;
     case "monthly":
-      periodText = "monthly";
-      break;
-    case "quarterly":
-      periodText = "quarterly";
-      break;
-    case "yearly":
-      periodText = "yearly";
-      break;
+      return `₱${price.toLocaleString()} / month`;
     default:
-      periodText = period;
+      return `₱${price.toLocaleString()}`;
   }
-
-  return `${formattedAmount} ${periodText}`;
 }
 
 function setupSearch(allListings, listingsContainer) {
@@ -185,22 +147,13 @@ function setupSearch(allListings, listingsContainer) {
     searchInput.addEventListener("input", function () {
       const searchTerm = this.value.toLowerCase().trim();
 
-      if (searchTerm === "") {
-        // If search is empty, show all listings
-        listingsContainer.innerHTML = "";
-        allListings.forEach((listing) => {
-          const listingElement = createListingElement(listing);
-          listingsContainer.appendChild(listingElement);
-        });
-        return;
-      }
+      listingsContainer.innerHTML = "";
 
-      // Filter listings based on search term
       const filteredListings = allListings.filter((listing) => {
-        const title = listing.title.toLowerCase();
+        const title = listing.title?.toLowerCase() || "";
         const description = listing.description?.toLowerCase() || "";
-        const street = listing.address.street?.toLowerCase() || "";
-        const landmark = listing.address.landmark?.toLowerCase() || "";
+        const street = listing.address?.street?.toLowerCase() || "";
+        const landmark = listing.address?.landmark?.toLowerCase() || "";
 
         return (
           title.includes(searchTerm) ||
@@ -209,9 +162,6 @@ function setupSearch(allListings, listingsContainer) {
           landmark.includes(searchTerm)
         );
       });
-
-      // Update listings display
-      listingsContainer.innerHTML = "";
 
       if (filteredListings.length === 0) {
         listingsContainer.innerHTML = `
