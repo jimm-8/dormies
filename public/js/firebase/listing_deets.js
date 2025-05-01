@@ -567,7 +567,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const auth = getAuth();
   const currentPath = window.location.pathname;
 
-  // ✅ Only proceed if we are on /pages/renter/listing.html
   if (currentPath === "/pages/renter/listing.html") {
     onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -580,28 +579,27 @@ document.addEventListener("DOMContentLoaded", () => {
         writeReviewButton.disabled = false;
         writeReviewButton.title = "";
         writeReviewButton.addEventListener("click", () => {
-          reviewModal.style.display = "block";
+          reviewModal.classList.add("show");
         });
       }
     });
   } else {
-    // Not on renter listing page, hide or disable review button entirely
     writeReviewButton.style.display = "none";
   }
 
   closeReview.addEventListener("click", () => {
-    reviewModal.style.display = "none";
+    reviewModal.classList.remove("show");
   });
 
   window.addEventListener("click", (event) => {
     if (event.target === reviewModal) {
-      reviewModal.style.display = "none";
+      reviewModal.classList.remove("show");
     }
   });
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-      reviewModal.style.display = "none";
+      reviewModal.classList.remove("show");
     }
   });
 });

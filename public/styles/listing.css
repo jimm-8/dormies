@@ -651,7 +651,7 @@ body {
 
 /* Modal Styles */
 .modal {
-  display: none;
+  display: flex; /* <-- FIX: this makes centering work */
   position: fixed;
   top: 0;
   left: 0;
@@ -660,6 +660,15 @@ body {
   background: rgba(0, 0, 0, 0.5);
   justify-content: center;
   align-items: center;
+  z-index: 1000;
+  visibility: hidden; /* Use this instead of display for smoother toggle */
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal.show {
+  visibility: visible;
+  opacity: 1;
 }
 
 .modal-content {
@@ -667,8 +676,9 @@ body {
   padding: 20px;
   border-radius: 8px;
   width: 300px;
-  max-width: 100%;
+  max-width: 90%;
   position: relative;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
 .close-button {
@@ -685,6 +695,7 @@ textarea {
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  resize: vertical;
 }
 
 button {
