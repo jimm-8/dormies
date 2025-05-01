@@ -83,6 +83,40 @@ async function fetchAllListings() {
   return allListings;
 }
 
+function createAdminListingCard(listing) {
+  const card = document.createElement("div");
+  card.className = "listing-card";
+
+  const statusClass =
+    listing.status === "Available" ? "status-available" : "status-unavailable";
+
+  card.innerHTML = `
+    <div class="listing-img-container">
+      <h2>${listing.title ?? "No Title"}</h2>
+      <div class="listing-status ${statusClass}">${listing.status}</div>
+    </div>
+    <div class="listing-info">
+      <div class="listing-price">${formatPrice(
+        listing.pricing?.rentAmount ?? 0,
+        listing.contractTerms?.rentPeriod ?? ""
+      )}</div>
+      <div class="listing-location">${
+        listing.address?.full ?? "No Address Provided"
+      }</div>
+      <div class="listing-actions">
+        <button class="action-btn edit-btn" data-id="${
+          listing.id
+        }">Edit</button>
+        <button class="action-btn view-btn" data-id="${
+          listing.id
+        }">Delete</button>
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
 function createListingElement(listing) {
   const listingCard = document.createElement("a");
   listingCard.href = `/pages/renter/listing.html?ownerId=${listing.ownerId}&listingId=${listing.id}`;

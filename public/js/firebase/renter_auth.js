@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("userData", JSON.stringify(userInfo));
 
         showMessageBox("Login successful");
-        window.location.href = "/index.html";
+        window.location.href = "/pages/renter/home.html";
       } else {
         showMessageBox("Unauthorized access. This account is not a renter.");
       }

@@ -25,82 +25,28 @@
       <div id="sidebar-container"></div>
 
       <!-- Add the main-content div which is referenced in your CSS -->
-      <div>
-        <div class="main-content">
-          <div class="one">
-            <h5>Good day!</h5>
-            <h1><span id="owner_name"></span></h1>
-          </div>
-    
-          <div class="main-list">
-            <div class="title">
-              <h3>Your Listings</h3>
-              <div class="listing-layout">
-                <div id="create_btn" class="add-listing">+ Add New Listing</div>
-              </div>
+     <div class="main-content">
+        <div class="one">
+          <h5>Good day!</h5>
+          <h1><span id="owner_name"></span></h1>
+        </div>
+
+        <div class="title">
+          <h3>Your Listings</h3>
+
+          <!-- 3-Column Grid Layout -->
+          <div class="listings-grid">
+            <!-- Add New Listing Button -->
+            <div class="add-listing" id="create_btn">
+              <span>+ Add New Listing</span>
             </div>
-            
-            <div class="listing-container">
-              <!-- Sample Listing Card 1 -->
-              <div class="listing-card">
-                <div class="listing-img-container">
-                  <img
-                    src="/api/placeholder/150/150"
-                    alt="Property 1"
-                    class="listing-img"
-                  />
-                </div>
-                <div class="listing-info">
-                  <div class="listing-price">$1,250/mo</div>
-                  <div class="listing-location">123 Main Street, Apt 4B</div>
-                  <div class="listing-actions">
-                    <button class="action-btn edit-btn">Edit</button>
-                    <button class="action-btn view-btn">View</button>
-                  </div>
-                </div>
-              </div>
 
-              <!-- Sample Listing Card 2 -->
-              <div class="listing-card">
-                <div class="listing-img-container">
-                  <img
-                    src="/api/placeholder/150/150"
-                    alt="Property 2"
-                    class="listing-img"
-                  />
-                </div>
-                <div class="listing-info">
-                  <div class="listing-price">$1,800/mo</div>
-                  <div class="listing-location">456 Oak Avenue, Unit 7C</div>
-                  <div class="listing-actions">
-                    <button class="action-btn edit-btn">Edit</button>
-                    <button class="action-btn view-btn">View</button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Sample Listing Card 3 -->
-              <div class="listing-card">
-                <div class="listing-img-container">
-                  <img
-                    src="/api/placeholder/150/150"
-                    alt="Property 3"
-                    class="listing-img"
-                  />
-                </div>
-                <div class="listing-info">
-                  <div class="listing-price">$2,100/mo</div>
-                  <div class="listing-location">789 Pine Boulevard, #303</div>
-                  <div class="listing-actions">
-                    <button class="action-btn edit-btn">Edit</button>
-                    <button class="action-btn view-btn">View</button>
-                  </div>
-                </div>
-              </div>
+            <!-- Property Card 1 -->
+            <div class="listing-card">
             </div>
           </div>
+        </div>
       </div>
-     </div>
   </body>
 </html>
 
