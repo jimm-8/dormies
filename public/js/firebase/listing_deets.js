@@ -3,6 +3,9 @@ import {
   getFirestore,
   doc,
   getDoc,
+  query,
+  where,
+  getCountFromServer,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import {
   getAuth,
@@ -322,15 +325,14 @@ function updatePaymentTerms(listing) {
   });
 }
 
-function updateOwnerInfo(owner) {
+async function updateOwnerInfo(owner) {
   const ownerSection = document.querySelector(".owner-section");
   if (!ownerSection) return;
 
   const fullName = owner.name || "Owner";
   const nameParts = fullName.trim().split(" ");
-
-  const firstName = nameParts[0]; // e.g., "Juan"
-  let lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : ""; // e.g., "Cruz"
+  const firstName = nameParts[0];
+  let lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
 
   if (lastName) lastName = lastName.charAt(0) + ".";
 
@@ -341,7 +343,18 @@ function updateOwnerInfo(owner) {
 
   const memberSince = owner.createdAt ? formatDate(owner.createdAt) : "Unknown";
 
-  // Create owner info HTML
+  // Fetch actual listing count from Firestore
+  let listingsCount = 0;
+  try {
+    const listingsSnapshot = await getDocs(
+      collection(db, "owners", owner.id, "listings")
+    );
+    listingsCount = listingsSnapshot.size;
+  } catch (error) {
+    console.error("Failed to fetch listing count:", error);
+  }
+
+  // Render to DOM
   ownerSection.innerHTML = `
     <h3 class="owner-header">Property Owner</h3>
     <div class="owner-card">
@@ -352,8 +365,8 @@ function updateOwnerInfo(owner) {
         <div class="owner-stats">
           <div class="stat">
             <i class="fa fa-home"></i>
-            <span>${owner.listingsCount || 1} Listing${
-    owner.listingsCount !== 1 ? "s" : ""
+            <span>${listingsCount} Listing${
+    listingsCount !== 1 ? "s" : ""
   }</span>
           </div>
           <div class="stat">
