@@ -565,20 +565,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeReview = document.getElementById("closeReview");
 
   const auth = getAuth();
-  const user = auth.currentUser;
+  const currentPath = window.location.pathname;
 
-  // Check if user is logged in
-  if (!user) {
-    writeReviewButton.disabled = true;
-    writeReviewButton.title = "You must be logged in to leave a review";
-
-    writeReviewButton.addEventListener("click", () => {
-      showNotice("Please log in to write a review.");
+  // ✅ Only proceed if we are on /pages/renter/listing.html
+  if (currentPath === "/pages/renter/listing.html") {
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        writeReviewButton.disabled = true;
+        writeReviewButton.title = "You must be logged in to leave a review";
+        writeReviewButton.addEventListener("click", () => {
+          showNotice("Please log in to write a review.");
+        });
+      } else {
+        writeReviewButton.disabled = false;
+        writeReviewButton.title = "";
+        writeReviewButton.addEventListener("click", () => {
+          reviewModal.style.display = "block";
+        });
+      }
     });
   } else {
-    writeReviewButton.addEventListener("click", () => {
-      reviewModal.style.display = "block";
-    });
+    // Not on renter listing page, hide or disable review button entirely
+    writeReviewButton.style.display = "none";
   }
 
   closeReview.addEventListener("click", () => {
@@ -587,6 +595,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("click", (event) => {
     if (event.target === reviewModal) {
+      reviewModal.style.display = "none";
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
       reviewModal.style.display = "none";
     }
   });
