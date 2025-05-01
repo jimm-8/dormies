@@ -511,7 +511,7 @@ function showError(message) {
         <i class="fa fa-exclamation-triangle" style="font-size: 3rem; color: #f44336;"></i>
         <h2 style="margin: 1rem 0;">Oops!</h2>
         <p>${message}</p>
-        <a href="/pages/renter/browse.html" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">
+        <a href="/index.html" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">
           Go back to listings
         </a>
       </div>
