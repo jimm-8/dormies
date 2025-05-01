@@ -2,10 +2,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebas
 import {
   getFirestore,
   doc,
-  getDoc,
-  query,
-  where,
-  getCountFromServer,
+  collection,
+  getDocs,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import {
   getAuth,
