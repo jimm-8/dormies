@@ -33,6 +33,18 @@ function initNavbarEvents() {
   }
 }
 
+// Load Navbar and Footer
+document.addEventListener("DOMContentLoaded", function () {
+  loadComponent("navbar", "/navbar.html", initNavbarEvents);
+  loadComponent("footer", "/footer.html");
+});
+
+let logoLoader = document.querySelector(".loader-img");
+if (logoLoader) {
+  logoLoader.src = "/assets/logo-md.png";
+  console.log("Logo updated:", logoLoader.src);
+}
+
 const owner_btn = document.getElementById("owner_btn");
 const renter_btn = document.getElementById("renter_btn");
 
