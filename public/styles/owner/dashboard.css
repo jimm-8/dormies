@@ -150,7 +150,7 @@ body {
 /* Add New Listing Button */
 .add-listing {
   height: 100%;
-  min-height: 80px;
+  min-height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
