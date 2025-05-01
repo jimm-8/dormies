@@ -14,11 +14,6 @@
   font-family: "Poppins", sans-serif;
 }
 
-body {
-  background-color: #f9f9f9;
-}
-
-/* Loader CSS */
 .loader {
   --color: #a5a5b0;
   --size: 70px;
@@ -88,6 +83,14 @@ body {
   }
 }
 
+body {
+  background-color: #f9f9f9;
+}
+
+#main {
+  width: 100%;
+}
+
 #main {
   display: none;
   opacity: 0;
@@ -95,6 +98,7 @@ body {
   width: 100vw;
   min-height: 100vh;
 }
+
 .main-content {
   margin-left: 330px;
   margin-top: 80px;
