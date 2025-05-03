@@ -7,6 +7,7 @@ import {
   getFirestore,
   setDoc,
   doc,
+  serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -96,6 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
         name: name,
         bisname: bisname,
         role: "owner",
+        createdAt: serverTimestamp(),
       };
 
       await setDoc(doc(db, "owners", user.uid), userData);

@@ -10,6 +10,7 @@
     <script type="module" src="/js/admin.js"></script>
     <script type="module" src="/js/owner/dashboard.js"></script>
     <script type="module" src="/js/firebase/fetch_user.js"></script>
+    <script type="module" src="/js/firebase/fetch_post.js"></script>
   </head>
   <body>
     <div class="loader">
@@ -25,23 +26,28 @@
       <div id="sidebar-container"></div>
 
       <!-- Add the main-content div which is referenced in your CSS -->
-      <div>
-        <div class="main-content">
-          <div class="one">
-            <h5>Good day!</h5>
-            <h1><span id="owner_name"></span></h1>
-          </div>
-    
-          <div class="main-list">
-            <div class="title">
-              <h3>Your Listings</h3>
-              <div class="listing-layout">
-                <div id="create_btn" class="add-listing">+ Add New Listing</div>
-              </div>
+     <div class="main-content">
+        <div class="one">
+          <h5>Good day!</h5>
+          <h1><span id="owner_name"></span></h1>
+        </div>
+
+        <div class="title">
+          <h3>Your Listings</h3>
+
+          <!-- 3-Column Grid Layout -->
+          <div class="listings-grid">
+            <!-- Add New Listing Button -->
+            <div class="add-listing" id="create_btn">
+              <span>+ Add New Listing</span>
+            </div>
+
+            <!-- Property Card 1 -->
+            <div class="listing-card">
             </div>
           </div>
+        </div>
       </div>
-     </div>
   </body>
 </html>
 

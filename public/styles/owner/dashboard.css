@@ -1,12 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
 :root {
   --blue: #03045e;
   --yellow: #ffb703;
   --black: #151f28;
+  --gradient: linear-gradient(135deg, #03045e 0%, #023e8a 100%);
 }
 
-/* Loader CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
 .loader {
   --color: #a5a5b0;
   --size: 70px;
@@ -76,6 +83,14 @@
   }
 }
 
+body {
+  background-color: #f9f9f9;
+}
+
+#main {
+  width: 100%;
+}
+
 #main {
   display: none;
   opacity: 0;
@@ -87,15 +102,16 @@
 .main-content {
   margin-left: 330px;
   margin-top: 80px;
+  padding: 20px;
 }
 
-h5 {
+.one h5 {
   font-weight: 500;
   font-size: medium;
   color: var(--black);
 }
 
-h1 {
+.one h1 {
   font-weight: bold;
   font-size: xx-large;
   color: var(--black);
@@ -106,28 +122,46 @@ h1 {
   margin-top: 40px;
 }
 
-h3 {
+.title h3 {
   font-weight: 500;
+  margin-bottom: 15px;
 }
 
-/* LISTING CARDS */
-.listing-layout {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+/* Grid Layout */
+.listings-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
+/* For tablet view */
+@media (max-width: 1200px) {
+  .listings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* For mobile view */
+@media (max-width: 768px) {
+  .listings-grid {
+    grid-template-columns: 1fr;
+  }
+  .main-content {
+    margin-left: 0;
+  }
+}
+
+/* Add New Listing Button */
 .add-listing {
-  width: 400px;
-  height: 150px;
+  height: 100%;
+  min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  margin-top: 15px;
   border-radius: 10px;
   border: 3px dashed var(--blue);
-  transition: transform 0.2s ease, color 0.2s ease;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
 .add-listing:hover {
@@ -135,16 +169,155 @@ h3 {
   background-color: #f5f5f5;
 }
 
+.add-listing span {
+  color: var(--blue);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* Listing Card */
 .listing-card {
-  width: 150px;
-  height: 200px;
-  border: 1px solid #ccc;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.listing-card:hover {
+  transform: translateY(-5px);
+}
+
+.listing-img-container {
+  height: 120px;
+  position: relative;
+  background: var(--gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.listing-img-container h2 {
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
   text-align: center;
-  padding: 10px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .listing-img {
   width: 100%;
-  height: 100px;
+  height: 100%;
   object-fit: cover;
+}
+
+.listing-status {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-available {
+  background-color: #4caf50;
+  color: white;
+}
+
+.status-pending {
+  background-color: #ffc107;
+  color: var(--black);
+}
+
+.listing-info {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.listing-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 5px;
+}
+
+.listing-location {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listing-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.listing-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.detail-value {
+  font-weight: 600;
+  color: var(--black);
+}
+
+.detail-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.listing-tags {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.listing-tag {
+  background-color: var(--yellow);
+  color: var(--black);
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.listing-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  align-self: flex-end;
+}
+
+.action-btn {
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.view-btn {
+  background-color: var(--blue);
+  color: white;
+  border: none;
+}
+
+.edit-btn {
+  background-color: white;
+  color: var(--blue);
+  border: 1px solid var(--blue);
 }

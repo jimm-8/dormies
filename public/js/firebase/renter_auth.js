@@ -87,27 +87,33 @@ document.addEventListener("DOMContentLoaded", () => {
       );
       const user = userCredential.user;
 
-      // 🔍 Check Firestore for the 'owners' collection
-      const ownerDocRef = doc(db, "renters", user.uid);
-      const ownerDocSnap = await getDoc(ownerDocRef);
+      // 🔍 Check Firestore for the 'renters' collection
+      const renterDocRef = doc(db, "renters", user.uid);
+      const renterDocSnap = await getDoc(renterDocRef);
 
-      if (ownerDocSnap.exists()) {
-        showMessageBox("Login successful");
+      if (renterDocSnap.exists()) {
+        const userData = renterDocSnap.data();
+
+        // Store login-related data in localStorage
         localStorage.setItem("loggedInUserId", user.uid);
+        localStorage.setItem("userType", "renter");
+        localStorage.setItem("isLoggedIn", "true");
+
+        const userInfo = {
+          email: user.email,
+          name: userData.name || "",
+          // Add more fields from userData if needed
+        };
+        localStorage.setItem("userData", JSON.stringify(userInfo));
+
+        showMessageBox("Login successful");
         window.location.href = "/pages/renter/home.html";
       } else {
-        showMessageBox("Unauthorized access. This account is not an owner.");
+        showMessageBox("Unauthorized access. This account is not a renter.");
       }
     } catch (error) {
-      const errorCode = error.code;
-      if (errorCode === "auth/invalid-credential") {
-        showMessageBox("Incorrect email or password");
-      } else {
-        showMessageBox("Account does not exist");
-      }
-    } finally {
-      loginBtn.innerText = "Login";
-      loginBtn.disabled = false;
+      console.error("Login failed:", error);
+      showMessageBox(error.message || "An error occurred during login.");
     }
   });
 });
