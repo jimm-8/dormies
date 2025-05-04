@@ -141,10 +141,10 @@ function updateListingDetails(listing) {
       inclusions.push(...listing.inclusions);
     } else {
       // Check for specific inclusion fields
-      if (listing.inclusions.waterBill === "yes") inclusions.push("Water Bill");
-      if (listing.inclusions.electricBill === "yes")
+      if (listing.inclusions.waterBill === "Yes") inclusions.push("Water Bill");
+      if (listing.inclusions.electricBill === "Yes")
         inclusions.push("Electricity Bill");
-      if (listing.inclusions.wifiBill === "yes")
+      if (listing.inclusions.wifiBill === "Yes")
         inclusions.push("Internet Bill");
     }
   }
@@ -422,87 +422,87 @@ function setupTabs() {
   });
 }
 
-function setupFormSubmitHandlers(ownerId, listingId) {
-  // Check if user is logged in
-  onAuthStateChanged(auth, (user) => {
-    const isLoggedIn = !!user;
+// function setupFormSubmitHandlers(ownerId, listingId) {
+//   // Check if user is logged in
+//   onAuthStateChanged(auth, (user) => {
+//     const isLoggedIn = !!user;
 
-    // Set up inquire form submit handler
-    const inquireForm = document.querySelector(".inquire-form");
-    if (inquireForm) {
-      inquireForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
+//     // Set up inquire form submit handler
+//     const inquireForm = document.querySelector(".inquire-form");
+//     if (inquireForm) {
+//       inquireForm.addEventListener("submit", async (e) => {
+//         e.preventDefault();
 
-        if (!isLoggedIn) {
-          alert("Please log in to send a message to the owner.");
-          window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
-            window.location.href
-          )}`;
-          return;
-        }
+//         if (!isLoggedIn) {
+//           alert("Please log in to send a message to the owner.");
+//           window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
+//             window.location.href
+//           )}`;
+//           return;
+//         }
 
-        const messageText = inquireForm.querySelector("textarea").value.trim();
+//         const messageText = inquireForm.querySelector("textarea").value.trim();
 
-        if (!messageText) {
-          alert("Please enter a message.");
-          return;
-        }
+//         if (!messageText) {
+//           alert("Please enter a message.");
+//           return;
+//         }
 
-        try {
-          // Here you would send the inquiry to Firebase
-          // Could implement this later
-          alert("Your message has been sent to the owner!");
-          inquireForm.reset();
-        } catch (error) {
-          console.error("Error sending inquiry:", error);
-          alert("Failed to send your message. Please try again later.");
-        }
-      });
-    }
+//         try {
+//           // Here you would send the inquiry to Firebase
+//           // Could implement this later
+//           alert("Your message has been sent to the owner!");
+//           inquireForm.reset();
+//         } catch (error) {
+//           console.error("Error sending inquiry:", error);
+//           alert("Failed to send your message. Please try again later.");
+//         }
+//       });
+//     }
 
-    // Set up schedule form submit handler
-    const scheduleForm = document.querySelector(".schedule-form");
-    if (scheduleForm) {
-      scheduleForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
+//     // Set up schedule form submit handler
+//     const scheduleForm = document.querySelector(".schedule-form");
+//     if (scheduleForm) {
+//       scheduleForm.addEventListener("submit", async (e) => {
+//         e.preventDefault();
 
-        if (!isLoggedIn) {
-          alert("Please log in to schedule a viewing.");
-          window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
-            window.location.href
-          )}`;
-          return;
-        }
+//         if (!isLoggedIn) {
+//           alert("Please log in to schedule a viewing.");
+//           window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
+//             window.location.href
+//           )}`;
+//           return;
+//         }
 
-        const dateInput =
-          scheduleForm.querySelector('input[type="date"]').value;
-        const timeInput =
-          scheduleForm.querySelector('input[type="time"]').value;
-        const nameInput = scheduleForm
-          .querySelector('input[type="text"]')
-          .value.trim();
-        const phoneInput = scheduleForm
-          .querySelector('input[type="tel"]')
-          .value.trim();
+//         const dateInput =
+//           scheduleForm.querySelector('input[type="date"]').value;
+//         const timeInput =
+//           scheduleForm.querySelector('input[type="time"]').value;
+//         const nameInput = scheduleForm
+//           .querySelector('input[type="text"]')
+//           .value.trim();
+//         const phoneInput = scheduleForm
+//           .querySelector('input[type="tel"]')
+//           .value.trim();
 
-        if (!dateInput || !timeInput || !nameInput || !phoneInput) {
-          alert("Please fill in all required fields.");
-          return;
-        }
+//         if (!dateInput || !timeInput || !nameInput || !phoneInput) {
+//           alert("Please fill in all required fields.");
+//           return;
+//         }
 
-        try {
-          // Here you would send the schedule request to Firebase
-          // Could implement this later
-          alert("Your viewing request has been sent!");
-          scheduleForm.reset();
-        } catch (error) {
-          console.error("Error scheduling viewing:", error);
-          alert("Failed to schedule viewing. Please try again later.");
-        }
-      });
-    }
-  });
-}
+//         try {
+//           // Here you would send the schedule request to Firebase
+//           // Could implement this later
+//           alert("Your viewing request has been sent!");
+//           scheduleForm.reset();
+//         } catch (error) {
+//           console.error("Error scheduling viewing:", error);
+//           alert("Failed to schedule viewing. Please try again later.");
+//         }
+//       });
+//     }
+//   });
+// }
 
 function showError(message) {
   const container = document.querySelector("main.container");
