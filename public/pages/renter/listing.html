@@ -16,13 +16,9 @@
     <script type="module" src="/js/firebase/listing_deets.js"></script>
     <link rel="stylesheet" href="/styles/renter.css" />
     <link rel="stylesheet" href="/styles/listing.css" />
-    <script type="module" src="/js/firebase/transaction.js"></script>
-    <script type="module" src="..\js\renter\form-handler.js"></script>
-
     <title>Property Details</title>
   </head>
   <body>
-    <!-- Navigation -->
     <div class="navbar">
       <div class="nav-container">
         <div class="nav-left">
@@ -177,13 +173,42 @@
               </a>
             </div>
 
-            <!-- Review Modal -->
             <div id="reviewModal" class="modal">
               <div class="modal-content">
-                <span id="closeReview" class="close-button">&times;</span>
+                <span id="closeReview" class="close">&times;</span>
                 <h3>Write a Review</h3>
-                <textarea placeholder="Your review here..."></textarea>
-                <button>Submit</button>
+                <form id="reviewForm">
+                  <div class="rating-container">
+                    <p>Rating:</p>
+                    <div class="star-rating">
+                      <input type="radio" id="star5" name="rating" value="5" />
+                      <label for="star5"><i class="fas fa-star"></i></label>
+
+                      <input type="radio" id="star4" name="rating" value="4" />
+                      <label for="star4"><i class="fas fa-star"></i></label>
+
+                      <input type="radio" id="star3" name="rating" value="3" />
+                      <label for="star3"><i class="fas fa-star"></i></label>
+
+                      <input type="radio" id="star2" name="rating" value="2" />
+                      <label for="star2"><i class="fas fa-star"></i></label>
+
+                      <input type="radio" id="star1" name="rating" value="1" />
+                      <label for="star1"><i class="fas fa-star"></i></label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="reviewText">Your Review:</label>
+                    <textarea
+                      id="reviewText"
+                      rows="5"
+                      placeholder="Share your experience with this property..."
+                    ></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    Submit Review
+                  </button>
+                </form>
               </div>
             </div>
 

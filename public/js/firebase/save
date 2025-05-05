@@ -7,6 +7,10 @@ import {
   getDocs,
   addDoc,
   serverTimestamp,
+  query,
+  orderBy,
+  limit,
+  where,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
 import {
   getAuth,
@@ -26,6 +30,282 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+
+/**
+ * Initialize reviews functionality
+ * This function was previously imported from reviews.js
+ */
+function initializeReviews(ownerId, listingId) {
+  const reviewsContainer = document.querySelector(".reviews-container");
+  const reviewForm = document.getElementById("reviewForm");
+
+  if (!reviewsContainer || !reviewForm) {
+    console.warn("Reviews elements not found");
+    return;
+  }
+
+  // Load existing reviews
+  loadReviews(ownerId, listingId);
+
+  // Set up review form submission
+  setupReviewForm(ownerId, listingId);
+}
+
+/**
+ * Load existing reviews from Firestore
+ */
+async function loadReviews(ownerId, listingId) {
+  const reviewsContainer = document.querySelector(".reviews-container");
+  if (!reviewsContainer) return;
+
+  try {
+    // Create a reference to the reviews collection
+    const reviewsRef = collection(db, "reviews");
+
+    // Create a query against the collection
+    const q = query(
+      reviewsRef,
+      where("listingId", "==", listingId),
+      orderBy("timestamp", "desc"),
+      limit(10)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    // Clear loading state
+    reviewsContainer.innerHTML = "";
+
+    if (querySnapshot.empty) {
+      reviewsContainer.innerHTML = `
+        <div class="no-reviews">
+          <i class="fa fa-comment-slash"></i>
+          <p>No reviews yet. Be the first to leave a review!</p>
+        </div>
+      `;
+      return;
+    }
+
+    // Display each review
+    querySnapshot.forEach((doc) => {
+      const review = doc.data();
+      const reviewElement = createReviewElement(review);
+      reviewsContainer.appendChild(reviewElement);
+    });
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    reviewsContainer.innerHTML = `
+      <div class="error-message">
+        <i class="fa fa-exclamation-triangle"></i>
+        <p>Failed to load reviews. Please try again later.</p>
+      </div>
+    `;
+  }
+}
+
+/**
+ * Create a review element from review data
+ */
+function createReviewElement(review) {
+  const reviewDiv = document.createElement("div");
+  reviewDiv.className = "review";
+
+  // Format date
+  const reviewDate = review.timestamp
+    ? formatDate(review.timestamp)
+    : "Recently";
+
+  // Get user initials for avatar
+  const nameParts = (review.userName || "Anonymous User").split(" ");
+  const userInitials = (
+    nameParts[0].charAt(0) +
+    (nameParts.length > 1 ? nameParts[nameParts.length - 1].charAt(0) : "")
+  ).toUpperCase();
+
+  // Generate stars based on rating
+  const stars = generateStarRating(review.rating);
+
+  reviewDiv.innerHTML = `
+    <div class="review-header">
+      <div class="reviewer-avatar">${userInitials}</div>
+      <div class="reviewer-info">
+        <h4>${review.userName || "Anonymous User"}</h4>
+        <div class="review-date">${reviewDate}</div>
+      </div>
+    </div>
+    <div class="review-rating">
+      ${stars}
+    </div>
+    <div class="review-content">
+      ${review.comment || ""}
+    </div>
+  `;
+
+  return reviewDiv;
+}
+
+/**
+ * Generate star rating HTML
+ */
+function generateStarRating(rating) {
+  const fullStar = '<i class="fas fa-star"></i>';
+  const halfStar = '<i class="fas fa-star-half-alt"></i>';
+  const emptyStar = '<i class="far fa-star"></i>';
+
+  let stars = "";
+  const ratingNum = parseFloat(rating) || 0;
+
+  for (let i = 1; i <= 5; i++) {
+    if (i <= ratingNum) {
+      stars += fullStar;
+    } else if (i - 0.5 <= ratingNum) {
+      stars += halfStar;
+    } else {
+      stars += emptyStar;
+    }
+  }
+
+  return stars;
+}
+
+/**
+ * Set up review form submission
+ */
+function setupReviewForm(ownerId, listingId) {
+  const reviewForm = document.getElementById("reviewForm");
+  if (!reviewForm) return;
+
+  reviewForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const ratingInput = reviewForm.querySelector('input[name="rating"]');
+    const commentInput = reviewForm.querySelector("textarea");
+
+    const rating = parseInt(ratingInput.value);
+    const comment = commentInput.value.trim();
+
+    if (!rating || rating < 1 || rating > 5) {
+      showNotice("Please select a rating from 1 to 5 stars.");
+      return;
+    }
+
+    if (!comment) {
+      showNotice("Please enter a review comment.");
+      return;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        showNotice("Please log in to leave a review.");
+        window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
+          window.location.href
+        )}`;
+        return;
+      }
+
+      try {
+        // Check if user already left a review for this listing
+        const reviewsRef = collection(db, "reviews");
+        const q = query(
+          reviewsRef,
+          where("userId", "==", user.uid),
+          where("listingId", "==", listingId)
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          showNotice("You have already reviewed this property.");
+          return;
+        }
+
+        // Get user display name
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        const userName = userDoc.exists()
+          ? userDoc.data().name || user.displayName || "User"
+          : user.displayName || "User";
+
+        // Add the review
+        await addDoc(collection(db, "reviews"), {
+          userId: user.uid,
+          userName: userName,
+          ownerId: ownerId,
+          listingId: listingId,
+          rating: rating,
+          comment: comment,
+          timestamp: serverTimestamp(),
+        });
+
+        showNotice("Review submitted successfully!");
+        reviewForm.reset();
+
+        // Reload reviews to show the new one
+        loadReviews(ownerId, listingId);
+      } catch (error) {
+        console.error("Error submitting review:", error);
+        showNotice("Failed to submit review. Please try again.");
+      }
+    });
+  });
+
+  // Setup star rating functionality
+  setupStarRating(reviewForm);
+}
+
+/**
+ * Set up star rating functionality
+ */
+function setupStarRating(form) {
+  const starContainer = form.querySelector(".star-rating");
+  const ratingInput = form.querySelector('input[name="rating"]');
+
+  if (!starContainer || !ratingInput) return;
+
+  const stars = starContainer.querySelectorAll(".star");
+
+  stars.forEach((star, index) => {
+    star.addEventListener("click", () => {
+      const rating = index + 1;
+      ratingInput.value = rating;
+
+      // Update visual state
+      stars.forEach((s, i) => {
+        if (i < rating) {
+          s.classList.add("selected");
+          s.innerHTML = '<i class="fas fa-star"></i>';
+        } else {
+          s.classList.remove("selected");
+          s.innerHTML = '<i class="far fa-star"></i>';
+        }
+      });
+    });
+
+    // Hover effects
+    star.addEventListener("mouseenter", () => {
+      const rating = index + 1;
+
+      stars.forEach((s, i) => {
+        if (i < rating) {
+          s.innerHTML = '<i class="fas fa-star"></i>';
+        } else {
+          s.innerHTML = '<i class="far fa-star"></i>';
+        }
+      });
+    });
+
+    starContainer.addEventListener("mouseleave", () => {
+      const currentRating = parseInt(ratingInput.value) || 0;
+
+      stars.forEach((s, i) => {
+        if (i < currentRating) {
+          s.innerHTML = '<i class="fas fa-star"></i>';
+        } else {
+          s.innerHTML = '<i class="far fa-star"></i>';
+        }
+      });
+    });
+  });
+}
 
 /**
  * Main function to initialize the page
@@ -74,8 +354,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Set up the forms' submit events
     setupFormSubmitHandlers(ownerId, listingId);
 
-    // Setup review button if we're on the renter page
-    setupReviewButton();
+    // Setup reviews functionality - Now directly included in this file
+    initializeReviews(ownerId, listingId);
   } catch (error) {
     console.error("Error loading listing details:", error);
     showError("Failed to load listing details. Please try again later.");
@@ -581,57 +861,6 @@ function setupScheduleForm(ownerId, listingId) {
         showNotice("Failed to schedule.");
       }
     });
-  });
-}
-
-/**
- * Set up review button for the renter listing page
- */
-function setupReviewButton() {
-  const writeReviewButton = document.getElementById("writeReviewButton");
-  const reviewModal = document.getElementById("reviewModal");
-
-  if (!writeReviewButton || !reviewModal) return;
-
-  const closeReview = document.getElementById("closeReview");
-  const currentPath = window.location.pathname;
-
-  if (currentPath === "/pages/renter/listing.html") {
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        writeReviewButton.disabled = true;
-        writeReviewButton.title = "You must be logged in to leave a review";
-        writeReviewButton.addEventListener("click", () => {
-          showNotice("Please log in to write a review.");
-        });
-      } else {
-        writeReviewButton.disabled = false;
-        writeReviewButton.title = "";
-        writeReviewButton.addEventListener("click", () => {
-          reviewModal.classList.add("show");
-        });
-      }
-    });
-  } else {
-    writeReviewButton.style.display = "none";
-  }
-
-  if (closeReview) {
-    closeReview.addEventListener("click", () => {
-      reviewModal.classList.remove("show");
-    });
-  }
-
-  window.addEventListener("click", (event) => {
-    if (event.target === reviewModal) {
-      reviewModal.classList.remove("show");
-    }
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && reviewModal.classList.contains("show")) {
-      reviewModal.classList.remove("show");
-    }
   });
 }
 
