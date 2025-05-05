@@ -54,7 +54,7 @@
                                 <option value="Mecury Street">Mecury Street</option>
                                 <option value="Venus Street">Venus Street</option>
                                 <option value="Earth Street">Earth Street</option>
-                                <option value="Marz Street">Mars Street</option>
+                                <option value="Mars Street">Mars Street</option>
                                 <option value="Jupiter Street">Jupiter Street</option>
                                 <option value="Saturn Street">Saturn Street</option>
                                 <option value="Uranus Street">Uranus Street</option>
@@ -248,17 +248,16 @@
                   </div>
                 </div>
 
-                <!-- Photo upload section (commented out in original) 
+                <!-- Photo upload section - THIS SECTION NEEDS CHANGES -->
                 <label>Upload Photos of the Rental Space</label>
                 <div class="photo-upload-section">
                   <div class="upload-container">
-                    <input type="file" id="upload-photos" name="upload-photos" accept="image/*" multiple onchange="previewImages(event)">
+                    <input type="file" id="upload-photos" accept="image/*" multiple>
                     <span>Choose Images (you can upload multiple)</span>
-                  </div>ddsdsdsdsd
-                
+                  </div>
+
                   <div class="image-preview" id="image-preview"></div>
-                </div>                 -->
-                
+                </div>
               </div>
     
                 <!-- Buttons -->
@@ -268,5 +267,8 @@
             </div>
         </div>
     </div>
+    <script type="module" src="/js/firebase/post.js"></script>
+    <script type="module" src="/js/owner/create_listing.js"></script>
+    <script src="/js/cloudinary-upload.js"></script>
 </body>
 </html>
