@@ -6,8 +6,6 @@ import {
   doc,
   getDoc,
   query,
-  orderBy,
-  onSnapshot,
   where,
   updateDoc,
 } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
@@ -30,11 +28,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Reference to the appointments container
 const appointmentsContainer = document.getElementById("appointments-container");
 const currentListingHeader = document.getElementById("current-listing-header");
 
-// Function to format date in a more readable format
 function formatDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
@@ -45,7 +41,6 @@ function formatDate(dateString) {
   });
 }
 
-// Function to show loading indicator
 function showLoadingIndicator() {
   const loadingTemplate = document.getElementById("loading-indicator-template");
   if (loadingTemplate) {
@@ -54,7 +49,6 @@ function showLoadingIndicator() {
   }
 }
 
-// Function to show empty state
 function showEmptyState() {
   const emptyTemplate = document.getElementById("empty-state-template");
   if (emptyTemplate) {
@@ -63,7 +57,6 @@ function showEmptyState() {
   }
 }
 
-// Function to create and render appointment card
 function renderAppointmentCard(appointmentData, listingDetails, renterDetails) {
   const template = document.getElementById("appointment-card-template");
   if (!template) {
@@ -73,7 +66,9 @@ function renderAppointmentCard(appointmentData, listingDetails, renterDetails) {
 
   const appointmentCard = template.content.cloneNode(true);
 
-  // Fill in the data
+  appointmentCard.querySelector(".appointment-status").textContent =
+    appointmentData.status || "Pending";
+
   const renterNameElements = appointmentCard.querySelectorAll(".renter-name");
   renterNameElements.forEach(
     (el) =>
@@ -114,7 +109,6 @@ function renderAppointmentCard(appointmentData, listingDetails, renterDetails) {
   appointmentsContainer.appendChild(appointmentCard);
 }
 
-// Function to accept an appointment
 async function acceptAppointment(listingId, renterId) {
   try {
     const scheduleRef = doc(db, "schedules", listingId);
@@ -135,7 +129,6 @@ async function acceptAppointment(listingId, renterId) {
   }
 }
 
-// Function to decline an appointment
 async function declineAppointment(listingId, renterId) {
   try {
     const scheduleRef = doc(db, "schedules", listingId);
@@ -156,7 +149,6 @@ async function declineAppointment(listingId, renterId) {
   }
 }
 
-// Helper function to show notifications
 function showNotification(message, type) {
   const notification = document.createElement("div");
   notification.className = `notification ${type}`;
@@ -169,43 +161,21 @@ function showNotification(message, type) {
   }, 3000);
 }
 
-// Function to fetch a specific renter's details
 async function fetchRenterDetails(renterId) {
   try {
     const renterDoc = await getDoc(doc(db, "renters", renterId));
-    if (renterDoc.exists()) {
-      return renterDoc.data();
-    }
-    return null;
+    return renterDoc.exists() ? renterDoc.data() : null;
   } catch (error) {
     console.error("Error fetching renter details: ", error);
     return null;
   }
 }
 
-// Function to fetch listing details
-async function fetchListingDetails(ownerId, listingId) {
-  try {
-    const listingDoc = await getDoc(
-      doc(db, "owners", ownerId, "listings", listingId)
-    );
-    if (listingDoc.exists()) {
-      return listingDoc.data();
-    }
-    return null;
-  } catch (error) {
-    console.error("Error fetching listing details: ", error);
-    return null;
-  }
-}
-
-// Main function to fetch all appointments for the current logged-in owner
 async function fetchAppointmentsForOwner() {
   showLoadingIndicator();
 
   try {
     const user = auth.currentUser;
-
     if (!user) {
       console.error("No user is logged in");
       showEmptyState();
@@ -232,15 +202,27 @@ async function fetchAppointmentsForOwner() {
     });
 
     appointmentsContainer.innerHTML = "";
-
     let appointmentsFound = false;
 
     for (const listing of listings) {
-      const schedulesQuery = query(
-        collection(db, "schedules"),
-        where("listingId", "==", listing.id),
-        where("ownerId", "==", ownerId)
-      );
+      const statusFilterValue =
+        document.getElementById("filter-status")?.value || "all";
+
+      let schedulesQuery;
+      if (statusFilterValue === "all") {
+        schedulesQuery = query(
+          collection(db, "schedules"),
+          where("listingId", "==", listing.id),
+          where("ownerId", "==", ownerId)
+        );
+      } else {
+        schedulesQuery = query(
+          collection(db, "schedules"),
+          where("listingId", "==", listing.id),
+          where("ownerId", "==", ownerId),
+          where("status", "==", statusFilterValue)
+        );
+      }
 
       const schedulesSnapshot = await getDocs(schedulesQuery);
 
@@ -259,8 +241,7 @@ async function fetchAppointmentsForOwner() {
             renterDetails = await fetchRenterDetails(appointmentData.renterId);
           }
 
-          const listingDetails = listing;
-          renderAppointmentCard(appointmentData, listingDetails, renterDetails);
+          renderAppointmentCard(appointmentData, listing, renterDetails);
         }
       }
     }
@@ -279,7 +260,6 @@ async function fetchAppointmentsForOwner() {
   }
 }
 
-// Function to handle search functionality
 function setupSearchFunctionality() {
   const searchInput = document.getElementById("search-appointments");
   if (searchInput) {
@@ -290,29 +270,21 @@ function setupSearchFunctionality() {
         const renterName = card
           .querySelector(".renter-name")
           .textContent.toLowerCase();
-        if (renterName.includes(searchTerm)) {
-          card.style.display = "block";
-        } else {
-          card.style.display = "none";
-        }
+        card.style.display = renterName.includes(searchTerm) ? "block" : "none";
       });
     });
   }
 }
 
-// Function to handle status filter
 function setupStatusFilter() {
   const statusFilter = document.getElementById("filter-status");
   if (statusFilter) {
-    statusFilter.addEventListener("change", function (e) {
-      const filterValue = e.target.value;
-      console.log(`Filtering by status: ${filterValue}`);
+    statusFilter.addEventListener("change", function () {
       fetchAppointmentsForOwner();
     });
   }
 }
 
-// Initialize the page when DOM is loaded
 document.addEventListener("DOMContentLoaded", function () {
   console.log("Fetch schedules script loaded");
 

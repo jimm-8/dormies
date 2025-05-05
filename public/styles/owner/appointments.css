@@ -1,3 +1,125 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f7f6;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  margin: 20px;
+  color: #4caf50;
+}
+
+#search-appointments,
+#filter-status {
+  padding: 0.5rem;
+  margin: 10px;
+  font-size: 1rem;
+}
+
+.appointment-card {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.appointment-card:hover {
+  transform: scale(1.02);
+}
+
+.appointment-card p {
+  margin: 8px 0;
+}
+
+.appointment-status {
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.notification.success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 0.5rem;
+  margin: 1rem;
+  border: 1px solid #c3e6cb;
+  border-radius: 5px;
+}
+
+.notification.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 0.5rem;
+  margin: 1rem;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+}
+
+.loading,
+.empty {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.5rem;
+}
+
+.accept-button,
+.decline-button {
+  padding: 0.5rem 1rem;
+  margin-top: 10px;
+  border: none;
+  background-color: #4caf50;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.decline-button {
+  background-color: #f44336;
+}
+
+.accept-button:hover {
+  background-color: #45a049;
+}
+
+.decline-button:hover {
+  background-color: #e53935;
+}
+
+.status-tag {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.status-accepted {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-declined {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+#appointments-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Additional responsive styles */
+@media (max-width: 600px) {
+  .appointment-card {
+    width: 90%;
+  }
+}
 .appointment-card {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
