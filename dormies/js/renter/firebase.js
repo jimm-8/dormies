@@ -1,9 +1,9 @@
-// Import required Firebase SDK components
+// Firebase App and SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"; // ✅ Import Firebase Auth
 
-// Firebase configuration
+// Your Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
   authDomain: "dormies-b47b7.firebaseapp.com",
@@ -14,10 +14,12 @@ const firebaseConfig = {
   appId: "1:443577320462:web:0a418fa107fbd01bd1285f"
 };
 
-// Initialize Firebase and Firestore
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
 
-// Export Firebase services
-export { db, auth };
+// Initialize Firestore and Auth
+const db = getFirestore(app);
+const auth = getAuth(app); // ✅ Initialize Firebase Authentication
+
+// Export everything needed elsewhere
+export { db, collection, addDoc, serverTimestamp, auth }; // ✅ Export auth
