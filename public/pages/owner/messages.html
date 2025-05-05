@@ -48,17 +48,96 @@
                 </button>
               </div>
             </div>
-            <div class="listings-list" id="listings-container"></div>
+            <div class="listings-list" id="listings-container">
+              <!-- Listing items will be loaded here -->
+            </div>
           </div>
 
-          <!-- Message threads -->
+          <!-- Chat area with inquiries sidebar -->
           <div class="messages-main">
-            <div id="current-listing-header" class="messages-listing-header">
-              <h2>Select a Listing</h2>
-              <p>Choose a property from the sidebar to view inquiries</p>
+            <!-- Inquiries sidebar -->
+            <div class="inquiries-sidebar">
+              <div class="inquiries-header">
+                <div class="back-button mobile-only">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                  </svg>
+                </div>
+                <h3 id="listing-title">Select an Inquiry</h3>
+                <p id="listing-subtitle" class="listing-subtitle">
+                  Choose an inquiry to view messages
+                </p>
+              </div>
+              <div class="inquiries-list" id="inquiries-list">
+                <!-- Inquiry items will be loaded here -->
+              </div>
             </div>
 
-            <div class="inquiries-list" id="inquiries-container"></div>
+            <!-- Selected inquiry conversation -->
+            <div class="conversation-area" id="conversation-area">
+              <!-- Conversation header -->
+              <div class="conversation-header">
+                <div class="back-button mobile-only">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                  </svg>
+                </div>
+                <div class="user-info">
+                  <div class="user-avatar"></div>
+                  <div class="user-details">
+                    <h4 id="contact-name">Select an Inquiry</h4>
+                    <p id="inquiry-date">
+                      Select an inquiry to view the conversation
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Messages area -->
+              <div class="messages-wrapper">
+                <div class="messages-list" id="messages-container">
+                  <!-- Messages will be loaded here -->
+                </div>
+              </div>
+
+              <!-- Message input area -->
+              <div class="reply-section">
+                <textarea
+                  class="reply-input"
+                  placeholder="Type your reply..."
+                ></textarea>
+                <button class="send-btn" title="Send message">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -67,61 +146,84 @@
     <!-- Listing Item Template -->
     <template id="listing-item-template">
       <div class="listing-item" data-listing-id="">
-        <div class="listing-image">
-          <img class="listing-image" src="" alt="Property" />
-          <span class="unread-badge" style="display: none"></span>
-        </div>
         <div class="listing-details">
           <h4 class="listing-title">Listing Title</h4>
-          <p></p>
+          <p class="listing-address"></p>
+          <div class="listing-inquiries">
+            <span id="inquiries-count">0</span>
+            <span class="last-activity"></span>
+          </div>
         </div>
       </div>
     </template>
 
-    <!-- Inquiry Thread Template -->
-    <template id="inquiry-thread-template">
-      <div class="inquiry-thread" data-thread-id="">
-        <div class="inquiry-header">
-          <div class="user-info">
-            <div class="user-avatar"></div>
-            <div class="user-details">
-              <h4></h4>
-              <p></p>
+    <!-- Inquiry Item Template -->
+    <template id="inquiry-item-template">
+      <div class="inquiry-item" data-inquiry-id="">
+        <div class="inquiry-avatar">
+          <div class="avatar-img"></div>
+          <span class="status-indicator"></span>
+        </div>
+        <div class="inquiry-content">
+          <div class="inquiry-header">
+            <h4 class="inquiry-title">Contact Name</h4>
+            <span class="inquiry-time">12:45 PM</span>
+          </div>
+          <div class="inquiry-body">
+            <p class="last-message">Last message preview goes here...</p>
+            <div class="inquiry-indicators">
+              <span class="unread-badge" style="display: none"></span>
+              <span class="message-status">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </span>
             </div>
           </div>
-          <span class="inquiry-date"></span>
         </div>
+      </div>
+    </template>
 
+    <!-- Message Thread Template -->
+    <template id="message-thread-template">
+      <div class="message-thread" data-thread-id="">
+        <div class="message-date-divider">
+          <span>Today</span>
+        </div>
         <div class="messages-thread"></div>
-
-        <div class="reply-section">
-          <textarea
-            class="reply-input"
-            placeholder="Type your reply..."
-          ></textarea>
-          <button class="send-btn">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </button>
-        </div>
       </div>
     </template>
 
     <!-- Message Template -->
     <template id="message-template">
       <div class="message">
-        <p class="message-text"></p>
-        <span class="message-sender"></span>
+        <div class="message-content">
+          <p class="message-text"></p>
+        </div>
+        <div class="message-footer">
+          <span class="message-time"></span>
+          <span class="message-status">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+        </div>
       </div>
     </template>
 
@@ -136,9 +238,13 @@
           fill="none"
           stroke="currentColor"
           stroke-width="1"
-        ></svg>
-        <h3>No Data</h3>
-        <p>Nothing to show here yet.</p>
+        >
+          <path
+            d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+          ></path>
+        </svg>
+        <h3>No Messages</h3>
+        <p>Start a conversation about your properties</p>
       </div>
     </template>
 
@@ -146,7 +252,7 @@
     <template id="loading-indicator-template">
       <div class="loading-indicator">
         <div class="spinner"></div>
-        <p>Loading...</p>
+        <p>Loading conversations...</p>
       </div>
     </template>
   </body>
