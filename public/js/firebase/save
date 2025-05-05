@@ -1,0 +1,937 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  getDocs,
+  addDoc,
+  serverTimestamp,
+  query,
+  orderBy,
+  limit,
+  where,
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
+  authDomain: "dormies-b47b7.firebaseapp.com",
+  projectId: "dormies-b47b7",
+  storageBucket: "dormies-b47b7.appspot.com",
+  messagingSenderId: "443577320462",
+  appId: "1:443577320462:web:0a418fa107fbd01bd1285f",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+/**
+ * Initialize reviews functionality
+ * This function was previously imported from reviews.js
+ */
+function initializeReviews(ownerId, listingId) {
+  const reviewsContainer = document.querySelector(".reviews-container");
+  const reviewForm = document.getElementById("reviewForm");
+
+  if (!reviewsContainer || !reviewForm) {
+    console.warn("Reviews elements not found");
+    return;
+  }
+
+  // Load existing reviews
+  loadReviews(ownerId, listingId);
+
+  // Set up review form submission
+  setupReviewForm(ownerId, listingId);
+}
+
+/**
+ * Load existing reviews from Firestore
+ */
+async function loadReviews(ownerId, listingId) {
+  const reviewsContainer = document.querySelector(".reviews-container");
+  if (!reviewsContainer) return;
+
+  try {
+    // Create a reference to the reviews collection
+    const reviewsRef = collection(db, "reviews");
+
+    // Create a query against the collection
+    const q = query(
+      reviewsRef,
+      where("listingId", "==", listingId),
+      orderBy("timestamp", "desc"),
+      limit(10)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    // Clear loading state
+    reviewsContainer.innerHTML = "";
+
+    if (querySnapshot.empty) {
+      reviewsContainer.innerHTML = `
+        <div class="no-reviews">
+          <i class="fa fa-comment-slash"></i>
+          <p>No reviews yet. Be the first to leave a review!</p>
+        </div>
+      `;
+      return;
+    }
+
+    // Display each review
+    querySnapshot.forEach((doc) => {
+      const review = doc.data();
+      const reviewElement = createReviewElement(review);
+      reviewsContainer.appendChild(reviewElement);
+    });
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    reviewsContainer.innerHTML = `
+      <div class="error-message">
+        <i class="fa fa-exclamation-triangle"></i>
+        <p>Failed to load reviews. Please try again later.</p>
+      </div>
+    `;
+  }
+}
+
+/**
+ * Create a review element from review data
+ */
+function createReviewElement(review) {
+  const reviewDiv = document.createElement("div");
+  reviewDiv.className = "review";
+
+  // Format date
+  const reviewDate = review.timestamp
+    ? formatDate(review.timestamp)
+    : "Recently";
+
+  // Get user initials for avatar
+  const nameParts = (review.userName || "Anonymous User").split(" ");
+  const userInitials = (
+    nameParts[0].charAt(0) +
+    (nameParts.length > 1 ? nameParts[nameParts.length - 1].charAt(0) : "")
+  ).toUpperCase();
+
+  // Generate stars based on rating
+  const stars = generateStarRating(review.rating);
+
+  reviewDiv.innerHTML = `
+    <div class="review-header">
+      <div class="reviewer-avatar">${userInitials}</div>
+      <div class="reviewer-info">
+        <h4>${review.userName || "Anonymous User"}</h4>
+        <div class="review-date">${reviewDate}</div>
+      </div>
+    </div>
+    <div class="review-rating">
+      ${stars}
+    </div>
+    <div class="review-content">
+      ${review.comment || ""}
+    </div>
+  `;
+
+  return reviewDiv;
+}
+
+/**
+ * Generate star rating HTML
+ */
+function generateStarRating(rating) {
+  const fullStar = '<i class="fas fa-star"></i>';
+  const halfStar = '<i class="fas fa-star-half-alt"></i>';
+  const emptyStar = '<i class="far fa-star"></i>';
+
+  let stars = "";
+  const ratingNum = parseFloat(rating) || 0;
+
+  for (let i = 1; i <= 5; i++) {
+    if (i <= ratingNum) {
+      stars += fullStar;
+    } else if (i - 0.5 <= ratingNum) {
+      stars += halfStar;
+    } else {
+      stars += emptyStar;
+    }
+  }
+
+  return stars;
+}
+
+/**
+ * Set up review form submission
+ */
+function setupReviewForm(ownerId, listingId) {
+  const reviewForm = document.getElementById("reviewForm");
+  if (!reviewForm) return;
+
+  reviewForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const ratingInput = reviewForm.querySelector('input[name="rating"]');
+    const commentInput = reviewForm.querySelector("textarea");
+
+    const rating = parseInt(ratingInput.value);
+    const comment = commentInput.value.trim();
+
+    if (!rating || rating < 1 || rating > 5) {
+      showNotice("Please select a rating from 1 to 5 stars.");
+      return;
+    }
+
+    if (!comment) {
+      showNotice("Please enter a review comment.");
+      return;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        showNotice("Please log in to leave a review.");
+        window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
+          window.location.href
+        )}`;
+        return;
+      }
+
+      try {
+        // Check if user already left a review for this listing
+        const reviewsRef = collection(db, "reviews");
+        const q = query(
+          reviewsRef,
+          where("userId", "==", user.uid),
+          where("listingId", "==", listingId)
+        );
+
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          showNotice("You have already reviewed this property.");
+          return;
+        }
+
+        // Get user display name
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        const userName = userDoc.exists()
+          ? userDoc.data().name || user.displayName || "User"
+          : user.displayName || "User";
+
+        // Add the review
+        await addDoc(collection(db, "reviews"), {
+          userId: user.uid,
+          userName: userName,
+          ownerId: ownerId,
+          listingId: listingId,
+          rating: rating,
+          comment: comment,
+          timestamp: serverTimestamp(),
+        });
+
+        showNotice("Review submitted successfully!");
+        reviewForm.reset();
+
+        // Reload reviews to show the new one
+        loadReviews(ownerId, listingId);
+      } catch (error) {
+        console.error("Error submitting review:", error);
+        showNotice("Failed to submit review. Please try again.");
+      }
+    });
+  });
+
+  // Setup star rating functionality
+  setupStarRating(reviewForm);
+}
+
+/**
+ * Set up star rating functionality
+ */
+function setupStarRating(form) {
+  const starContainer = form.querySelector(".star-rating");
+  const ratingInput = form.querySelector('input[name="rating"]');
+
+  if (!starContainer || !ratingInput) return;
+
+  const stars = starContainer.querySelectorAll(".star");
+
+  stars.forEach((star, index) => {
+    star.addEventListener("click", () => {
+      const rating = index + 1;
+      ratingInput.value = rating;
+
+      // Update visual state
+      stars.forEach((s, i) => {
+        if (i < rating) {
+          s.classList.add("selected");
+          s.innerHTML = '<i class="fas fa-star"></i>';
+        } else {
+          s.classList.remove("selected");
+          s.innerHTML = '<i class="far fa-star"></i>';
+        }
+      });
+    });
+
+    // Hover effects
+    star.addEventListener("mouseenter", () => {
+      const rating = index + 1;
+
+      stars.forEach((s, i) => {
+        if (i < rating) {
+          s.innerHTML = '<i class="fas fa-star"></i>';
+        } else {
+          s.innerHTML = '<i class="far fa-star"></i>';
+        }
+      });
+    });
+
+    starContainer.addEventListener("mouseleave", () => {
+      const currentRating = parseInt(ratingInput.value) || 0;
+
+      stars.forEach((s, i) => {
+        if (i < currentRating) {
+          s.innerHTML = '<i class="fas fa-star"></i>';
+        } else {
+          s.innerHTML = '<i class="far fa-star"></i>';
+        }
+      });
+    });
+  });
+}
+
+/**
+ * Main function to initialize the page
+ */
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    // Get query parameters from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const ownerId = urlParams.get("ownerId");
+    const listingId = urlParams.get("listingId");
+
+    if (!ownerId || !listingId) {
+      showError(
+        "Missing listing information. Please return to the listings page."
+      );
+      return;
+    }
+
+    // Fetch listing details
+    const listing = await fetchListingDetails(ownerId, listingId);
+
+    if (!listing) {
+      showError(
+        "Listing not found. It may have been removed or is no longer available."
+      );
+      return;
+    }
+
+    // Fetch owner details
+    const ownerDetails = await fetchOwnerDetails(ownerId);
+
+    // Update the page with listing details
+    updateListingDetails(listing);
+
+    // Update owner information
+    if (ownerDetails) {
+      updateOwnerInfo(ownerDetails);
+    }
+
+    // Set up the back button
+    setupBackButton();
+
+    // Set up tab switching
+    setupTabs();
+
+    // Set up the forms' submit events
+    setupFormSubmitHandlers(ownerId, listingId);
+
+    // Setup reviews functionality - Now directly included in this file
+    initializeReviews(ownerId, listingId);
+  } catch (error) {
+    console.error("Error loading listing details:", error);
+    showError("Failed to load listing details. Please try again later.");
+  }
+});
+
+/**
+ * Fetches listing details from Firestore
+ */
+async function fetchListingDetails(ownerId, listingId) {
+  try {
+    const listingRef = doc(db, "owners", ownerId, "listings", listingId);
+    const listingSnapshot = await getDoc(listingRef);
+
+    if (listingSnapshot.exists()) {
+      return {
+        id: listingSnapshot.id,
+        ownerId,
+        ...listingSnapshot.data(),
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching listing details:", error);
+    return null;
+  }
+}
+
+/**
+ * Fetches owner details from Firestore
+ */
+async function fetchOwnerDetails(ownerId) {
+  try {
+    const ownerRef = doc(db, "owners", ownerId);
+    const ownerSnapshot = await getDoc(ownerRef);
+
+    if (ownerSnapshot.exists()) {
+      return {
+        id: ownerSnapshot.id,
+        ...ownerSnapshot.data(),
+      };
+    }
+    return null;
+  } catch (error) {
+    console.error("Error fetching owner details:", error);
+    return null;
+  }
+}
+
+/**
+ * Updates the listing details in the UI
+ */
+function updateListingDetails(listing) {
+  // Set page title
+  document.title = listing.title || "Property Details";
+
+  // Update property header
+  const titleElement = document.querySelector(".title-badge-container h1");
+  if (titleElement) titleElement.textContent = listing.title;
+
+  // Update address
+  const addressElement = document.querySelector(".address");
+  if (addressElement) {
+    const formattedAddress = formatAddress(listing.address);
+    addressElement.innerHTML = `<i class="fa fa-map-marker-alt"></i> ${formattedAddress}`;
+  }
+
+  // Update price tag
+  const priceElement = document.querySelector(".price-tag");
+  if (priceElement) {
+    // Consolidated pricing field references
+    const rentAmount =
+      listing.pricing?.rentAmount || listing.contractTerms?.rentAmount || 0;
+    const rentPeriod =
+      listing.pricing?.rentPeriod ||
+      listing.contractTerms?.rentPeriod ||
+      "monthly";
+    const formattedPrice = formatPrice(rentAmount, rentPeriod);
+    priceElement.textContent = formattedPrice;
+  }
+
+  // Update features
+  updateFeatures(listing.features);
+
+  // Update inclusions
+  updateInclusions(extractInclusions(listing));
+
+  // Update payment terms
+  updatePaymentTerms(listing);
+}
+
+/**
+ * Extract inclusions from different possible data structures
+ */
+function extractInclusions(listing) {
+  const inclusions = [];
+  if (listing.inclusions) {
+    // Direct inclusions array if available
+    if (Array.isArray(listing.inclusions)) {
+      inclusions.push(...listing.inclusions);
+    } else {
+      // Check for specific inclusion fields
+      if (listing.inclusions.waterBill === "Yes") inclusions.push("Water Bill");
+      if (listing.inclusions.electricBill === "Yes")
+        inclusions.push("Electricity Bill");
+      if (listing.inclusions.wifiBill === "Yes")
+        inclusions.push("Internet Bill");
+    }
+  }
+  return inclusions;
+}
+
+/**
+ * Format address for display
+ */
+function formatAddress(address) {
+  if (!address) return "Address not specified";
+
+  const parts = [
+    address.street || "",
+    address.blkNo ? `Blk ${address.blkNo}` : "",
+    address.landmark ? `${address.landmark}` : "",
+  ].filter(Boolean);
+
+  return parts.join(", ");
+}
+
+/**
+ * Format price for display
+ */
+function formatPrice(amount, period) {
+  if (!amount) return "Price not specified";
+
+  // Format currency
+  const formattedAmount = new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+    minimumFractionDigits: 0,
+  }).format(amount);
+
+  // Remove PHP currency symbol and replace with Php
+  const amountWithoutCurrencySymbol = formattedAmount
+    .replace(/PHP|₱/, "")
+    .trim();
+  return `Php ${amountWithoutCurrencySymbol} ${period.toLowerCase()}`;
+}
+
+/**
+ * Update features in the UI
+ */
+function updateFeatures(features) {
+  if (!features) return;
+
+  const featureItems = [
+    {
+      selector: ".feature-item:nth-child(1) .feature-value",
+      property: "bedrooms",
+    },
+    {
+      selector: ".feature-item:nth-child(2) .feature-value",
+      property: "bathrooms",
+    },
+    {
+      selector: ".feature-item:nth-child(3) .feature-value",
+      property: "propertyType",
+    },
+    {
+      selector: ".feature-item:nth-child(4) .feature-value",
+      property: "unitCondition",
+    },
+    {
+      selector: ".feature-item:nth-child(5) .feature-value",
+      property: "gender",
+    },
+  ];
+
+  featureItems.forEach((item) => {
+    const element = document.querySelector(item.selector);
+    if (element) {
+      element.textContent = features[item.property] || "Not specified";
+    }
+  });
+}
+
+/**
+ * Update inclusions in the UI
+ */
+function updateInclusions(inclusions) {
+  const inclusionsList = document.querySelector(
+    ".detail-section:nth-child(1) .detail-list"
+  );
+  if (!inclusionsList) return;
+
+  // Clear existing inclusions
+  inclusionsList.innerHTML = "";
+
+  // Add each inclusion
+  if (inclusions.length === 0) {
+    const li = document.createElement("li");
+    li.className = "detail-item";
+    li.innerHTML = `<i class="fa fa-times-circle"></i> No inclusions specified`;
+    inclusionsList.appendChild(li);
+    return;
+  }
+
+  inclusions.forEach((inclusion) => {
+    const li = document.createElement("li");
+    li.className = "detail-item";
+    li.innerHTML = `<i class="fa fa-check-circle"></i> ${inclusion}`;
+    inclusionsList.appendChild(li);
+  });
+}
+
+/**
+ * Update payment terms in the UI
+ */
+function updatePaymentTerms(listing) {
+  const paymentTermsList = document.querySelector(
+    ".detail-section:nth-child(2) .detail-list"
+  );
+  if (!paymentTermsList) return;
+
+  // Clear existing payment terms
+  paymentTermsList.innerHTML = "";
+
+  const paymentTerms = [];
+
+  // Check for contractTerms or fall back to other structures
+  const terms = listing.contractTerms || {};
+
+  // Add advance payment
+  if (terms.advanceAmount) {
+    paymentTerms.push({
+      icon: "fa fa-credit-card",
+      text: `${terms.advanceAmount} Month${
+        terms.advanceAmount > 1 ? "s" : ""
+      } Advance`,
+    });
+  }
+
+  // Add deposit
+  if (terms.depositAmount) {
+    paymentTerms.push({
+      icon: "fa fa-shield-alt",
+      text: `${terms.depositAmount} Month${
+        terms.depositAmount > 1 ? "s" : ""
+      } Deposit`,
+    });
+  }
+
+  // Add rent period
+  if (terms.rentPeriod) {
+    paymentTerms.push({
+      icon: "fa fa-calendar-alt",
+      text: `${capitalizeFirstLetter(terms.rentPeriod)}ly Payment`,
+    });
+  }
+
+  // Add contract term
+  if (terms.contractTerm) {
+    paymentTerms.push({
+      icon: "fa fa-file-contract",
+      text: capitalizeFirstLetter(terms.contractTerm),
+    });
+  }
+
+  // Add payment method
+  if (terms.rentMethod) {
+    paymentTerms.push({
+      icon: "fa fa-money-bill-wave",
+      text: `Accept ${terms.rentMethod}`,
+    });
+  }
+
+  // If no payment terms, add a default message
+  if (paymentTerms.length === 0) {
+    paymentTerms.push({
+      icon: "fa fa-info-circle",
+      text: "Payment terms not specified",
+    });
+  }
+
+  // Add payment terms to the list
+  paymentTerms.forEach((term) => {
+    const li = document.createElement("li");
+    li.className = "detail-item";
+    li.innerHTML = `<i class="${term.icon}"></i> ${term.text}`;
+    paymentTermsList.appendChild(li);
+  });
+}
+
+/**
+ * Update owner information in the UI
+ */
+async function updateOwnerInfo(owner) {
+  const ownerSection = document.querySelector(".owner-section");
+  if (!ownerSection) return;
+
+  const fullName = owner.name || "Owner";
+  const nameParts = fullName.trim().split(" ");
+  const firstName = nameParts[0];
+  let lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
+
+  if (lastName) lastName = lastName.charAt(0) + ".";
+
+  const ownerName = lastName ? `${firstName} ${lastName}` : firstName;
+  const ownerInitials = (
+    firstName.charAt(0) + (lastName.charAt(0) || "")
+  ).toUpperCase();
+
+  const memberSince = owner.createdAt ? formatDate(owner.createdAt) : "Unknown";
+
+  // Fetch actual listing count from Firestore
+  let listingsCount = 0;
+  try {
+    const listingsSnapshot = await getDocs(
+      collection(db, "owners", owner.id, "listings")
+    );
+    listingsCount = listingsSnapshot.size;
+  } catch (error) {
+    console.error("Failed to fetch listing count:", error);
+  }
+
+  // Render to DOM
+  ownerSection.innerHTML = `
+    <h3 class="owner-header">Property Owner</h3>
+    <div class="owner-card">
+      <div class="owner-avatar">${ownerInitials}</div>
+      <div class="owner-details">
+        <h4>${ownerName}</h4>
+        <p class="owner-since">Member since ${memberSince}</p>
+        <div class="owner-stats">
+          <div class="stat">
+            <i class="fa fa-home"></i>
+            <span>${listingsCount} Listing${
+    listingsCount !== 1 ? "s" : ""
+  }</span>
+          </div>
+          <div class="stat">
+            <i class="fa fa-star"></i>
+            <span>${owner.rating || "N/A"}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="owner-verification">
+      <div class="verification-badge">
+        <i class="fa fa-check-circle"></i>
+        <span>Verified Owner</span>
+      </div>
+      <div class="response-time">
+        <i class="fa fa-clock"></i>
+        <span>Typically responds within 24 hours</span>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Set up the back button functionality
+ */
+function setupBackButton() {
+  const backBtn = document.querySelector(".back-btn");
+  if (backBtn) {
+    backBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      window.location.href = "/index.html";
+    });
+  }
+}
+
+/**
+ * Set up tab switching functionality
+ */
+function setupTabs() {
+  const tabButtons = document.querySelectorAll(".tab-button");
+  const forms = document.querySelectorAll(".message-form");
+
+  if (tabButtons.length === 0 || forms.length === 0) return;
+
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const tabName = button.getAttribute("data-tab");
+
+      // Toggle active class for buttons
+      tabButtons.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      // Toggle active class for forms
+      forms.forEach((form) => {
+        if (form.classList.contains(`${tabName}-form`)) {
+          form.classList.add("active");
+        } else {
+          form.classList.remove("active");
+        }
+      });
+    });
+  });
+}
+
+/**
+ * Set up form submit handlers
+ */
+function setupFormSubmitHandlers(ownerId, listingId) {
+  // Set up inquire form submit handler
+  setupInquireForm(ownerId, listingId);
+
+  // Set up schedule form submit handler
+  setupScheduleForm(ownerId, listingId);
+}
+
+/**
+ * Set up inquire form submit handler
+ */
+function setupInquireForm(ownerId, listingId) {
+  const inquireForm = document.querySelector(".inquire-form");
+  if (!inquireForm) return;
+
+  inquireForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const messageText = inquireForm.querySelector("textarea").value.trim();
+    if (!messageText) {
+      showNotice("Please enter a message.");
+      return;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        showNotice("Please log in to send a message to the owner.");
+        window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
+          window.location.href
+        )}`;
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "inquiries"), {
+          userId: user.uid,
+          ownerId,
+          listingId,
+          message: messageText,
+          timestamp: serverTimestamp(),
+        });
+        showNotice("Message sent!");
+        inquireForm.reset();
+      } catch (error) {
+        console.error("Error sending inquiry:", error);
+        showNotice("Failed to send message.");
+      }
+    });
+  });
+}
+
+/**
+ * Set up schedule form submit handler
+ */
+function setupScheduleForm(ownerId, listingId) {
+  const scheduleForm = document.querySelector(".schedule-form");
+  if (!scheduleForm) return;
+
+  scheduleForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const dateInput = scheduleForm.querySelector('input[type="date"]').value;
+    const timeInput = scheduleForm.querySelector('input[type="time"]').value;
+    const nameInput = scheduleForm
+      .querySelector('input[type="text"]')
+      .value.trim();
+    const phoneInput = scheduleForm
+      .querySelector('input[type="tel"]')
+      .value.trim();
+
+    if (!dateInput || !timeInput || !nameInput || !phoneInput) {
+      showNotice("Please fill in all required fields.");
+      return;
+    }
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        showNotice("Please log in to schedule a viewing.");
+        window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
+          window.location.href
+        )}`;
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "schedules"), {
+          userId: user.uid,
+          ownerId,
+          listingId,
+          preferredDate: dateInput,
+          preferredTime: timeInput,
+          name: nameInput,
+          phone: phoneInput,
+          timestamp: serverTimestamp(),
+        });
+        showNotice("Schedule request sent!");
+        scheduleForm.reset();
+      } catch (error) {
+        console.error("Error sending schedule:", error);
+        showNotice("Failed to schedule.");
+      }
+    });
+  });
+}
+
+/**
+ * Display error message on the page
+ */
+function showError(message) {
+  const container = document.querySelector("main.container");
+  if (container) {
+    container.innerHTML = `
+      <div class="error-message" style="text-align: center; padding: 2rem; margin: 2rem 0;">
+        <i class="fa fa-exclamation-triangle" style="font-size: 3rem; color: #f44336;"></i>
+        <h2 style="margin: 1rem 0;">Oops!</h2>
+        <p>${message}</p>
+        <a href="/index.html" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 4px;">
+          Go back to listings
+        </a>
+      </div>
+    `;
+  }
+}
+
+/**
+ * Capitalize first letter of a string
+ */
+function capitalizeFirstLetter(string) {
+  if (!string) return "";
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+/**
+ * Format date for display
+ */
+function formatDate(timestamp) {
+  if (!timestamp) return "Unknown";
+
+  // If timestamp is a Firebase timestamp
+  if (timestamp.toDate && typeof timestamp.toDate === "function") {
+    timestamp = timestamp.toDate();
+  } else if (typeof timestamp === "string") {
+    // If timestamp is a string, convert to Date
+    timestamp = new Date(timestamp);
+  } else if (typeof timestamp === "object" && timestamp.seconds) {
+    // If timestamp is a Firebase timestamp object
+    timestamp = new Date(timestamp.seconds * 1000);
+  }
+
+  // Return formatted date
+  const options = { year: "numeric", month: "long" };
+  return new Intl.DateTimeFormat("en-US", options).format(timestamp);
+}
+
+/**
+ * Show notification to the user
+ */
+function showNotice(message, duration = 3000) {
+  const noticeBox = document.getElementById("noticeBox");
+  const noticeText = document.getElementById("noticeText");
+
+  if (!noticeBox || !noticeText) {
+    console.warn("Notice box elements not found");
+    alert(message);
+    return;
+  }
+
+  noticeText.textContent = message;
+  noticeBox.classList.remove("hide");
+  noticeBox.classList.add("show");
+
+  setTimeout(() => {
+    noticeBox.classList.remove("show");
+    noticeBox.classList.add("hide");
+  }, duration);
+}
