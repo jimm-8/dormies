@@ -572,6 +572,7 @@ function setupScheduleForm(ownerId, listingId) {
           preferredTime: timeInput,
           name: nameInput,
           phone: phoneInput,
+          status: "Pending",
           timestamp: serverTimestamp(),
         });
         showNotice("Schedule request sent!");
