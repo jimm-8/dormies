@@ -39,6 +39,25 @@
   opacity: 0;
 }
 
+/* Notice box styling for Cloudinary upload feedback */
+.notice.info {
+  background-color: #e3f2fd;
+  color: #0d47a1;
+  border-color: #90caf9;
+}
+
+.notice.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-color: #a5d6a7;
+}
+
+.notice.error {
+  background-color: #ffebee;
+  color: #c62828;
+  border-color: #ef9a9a;
+}
+
 .loader {
   --color: #a5a5b0;
   --size: 70px;
@@ -591,39 +610,106 @@ textarea {
   color: white;
 }
 
+/* Enhanced Photo Upload Section for Cloudinary */
 .photo-upload-section {
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .upload-container {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: relative;
 }
 
-.upload-container input {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+.upload-container:hover {
+  background-color: #f8f8f8;
+}
+
+#upload-photos {
+  opacity: 0;
+  position: absolute;
   width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  cursor: pointer;
 }
 
 .upload-container span {
-  font-size: 14px;
-  color: #555;
+  display: block;
+  font-size: 16px;
+  color: #666;
+  margin-top: 10px;
+}
+
+.upload-container::before {
+  content: '\f093';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  font-size: 40px;
+  color: #999;
+  display: block;
+  margin-bottom: 10px;
 }
 
 .image-preview {
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
   flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 20px;
 }
 
-.image-preview img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
+.preview-item {
+  position: relative;
+  width: 150px;
+  height: 150px;
   border-radius: 5px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.delete-image {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.delete-image:hover {
+  background-color: rgba(255, 0, 0, 0.2);
+}
+
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.loading-indicator i {
+  font-size: 30px;
+  color: #666;
 }
