@@ -503,8 +503,8 @@ function setupInquireForm(ownerId, listingId) {
       return;
     }
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
+    onAuthStateChanged(auth, async (renter) => {
+      if (!renter) {
         showNotice("Please log in to send a message to the owner.");
         window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
           window.location.href
@@ -514,7 +514,7 @@ function setupInquireForm(ownerId, listingId) {
 
       try {
         await addDoc(collection(db, "inquiries"), {
-          userId: user.uid,
+          renterId: renter.uid,
           ownerId,
           listingId,
           message: messageText,
@@ -554,8 +554,8 @@ function setupScheduleForm(ownerId, listingId) {
       return;
     }
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user) {
+    onAuthStateChanged(auth, async (renter) => {
+      if (!renter) {
         showNotice("Please log in to schedule a viewing.");
         window.location.href = `/pages/login.html?redirect=${encodeURIComponent(
           window.location.href
@@ -565,7 +565,7 @@ function setupScheduleForm(ownerId, listingId) {
 
       try {
         await addDoc(collection(db, "schedules"), {
-          userId: user.uid,
+          renterId: renter.uid,
           ownerId,
           listingId,
           preferredDate: dateInput,
@@ -597,8 +597,8 @@ function setupReviewButton() {
   const currentPath = window.location.pathname;
 
   if (currentPath === "/pages/renter/listing.html") {
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
+    onAuthStateChanged(auth, (renter) => {
+      if (!renter) {
         writeReviewButton.disabled = true;
         writeReviewButton.title = "You must be logged in to leave a review";
         writeReviewButton.addEventListener("click", () => {

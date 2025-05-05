@@ -3,34 +3,195 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/assets/logo-sm.png" />
-    <title>Owner - Dashboard</title>
-    <link rel="stylesheet" href="/styles/admin.css" />
-    <script type="module" src="/js/admin.js"></script>
-    <link rel="stylesheet" href="/styles/owner/appointments.css" />
+    <title>Dormies - Manage Appointments</title>
     <script type="module" src="/js/owner/appointments.js"></script>
+    <script src="/js/firebase/fetch_sched.js" type="module"></script>
+    <style>
+      /* Basic styling */
+      body {
+        font-family: "Arial", sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .header {
+        margin-bottom: 20px;
+      }
+
+      .controls {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        align-items: center;
+      }
+
+      .search-box {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        width: 250px;
+      }
+
+      .filter-select {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+      }
+
+      .appointment-card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+
+      .renter-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+      }
+
+      .appointment-details {
+        margin-bottom: 15px;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .accept-button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .decline-button {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 15px;
+        border-radius: 4px;
+        color: white;
+        z-index: 1000;
+      }
+
+      .notification.success {
+        background-color: #4caf50;
+      }
+
+      .notification.error {
+        background-color: #f44336;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+      }
+
+      .loading-indicator {
+        text-align: center;
+        padding: 40px;
+      }
+    </style>
   </head>
   <body>
-    <div class="loader">
-      <img src="/assets/logo-md.png" class="loader-img" alt="logo-md" />
-      <div>
-        <span>Find.</span>
-        <span>Book.</span>
-        <span>Move In.</span>
-      </div>
+    <div class="header">
+      <h1>Manage Your Appointments</h1>
+      <h2 id="current-listing-header">Loading appointments...</h2>
     </div>
-    <!-- Sidebar & Navbar Will Be Loaded Here -->
-     <div id="main">
-      <div id="sidebar-container"></div>
 
-      <!-- Add the main-content div which is referenced in your CSS -->
-      <div>
-        <div class="main-content">
-          <div class="one">
-            <h5>Good day!</h5>
-            <h1>THIS IS APPOINTMENTS</h1>
+    <div class="controls">
+      <input
+        type="text"
+        id="search-appointments"
+        class="search-box"
+        placeholder="Search by renter name..."
+      />
+
+      <select id="filter-status" class="filter-select">
+        <option value="all">All Appointments</option>
+        <option value="pending">Pending</option>
+        <option value="accepted">Accepted</option>
+        <option value="declined">Declined</option>
+      </select>
+    </div>
+
+    <div id="appointments-container">
+      <!-- Appointments will be inserted here by JavaScript -->
+    </div>
+
+    <!-- Templates -->
+    <template id="appointment-card-template">
+      <div class="appointment-card">
+        <div class="renter-info">
+          <div>
+            <h3 class="renter-name">John Doe</h3>
+            <p class="renter-phone">555-123-4567</p>
           </div>
+          <div class="appointment-status">
+            <span class="status-badge">Pending</span>
+          </div>
+        </div>
+
+        <div class="appointment-details">
+          <p>
+            <strong>Preferred Date:</strong>
+            <span class="preferred-date">January 1, 2023</span>
+          </p>
+          <p>
+            <strong>Preferred Time:</strong>
+            <span class="preferred-time">2:00 PM</span>
+          </p>
+          <p>
+            <strong>Listing ID:</strong>
+            <span class="appointment-id">ABC123</span>
+          </p>
+          <p>
+            <strong>Requested on:</strong>
+            <span class="request-timestamp">December 25, 2022</span>
+          </p>
+          <p>
+            <strong>Appointment Created:</strong>
+            <span class="appointment-timestamp">December 26, 2022</span>
+          </p>
+        </div>
+
+        <div class="actions">
+          <button class="accept-button">Accept</button>
+          <button class="decline-button">Decline</button>
+        </div>
       </div>
-     </div>
+    </template>
+
+    <template id="loading-indicator-template">
+      <div class="loading-indicator">
+        <p>Loading appointments...</p>
+      </div>
+    </template>
+
+    <template id="empty-state-template">
+      <div class="empty-state">
+        <h3>No Appointments Found</h3>
+        <p>You don't have any appointment requests at the moment.</p>
+      </div>
+    </template>
   </body>
 </html>

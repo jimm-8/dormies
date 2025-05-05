@@ -4,33 +4,150 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/assets/logo-sm.png" />
-    <title>Owner - Dashboard</title>
+    <title>Owner - Messages</title>
     <link rel="stylesheet" href="/styles/admin.css" />
-    <script type="module" src="/js/admin.js"></script>
     <link rel="stylesheet" href="/styles/owner/messages.css" />
+    <script type="module" src="/js/admin.js"></script>
+    <script type="module" src="/js/firebase/fetch_inquire.js"></script>
     <script type="module" src="/js/owner/messages.js"></script>
   </head>
   <body>
-    <div class="loader">
-      <img src="/assets/logo-md.png" class="loader-img" alt="logo-md" />
-      <div>
-        <span>Find.</span>
-        <span>Book.</span>
-        <span>Move In.</span>
-      </div>
-    </div>
-    <!-- Sidebar & Navbar Will Be Loaded Here -->
-     <div id="main">
+    <div id="main">
       <div id="sidebar-container"></div>
 
-      <!-- Add the main-content div which is referenced in your CSS -->
-      <div>
-        <div class="main-content">
-          <div class="one">
-            <h5>Good day!</h5>
-            <h1>THIS IS MESSAGES</h1>
+      <div class="main-content">
+        <div class="messages-header">
+          <h1>Inquiries & Messages</h1>
+          <p>Manage communication with potential renters</p>
+        </div>
+
+        <div class="messages-container">
+          <!-- Sidebar for listings -->
+          <div class="listings-sidebar">
+            <div class="listings-header">
+              <h3>Listings</h3>
+              <div class="search-bar">
+                <input
+                  type="text"
+                  id="listing-search"
+                  placeholder="Search listings..."
+                />
+                <button class="search-btn">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="listings-list" id="listings-container"></div>
           </div>
+
+          <!-- Message threads -->
+          <div class="messages-main">
+            <div id="current-listing-header" class="messages-listing-header">
+              <h2>Select a Listing</h2>
+              <p>Choose a property from the sidebar to view inquiries</p>
+            </div>
+
+            <div class="inquiries-list" id="inquiries-container"></div>
+          </div>
+        </div>
       </div>
-     </div>
+    </div>
+
+    <!-- Listing Item Template -->
+    <template id="listing-item-template">
+      <div class="listing-item" data-listing-id="">
+        <div class="listing-image">
+          <img class="listing-image" src="" alt="Property" />
+          <span class="unread-badge" style="display: none"></span>
+        </div>
+        <div class="listing-details">
+          <h4 class="listing-title">Listing Title</h4>
+          <p></p>
+        </div>
+      </div>
+    </template>
+
+    <!-- Inquiry Thread Template -->
+    <template id="inquiry-thread-template">
+      <div class="inquiry-thread" data-thread-id="">
+        <div class="inquiry-header">
+          <div class="user-info">
+            <div class="user-avatar"></div>
+            <div class="user-details">
+              <h4></h4>
+              <p></p>
+            </div>
+          </div>
+          <span class="inquiry-date"></span>
+        </div>
+
+        <div class="messages-thread"></div>
+
+        <div class="reply-section">
+          <textarea
+            class="reply-input"
+            placeholder="Type your reply..."
+          ></textarea>
+          <button class="send-btn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </template>
+
+    <!-- Message Template -->
+    <template id="message-template">
+      <div class="message">
+        <p class="message-text"></p>
+        <span class="message-sender"></span>
+      </div>
+    </template>
+
+    <!-- Empty State Template -->
+    <template id="empty-state-template">
+      <div class="empty-state">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="48"
+          height="48"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+        ></svg>
+        <h3>No Data</h3>
+        <p>Nothing to show here yet.</p>
+      </div>
+    </template>
+
+    <!-- Loading Indicator Template -->
+    <template id="loading-indicator-template">
+      <div class="loading-indicator">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+      </div>
+    </template>
   </body>
 </html>

@@ -1,24 +1,3 @@
-// Loader
-setTimeout(() => {
-  const loader = document.querySelector(".loader");
-  const main = document.getElementById("main");
-
-  if (loader && main) {
-    loader.style.opacity = "0";
-    loader.style.transition = "opacity 0.8s ease-out";
-
-    setTimeout(() => {
-      loader.style.display = "none";
-      main.style.display = "block"; // Ensure it's visible first!
-
-      setTimeout(() => {
-        main.style.opacity = "1";
-        main.style.transition = "opacity 0.8s ease-in";
-      }, 100);
-    }, 800);
-  }
-}, 3000);
-
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM Loaded. Fetching sidebar...");
 
