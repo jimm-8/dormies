@@ -1,22 +1,20 @@
-// Firebase App and Firestore SDK
+// firebase.js
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-// Your Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyC6lQdR4Hzwt5hel76LvLuXWtMVILC1zCE",
-    authDomain: "dormiesdb.firebaseapp.com",
-    databaseURL: "https://dormiesdb-default-rtdb.firebaseio.com",
-    projectId: "dormiesdb",
-    storageBucket: "dormiesdb.firebasestorage.app",
-    messagingSenderId: "944183752845",
-    appId: "1:944183752845:web:6a71a1f6cad348991acac4",
-    measurementId: "G-8W4Y49K5XR"
-  };
+  apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
+  authDomain: "dormies-b47b7.firebaseapp.com",
+  databaseURL: "https://dormies-b47b7-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "dormies-b47b7",
+  storageBucket: "dormies-b47b7.firebasestorage.app",
+  messagingSenderId: "443577320462",
+  appId: "1:443577320462:web:0a418fa107fbd01bd1285f"
+};
 
-// Initialize Firebase and Firestore
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Export db to use in other files
 export { db, collection, addDoc, serverTimestamp };
