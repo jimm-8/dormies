@@ -65,7 +65,7 @@ function showNotice(message, type = "info") {
 }
 
 // Function to handle image upload event
-function uploadImages(event) {
+function handleFileUpload(event) {
   const files = event.target.files;
   const imagePreview = document.getElementById('image-preview');
   
@@ -139,31 +139,68 @@ function uploadImages(event) {
   });
 }
 
-// Add event listener to the save button to include uploaded images
+// Initialize the upload functionality
 document.addEventListener('DOMContentLoaded', function() {
+  const uploadInput = document.getElementById('upload-photos');
   const saveListingBtn = document.getElementById('save-listing-btn');
   
+  // Add event listener to file input
+  if (uploadInput) {
+    uploadInput.addEventListener('change', handleFileUpload);
+  }
+  
+  // Add event listener to save button
   if (saveListingBtn) {
     saveListingBtn.addEventListener('click', function() {
-      // Add the image URLs to your form submission
-      // This depends on how you're handling the form submission
+      // Get all form values
+      const listingData = {
+        title: document.getElementById('listing-title').value,
+        street: document.getElementById('street').value,
+        blkNo: document.getElementById('blk-no').value,
+        landmark: document.getElementById('landmark').value,
+        description: document.getElementById('description').value,
+        rentalSpace: document.getElementById('rental-space').value,
+        furnishStatus: document.getElementById('furnish-status').value,
+        roomType: document.getElementById('room-type').value,
+        roomPrivacy: document.getElementById('room-privacy').value,
+        bathroom: document.getElementById('bathroom').value,
+        gender: document.getElementById('gender').value,
+        rentAmount: document.getElementById('rent-amount').value,
+        rentPeriod: document.getElementById('rent-period').value,
+        rentMethod: document.getElementById('rent-method').value,
+        advancePayment: document.getElementById('advance-payment').value,
+        depositPayment: document.getElementById('deposit-payment').value,
+        contractTerm: document.getElementById('contract-term').value,
+        waterBill: document.getElementById('water-bill').value,
+        electricBill: document.getElementById('electric-bill').value,
+        wifiBill: document.getElementById('wifi-bill').value,
+        images: uploadedImages
+      };
       
-      console.log('Uploaded images:', uploadedImages);
+      console.log('Listing data to save:', listingData);
       
-      // If you're using Firebase as mentioned in your HTML:
-      // You can add this array to your listing data before saving
+      // Here you would integrate with your Firebase or backend service
+      // For example, with Firebase:
+      // saveListingToFirebase(listingData);
       
-      // Example:
-      // const listingData = {
-      //   title: document.getElementById('listing-title').value,
-      //   // ... other fields
-      //   images: uploadedImages
-      // };
-      
-      // Then save the data to Firebase or your backend
+      showNotice("Listing saved successfully!", "success");
     });
   }
 });
 
-// Make the uploadImages function globally available
-window.uploadImages = uploadImages;
+// Function to save listing to Firebase
+// This is a placeholder - you'll need to integrate with your actual Firebase setup
+function saveListingToFirebase(listingData) {
+  // This function should be implemented based on your Firebase configuration
+  // For example:
+  // const db = firebase.firestore();
+  // db.collection("listings").add(listingData)
+  //   .then((docRef) => {
+  //     console.log("Document written with ID: ", docRef.id);
+  //     showNotice("Listing saved successfully!", "success");
+  //   })
+  //   .catch((error) => {
+  //     console.error("Error adding document: ", error);
+  //     showNotice("Error saving listing. Please try again.", "error");
+  //   });
+}
