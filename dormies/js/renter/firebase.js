@@ -1,9 +1,9 @@
-// Import Firebase modules
+// Import required Firebase SDK components
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js"; // 👈 Include auth
+import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
 
-// Your Firebase configuration (for dormies-b47b7)
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
   authDomain: "dormies-b47b7.firebaseapp.com",
@@ -14,10 +14,10 @@ const firebaseConfig = {
   appId: "1:443577320462:web:0a418fa107fbd01bd1285f"
 };
 
-// Initialize Firebase services
+// Initialize Firebase and Firestore
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app); // 👈 Initialize auth
+const auth = getAuth(app);
 
-// Export everything you need
-export { db, collection, addDoc, serverTimestamp, auth };
+// Export Firebase services
+export { db, auth };

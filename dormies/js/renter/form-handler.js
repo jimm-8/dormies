@@ -1,36 +1,22 @@
-// Import Firebase modules from your firebase.js
 import { db, collection, addDoc, serverTimestamp, auth } from "./firebase.js";
-
-// Track the current logged-in user
-let currentUser = null;
-
-// Listen for auth state changes
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    currentUser = user;
-    console.log("User logged in:", user.uid);
-  } else {
-    currentUser = null;
-    console.log("No user is logged in.");
-  }
-});
 
 // Handle Inquire Form
 document.getElementById("inquireForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const message = document.getElementById("inquireMessage").value.trim();
+  const user = auth.currentUser;
 
-  if (message && currentUser) {
+  if (message && user) {
     try {
       await addDoc(collection(db, "inquiries"), {
-        userId: currentUser.uid,
+        renterId: user.uid, // Attach renterId (user's UID)
         message,
         timestamp: serverTimestamp()
       });
       alert("Message sent!");
       e.target.reset();
     } catch (error) {
-      console.error("Error sending inquiry:", error);
+      console.error("Error:", error);
       alert("Failed to send message.");
     }
   } else {
@@ -43,11 +29,12 @@ document.getElementById("scheduleForm").addEventListener("submit", async (e) => 
   e.preventDefault();
   const date = document.getElementById("scheduleDate").value;
   const time = document.getElementById("scheduleTime").value;
+  const user = auth.currentUser;
 
-  if (date && time && currentUser) {
+  if (date && time && user) {
     try {
       await addDoc(collection(db, "schedules"), {
-        userId: currentUser.uid,
+        renterId: user.uid, // Attach renterId (user's UID)
         preferredDate: date,
         preferredTime: time,
         timestamp: serverTimestamp()
@@ -55,7 +42,7 @@ document.getElementById("scheduleForm").addEventListener("submit", async (e) => 
       alert("Schedule request sent!");
       e.target.reset();
     } catch (error) {
-      console.error("Error sending schedule:", error);
+      console.error("Error:", error);
       alert("Failed to schedule.");
     }
   } else {
