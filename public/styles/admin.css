@@ -21,7 +21,7 @@
   height: 60px;
   background: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: -1000;
+  z-index: 1000;
   display: flex;
   justify-content: end;
   align-items: center;
@@ -38,7 +38,7 @@
   min-height: 100vh;
   background: white;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  z-index: 10000;
   padding: 10px 0;
   display: block;
   border-right: 4px solid var(--yellow);
