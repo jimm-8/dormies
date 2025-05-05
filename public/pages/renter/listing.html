@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="/assets/logo-sm.png" type="image/png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <!-- Note: The listing_deets.js script already imports Firebase, so no need to duplicate imports -->
+    <script type="module" src="/js/firebase/listing_deets.js"></script>
+    <link rel="stylesheet" href="/styles/renter.css" />
+    <link rel="stylesheet" href="/styles/listing.css" />
+    <title>Property Details</title>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <div class="navbar">
+      <div class="nav-container">
+        <div class="nav-left">
+          <a href="#" class="back-btn">
+            <i class="fa fa-arrow-left"></i> Back to Listings
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <main class="container">
+      <!-- Image Gallery -->
+      <!-- <div class="gallery-container">
+        <div class="gallery-grid">
+          <div class="gallery-main">
+            <img
+              src="/api/placeholder/800/600"
+              alt="Main property image"
+              class="gallery-image"
+            />
+            <div class="gallery-overlay">
+              <i class="fa fa-camera"></i>
+              <span class="photo-count">0</span> Photos
+            </div>
+          </div>
+          <div>
+            <img
+              src="/api/placeholder/400/300"
+              alt="Property image"
+              class="gallery-image"
+            />
+          </div>
+          <div>
+            <img
+              src="/api/placeholder/400/300"
+              alt="Property image"
+              class="gallery-image"
+            />
+          </div>
+        </div>
+        <button class="view-all-btn">
+          <i class="fa fa-images"></i> View All Photos
+        </button>
+      </div> -->
+
+      <div id="noticeBox" class="notice hide">
+        <span id="noticeText"></span>
+      </div>
+
+      <!-- Property Header -->
+      <div class="property-header">
+        <div class="title-container">
+          <div class="title-badge-container">
+            <h1>Loading property title...</h1>
+            <div class="verified-badge">
+              <i class="ri-checkbox-circle-fill"></i> VERIFIED
+            </div>
+          </div>
+          <div class="address">
+            <i class="fa fa-map-marker-alt"></i> Loading address...
+          </div>
+        </div>
+        <div class="price-section">
+          <div class="price-tag">Loading price...</div>
+        </div>
+      </div>
+
+      <div class="details-grid">
+        <!-- Left Column -->
+        <div>
+          <!-- Property Details -->
+          <div class="grid-wrapper">
+            <div class="details-container">
+              <section class="detail-section">
+                <h2>INCLUSIONS</h2>
+                <ul class="detail-list">
+                  <li class="detail-item">
+                    <i class="fa fa-spinner fa-pulse"></i> Loading inclusions...
+                  </li>
+                </ul>
+              </section>
+              <section class="detail-section">
+                <h2>PAYMENT TERMS</h2>
+                <ul class="detail-list">
+                  <li class="detail-item">
+                    <i class="fa fa-spinner fa-pulse"></i> Loading payment
+                    terms...
+                  </li>
+                </ul>
+              </section>
+            </div>
+          </div>
+
+          <!-- Property Features -->
+          <section class="features-section">
+            <h2>Property Features</h2>
+            <div class="features-grid">
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="fa fa-bed"></i>
+                </div>
+                <div class="feature-info">
+                  <div class="feature-title">Bedrooms</div>
+                  <div class="feature-value">--</div>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="fa fa-bath"></i>
+                </div>
+                <div class="feature-info">
+                  <div class="feature-title">Bathrooms</div>
+                  <div class="feature-value">--</div>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="fa fa-building"></i>
+                </div>
+                <div class="feature-info">
+                  <div class="feature-title">Property Type</div>
+                  <div class="feature-value">--</div>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="fa fa-couch"></i>
+                </div>
+                <div class="feature-info">
+                  <div class="feature-title">Unit Condition</div>
+                  <div class="feature-value">--</div>
+                </div>
+              </div>
+              <div class="feature-item">
+                <div class="feature-icon">
+                  <i class="fa fa-venus-mars"></i>
+                </div>
+                <div class="feature-info">
+                  <div class="feature-title">Gender</div>
+                  <div class="feature-value">--</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Reviews and Feedback -->
+          <section class="reviews-container">
+            <div class="section-header">
+              <h2>Tenant Reviews & Feedback</h2>
+              <a id="writeReviewButton" class="feedback-button">
+                <i class="ri-edit-2-line"></i> Write a Review
+              </a>
+            </div>
+
+            <!-- Review Modal -->
+            <div id="reviewModal" class="modal">
+              <div class="modal-content">
+                <span id="closeReview" class="close-button">&times;</span>
+                <h3>Write a Review</h3>
+                <textarea placeholder="Your review here..."></textarea>
+                <button>Submit</button>
+              </div>
+            </div>
+
+            <!-- Reviews List -->
+            <div class="reviews-list">
+              <!-- Reviews will be populated dynamically -->
+              <div class="no-reviews-message">
+                <p>No reviews yet. Be the first to leave a review!</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right Column -->
+        <div>
+          <!-- Inquire Form -->
+          <section class="inquire-section">
+            <div class="tab-container">
+              <button class="tab-button active" data-tab="inquire">
+                Inquire
+              </button>
+              <button class="tab-button" data-tab="schedule">
+                Schedule Visit
+              </button>
+            </div>
+
+            <!-- Inquire Form -->
+            <form class="message-form inquire-form active">
+              <div class="form-group">
+                <label>Your Message</label>
+                <textarea
+                  class="form-control"
+                  placeholder="Type your message to the owner here..."
+                  rows="4"
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="send-button">
+                <i class="fa fa-paper-plane"></i> Send Private Message
+              </button>
+            </form>
+
+            <!-- Schedule Form -->
+            <form class="message-form schedule-form">
+              <div class="schedule-options">
+                <div class="form-group">
+                  <label>Preferred Date</label>
+                  <input type="date" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label>Preferred Time</label>
+                  <input type="time" class="form-control" required />
+                </div>
+                <div class="form-group">
+                  <label>Your Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Enter your full name"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Your Phone</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    placeholder="Enter your phone number"
+                    required
+                  />
+                </div>
+              </div>
+              <button type="submit" class="send-button">
+                <i class="fa fa-calendar-check"></i> Request Schedule
+              </button>
+            </form>
+          </section>
+
+          <!-- Owner/Agent Info -->
+          <section class="owner-section">
+            <h3 class="owner-header">Property Owner</h3>
+            <div class="owner-loading">
+              <i class="fa fa-spinner fa-pulse"></i> Loading owner
+              information...
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <!-- You may want to add this modal for displaying all photos -->
+    <div id="photos-modal" class="photos-modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <div class="photos-carousel">
+          <!-- Photos will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

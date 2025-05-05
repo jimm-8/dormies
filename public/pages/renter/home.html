@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="/assets/logo-sm.png" type="image/png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <script type="module" src="/js/firebase/fetch_post.js"></script>
+    <script type="module" src="/js/renter/home.js"></script>
+    <link rel="stylesheet" href="/styles/renter/home.css" />
+    <link rel="stylesheet" href="/styles/renter.css" />
+    <title>Dormies - Home</title>
+  </head>
+  <body>
+    <div class="loader">
+      <img src="/assets/logo-md.png" class="loader-img" alt="logo-md" />
+      <div>
+        <span>Find.</span>
+        <span>Book.</span>
+        <span>Move In.</span>
+      </div>
+    </div>
+
+    <div id="main">
+      <div id="navbar"></div>
+
+      <div class="content">
+        <div class="top">
+          <h1>Find dorms for rent with <span class="title">DORMIES</span>!</h1>
+          <div class="search-bar">
+            <div class="search-container">
+              <input
+                type="text"
+                placeholder="Where do you want to stay?"
+                class="search-input"
+              />
+              <i class="fas fa-search"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="listings-container"></div>
+      </div>
+      <div id="footer"></div>
+    </div>
+  </body>
+</html>
