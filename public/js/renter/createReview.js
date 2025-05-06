@@ -1,4 +1,4 @@
-// Import Firebase core and the needed services
+// Import Firebase core and needed services
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import {
   getFirestore,
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const { id: listingId, ownerId } = listingDetailsModule.listingData;
 
       if (listingId && ownerId) {
-        initializeReviews(ownerId, listingId);
+        initializeReviews(db, auth, listingId, ownerId);
       } else {
         console.error("Missing listing ID or owner ID");
       }
@@ -45,10 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }, 500);
 });
 
-function initializeReviews(ownerId, listingId) {
-  const db = getFirestore();
-  const auth = getAuth();
-
+function initializeReviews(db, auth, listingId, ownerId) {
   const writeReviewButton = document.getElementById("writeReviewButton");
   const reviewModal = document.getElementById("reviewModal");
   const reviewsList = document.getElementById("reviewsList");
