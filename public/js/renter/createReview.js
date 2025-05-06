@@ -1,4 +1,4 @@
-// Import Firebase core and needed services
+// Fixed version of createReview.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import {
   getFirestore,
@@ -16,6 +16,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM loaded - initializing review system");
+  
   const firebaseConfig = {
     apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
     authDomain: "dormies-b47b7.firebaseapp.com",
@@ -29,42 +31,72 @@ document.addEventListener("DOMContentLoaded", () => {
   const db = getFirestore(app);
   const auth = getAuth(app);
 
+  // Check URL parameters for listing ID and owner ID
+  const urlParams = new URLSearchParams(window.location.search);
+  const listingId = urlParams.get('ownerId')?.split('&')[0];
+  const ownerId = urlParams.get('listingId') || urlParams.get('ownerId')?.split('&')[1];
+  
+  console.log("URL params:", { listingId, ownerId });
+
+  // Also check for data from listing_deets.js module as fallback
   const listingDetailsModule = window.listingDetailsModule || {};
 
-  const checkListingData = setInterval(() => {
-    if (listingDetailsModule.listingData) {
-      clearInterval(checkListingData);
-      const { id: listingId, ownerId } = listingDetailsModule.listingData;
+  // First try URL params, then fall back to module data
+  if (listingId && ownerId) {
+    console.log("Initializing reviews with URL params");
+    initializeReviews(db, auth, listingId, ownerId);
+  } else {
+    console.log("Checking for listing data from module");
+    const checkListingData = setInterval(() => {
+      if (listingDetailsModule.listingData) {
+        clearInterval(checkListingData);
+        const { id: moduleListingId, ownerId: moduleOwnerId } = listingDetailsModule.listingData;
 
-      if (listingId && ownerId) {
-        initializeReviews(db, auth, listingId, ownerId);
-      } else {
-        console.error("Missing listing ID or owner ID");
+        if (moduleListingId && moduleOwnerId) {
+          console.log("Initializing reviews with module data");
+          initializeReviews(db, auth, moduleListingId, moduleOwnerId);
+        } else {
+          console.error("Missing listing ID or owner ID in module data");
+        }
       }
-    }
-  }, 500);
+    }, 500);
+  }
 });
 
 function initializeReviews(db, auth, listingId, ownerId) {
+  console.log(`Setting up reviews for listing: ${listingId}, owner: ${ownerId}`);
+  
+  // Debug DOM elements
   const writeReviewButton = document.getElementById("writeReviewButton");
   const reviewModal = document.getElementById("reviewModal");
   const reviewsList = document.getElementById("reviewsList");
+  const closeReviewButton = document.getElementById("closeReview");
+  const submitReviewButton = document.getElementById("submitReview");
+  const reviewTextArea = document.getElementById("reviewText");
+  const reviewForm = document.getElementById("reviewForm");
+  
+  console.log("DOM elements:", {
+    writeReviewButton: !!writeReviewButton,
+    reviewModal: !!reviewModal, 
+    reviewsList: !!reviewsList,
+    closeReviewButton: !!closeReviewButton,
+    submitReviewButton: !!submitReviewButton,
+    reviewTextArea: !!reviewTextArea,
+    reviewForm: !!reviewForm
+  });
 
   if (!writeReviewButton || !reviewModal || !reviewsList) {
     console.warn("Review elements not found on page");
     return;
   }
 
-  const closeReviewButton = document.getElementById("closeReview");
-  const submitReviewButton = document.getElementById("submitReview");
-  const reviewTextArea = document.getElementById("reviewText");
   const ratingInputs = document
     .getElementById("starRating")
     .querySelectorAll("input[type='radio']");
-  const reviewForm = document.getElementById("reviewForm");
 
   async function saveReview(reviewText, rating) {
     const user = auth.currentUser;
+    console.log("Current user:", user);
 
     if (!user) {
       showNotice("You must be logged in to leave a review");
@@ -72,6 +104,13 @@ function initializeReviews(db, auth, listingId, ownerId) {
     }
 
     try {
+      console.log("Saving review with data:", {
+        reviewText: reviewText.substring(0, 20) + "...", // log partial content for privacy
+        rating,
+        listingId,
+        ownerId
+      });
+      
       const reviewsRef = collection(db, "reviews");
       const reviewData = {
         reviewText,
@@ -99,6 +138,7 @@ function initializeReviews(db, auth, listingId, ownerId) {
   }
 
   async function fetchReviews() {
+    console.log("Fetching reviews for listing:", listingId);
     try {
       const q = query(
         collection(db, "reviews"),
@@ -107,16 +147,17 @@ function initializeReviews(db, auth, listingId, ownerId) {
       );
       const snapshot = await getDocs(q);
       const reviews = [];
+      
       snapshot.forEach((doc) => {
         const data = doc.data();
-        if (data.listingId === listingId) {
-          reviews.push({
-            id: doc.id,
-            ...data,
-            createdAt: data.createdAt?.toDate?.() || new Date(data.timestamp),
-          });
-        }
+        reviews.push({
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate?.() || new Date(data.timestamp),
+        });
       });
+      
+      console.log(`Fetched ${reviews.length} reviews`);
       return reviews;
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -126,6 +167,7 @@ function initializeReviews(db, auth, listingId, ownerId) {
   }
 
   function showNotice(message, duration = 3000) {
+    console.log("Notice:", message);
     const noticeBox = document.getElementById("noticeBox");
     const noticeText = document.getElementById("noticeText");
     if (!noticeBox || !noticeText) {
@@ -142,6 +184,7 @@ function initializeReviews(db, auth, listingId, ownerId) {
   }
 
   async function loadReviews() {
+    console.log("Loading reviews into UI");
     reviewsList.innerHTML = `<div class="reviews-loading"><i class="fa fa-spinner fa-pulse"></i> Loading reviews...</div>`;
     const reviews = await fetchReviews();
     reviewsList.innerHTML = "";
@@ -195,6 +238,7 @@ function initializeReviews(db, auth, listingId, ownerId) {
     });
 
     reviewsList.appendChild(container);
+    console.log("Reviews displayed successfully");
   }
 
   function generateStarsHtml(rating) {
@@ -219,8 +263,12 @@ function initializeReviews(db, auth, listingId, ownerId) {
 
   async function handleReviewSubmit(e) {
     e.preventDefault();
+    console.log("Review form submitted");
+    
     const reviewText = reviewTextArea.value.trim();
     const rating = getSelectedRating();
+    
+    console.log("Review data:", { reviewText: reviewText.substring(0, 20) + "...", rating });
 
     if (!reviewText || rating < 1 || rating > 5) {
       showNotice("Please enter review text and select a rating.");
@@ -229,23 +277,42 @@ function initializeReviews(db, auth, listingId, ownerId) {
 
     const success = await saveReview(reviewText, rating);
     if (success) {
+      console.log("Review saved successfully, reloading reviews");
       reviewForm.reset();
+      
+      // Try both class hide and display:none to ensure modal closes
       reviewModal.classList.add("hide");
-      loadReviews();
+      reviewModal.style.display = "none";
+      
+      // Make sure to reload the reviews
+      await loadReviews();
     }
   }
 
+  // Set up event listeners
   writeReviewButton.addEventListener("click", () => {
+    console.log("Opening review modal");
     reviewModal.classList.remove("hide");
+    reviewModal.style.display = "block";
   });
 
   closeReviewButton.addEventListener("click", () => {
+    console.log("Closing review modal");
     reviewModal.classList.add("hide");
+    reviewModal.style.display = "none";
   });
 
-  reviewForm.addEventListener("submit", handleReviewSubmit);
+  // Ensure the form submission is properly handled
+  if (reviewForm) {
+    reviewForm.addEventListener("submit", (e) => {
+      console.log("Form submission detected");
+      handleReviewSubmit(e);
+    });
+  }
 
+  // Check if the user is logged in
   onAuthStateChanged(auth, (user) => {
+    console.log("Auth state changed:", user ? "logged in" : "logged out");
     if (user) {
       writeReviewButton.classList.remove("hidden");
     } else {
@@ -253,5 +320,7 @@ function initializeReviews(db, auth, listingId, ownerId) {
     }
   });
 
+  // Initial loading of reviews
+  console.log("Initial loading of reviews");
   loadReviews();
 }
