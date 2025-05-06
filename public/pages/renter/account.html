@@ -11,6 +11,7 @@
 
     <link rel="stylesheet" href="/styles/renter/account.css" />
     <link rel="stylesheet" href="/styles/renter.css" />
+    <script type="module" src="/js/renter/account.js"></script>
     <title>Dormies - Account Settings</title>
   </head>
   <body>
@@ -227,112 +228,8 @@
       <div id="footer"></div>
     </div>
 
-    <!-- Firebase imports should be at the top level -->
-    <script type="module" src="/js/firebase/renter.js"></script>
-    <script type="module" src="/js/renter/account.js"></script>
-    <script type="module" src="/js/firebase/fetch_user.js"></script>
-    <script type="module" src="/js/renter/inquire_fetch.js"></script>
-
-    <!-- Main scripts -->
-    <script>
-      // Hide loader when page loads
-      window.addEventListener("load", function () {
-        document.querySelector(".loader").style.display = "none";
-      });
-
-      // Function to handle tab switching
-      function openTab(evt, tabName) {
-        // Hide all tab contents
-        const tabContents = document.getElementsByClassName("tab-content");
-        for (let i = 0; i < tabContents.length; i++) {
-          tabContents[i].classList.remove("active");
-        }
-
-        // Remove active class from all tab buttons
-        const tabButtons = document.getElementsByClassName("tab-button");
-        for (let i = 0; i < tabButtons.length; i++) {
-          tabButtons[i].classList.remove("active");
-        }
-
-        // Show the selected tab content and mark button as active
-        document.getElementById(tabName).classList.add("active");
-        evt.currentTarget.classList.add("active");
-      }
-
-      // Set up default tab on page load
-      document.addEventListener("DOMContentLoaded", function () {
-        // Default tab is already set in HTML with "active" class
-
-        // Set up back button
-        const backBtn = document.getElementById("back-btn");
-        if (backBtn) {
-          backBtn.addEventListener("click", function () {
-            window.history.back();
-          });
-        }
-
-        // Set up message loading
-        setupMessageHandlers();
-      });
-
-      // Message handling for conversations
-      function setupMessageHandlers() {
-        const conversationList = document.getElementById("inquiryList");
-        const messageView = document.getElementById("messageView");
-
-        if (!conversationList || !messageView) {
-          console.log("Message view elements not found or not ready yet.");
-          return;
-        }
-
-        function loadMessages(listingId, name) {
-          const allMessages = JSON.parse(
-            localStorage.getItem("renterMessages") || "{}"
-          );
-          const messages = allMessages[listingId] || [];
-
-          messageView.innerHTML = `
-            <div class="message-header">
-              <button id="backBtn" class="back-button">← Back</button>
-              <h3>${name}</h3>
-            </div>
-            <div class="messages" id="messagesContainer"></div>
-          `;
-
-          const messagesContainer =
-            document.getElementById("messagesContainer");
-
-          messages.forEach((msg) => {
-            const messageElement = document.createElement("div");
-            messageElement.classList.add(
-              "message",
-              msg.sender === "renter" ? "sent" : "received"
-            );
-            messageElement.innerText = msg.text;
-            messagesContainer.appendChild(messageElement);
-          });
-
-          conversationList.style.display = "none";
-          messageView.style.display = "block";
-
-          document.getElementById("backBtn").addEventListener("click", () => {
-            messageView.style.display = "none";
-            conversationList.style.display = "block";
-          });
-        }
-
-        // Attach click listeners to each conversation item
-        document.querySelectorAll(".inquiry").forEach((convo) => {
-          convo.addEventListener("click", () => {
-            const listingId = convo.getAttribute("data-id");
-            const name = convo.querySelector("h3").innerText;
-            loadMessages(listingId, name);
-          });
-        });
-      }
-    </script>
-
     <!-- Firebase notifications module -->
+    <!-- Keep your existing module script with improvements -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
       import {
@@ -356,8 +253,15 @@
         onAuthStateChanged,
       } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
 
-      // Firebase config - in production, use environment variables instead of hardcoding
-      // For improved security, fetch this from a protected endpoint
+      const firebaseConfig = {
+        apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
+        authDomain: "dormies-b47b7.firebaseapp.com",
+        projectId: "dormies-b47b7",
+        storageBucket: "dormies-b47b7.appspot.com",
+        messagingSenderId: "443577320462",
+        appId: "1:443577320462:web:0a418fa107fbd01bd1285f",
+      };
+
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
       const auth = getAuth(app);
@@ -369,8 +273,9 @@
       function setupNotificationListener(userId) {
         if (!userId) return;
 
+        // Listen for the renter's schedules
         const schedulesRef = collection(db, "schedules");
-        const q = query(schedulesRef, where("ownerId", "==", userId));
+        const q = query(schedulesRef, where("renterId", "==", userId));
 
         // Create a separate notifications collection to store notification history
         const userNotificationsRef = collection(db, "userNotifications");
@@ -378,48 +283,45 @@
         // Set up real-time listener for schedule changes
         const unsubscribe = onSnapshot(q, async (snapshot) => {
           snapshot.docChanges().forEach(async (change) => {
-            // We're only interested in modified documents for status changes
-            if (change.type === "modified") {
+            // We're interested in modified documents AND new documents for status changes
+            if (change.type === "modified" || change.type === "added") {
               const scheduleData = change.doc.data();
 
-              // If there's a status change, create a notification
+              // For new documents, we only care if they're not pending
               if (
-                scheduleData.status === "accepted" ||
-                scheduleData.status === "declined"
+                change.type === "added" &&
+                scheduleData.status !== "pending"
               ) {
-                const notificationId = `${change.doc.id}-${
-                  scheduleData.status
-                }-${Date.now()}`;
+                // Handle non-pending new documents (could be directly added as accepted/declined)
+                await createStatusNotification(
+                  change.doc.id,
+                  scheduleData,
+                  userId,
+                  userNotificationsRef
+                );
+              }
+              // For modified documents, we check for status changes
+              else if (change.type === "modified") {
+                const oldStatus = change.doc.metadata.hasPendingWrites
+                  ? "pending"
+                  : scheduleData._previousStatus || "pending";
 
-                // Create the notification
-                const notification = {
-                  userId: userId,
-                  scheduleId: change.doc.id,
-                  title: `Appointment ${
-                    scheduleData.status.charAt(0).toUpperCase() +
-                    scheduleData.status.slice(1)
-                  }`,
-                  message: `Your appointment with ${
-                    scheduleData.name
-                  } on ${formatDate(
-                    scheduleData.preferredDate
-                  )} at ${formatTime(scheduleData.preferredTime)} has been ${
-                    scheduleData.status
-                  }.`,
-                  status: scheduleData.status,
-                  read: false,
-                  createdAt: Timestamp.now(),
-                };
+                console.log(
+                  `Schedule ${change.doc.id} changed: ${oldStatus} -> ${scheduleData.status}`
+                );
 
-                // Store in Firestore
-                try {
-                  await setDoc(
-                    doc(userNotificationsRef, notificationId),
-                    notification
+                // If there's a status change from pending to accepted/declined
+                if (
+                  (scheduleData.status === "accepted" ||
+                    scheduleData.status === "declined") &&
+                  (oldStatus === "pending" || !scheduleData._statusNotified)
+                ) {
+                  await createStatusNotification(
+                    change.doc.id,
+                    scheduleData,
+                    userId,
+                    userNotificationsRef
                   );
-                  // No need to manually add to UI here, the collection listener will handle it
-                } catch (error) {
-                  console.error("Error adding notification:", error);
                 }
               }
             }
@@ -441,6 +343,67 @@
         return unsubscribe;
       }
 
+      // Create a notification for status changes
+      async function createStatusNotification(
+        docId,
+        scheduleData,
+        userId,
+        userNotificationsRef
+      ) {
+        const notificationId = `${docId}-${scheduleData.status}-${Date.now()}`;
+        const propertyName =
+          scheduleData.propertyName || scheduleData.name || "the property";
+        const ownerName = scheduleData.ownerName || "the owner";
+
+        // Create the notification
+        const notification = {
+          userId: userId,
+          scheduleId: docId,
+          title: `Viewing Request ${
+            scheduleData.status.charAt(0).toUpperCase() +
+            scheduleData.status.slice(1)
+          }`,
+          message: `Your request to view ${propertyName} on ${formatDate(
+            scheduleData.preferredDate
+          )} at ${formatTime(scheduleData.preferredTime)} has been ${
+            scheduleData.status
+          } by ${ownerName}.`,
+          status: scheduleData.status,
+          read: false,
+          createdAt: Timestamp.now(),
+        };
+
+        // Play notification sound for accepted appointments
+        if (scheduleData.status === "accepted") {
+          playNotificationSound();
+        }
+
+        // Store in Firestore
+        try {
+          await setDoc(doc(userNotificationsRef, notificationId), notification);
+
+          // Mark that we've notified about this status to avoid duplicate notifications
+          await updateDoc(doc(collection(db, "schedules"), docId), {
+            _statusNotified: true,
+            _previousStatus: scheduleData.status,
+          });
+
+          console.log(`Notification created for schedule ${docId}`);
+        } catch (error) {
+          console.error("Error adding notification:", error);
+        }
+      }
+
+      // Play a notification sound
+      function playNotificationSound() {
+        try {
+          const audio = new Audio("/assets/sounds/notification.mp3");
+          audio.play();
+        } catch (error) {
+          console.error("Error playing notification sound:", error);
+        }
+      }
+
       // Format date for display
       function formatDate(dateString) {
         const date = new Date(dateString);
@@ -454,6 +417,8 @@
 
       // Format time for display
       function formatTime(timeStr) {
+        if (!timeStr) return "N/A";
+
         const [hourStr, minute] = timeStr.split(":");
         let hour = parseInt(hourStr, 10);
         const ampm = hour >= 12 ? "PM" : "AM";
@@ -465,6 +430,8 @@
 
       // Render time ago
       function timeAgo(timestamp) {
+        if (!timestamp || !timestamp.toDate) return "unknown time";
+
         const now = new Date();
         const date = timestamp.toDate();
         const seconds = Math.floor((now - date) / 1000);
@@ -512,15 +479,13 @@
           }
 
           notificationEl.innerHTML = `
-            <div class="notification-content">
-              <div class="notification-title">${notification.title}</div>
-              <div class="notification-message">${notification.message}</div>
-              <div class="notification-time">${timeAgo(
-                notification.createdAt
-              )}</div>
-            </div>
-            <span class="notification-close" data-id="${doc.id}">×</span>
-          `;
+    <div class="notification-content">
+      <div class="notification-title">${notification.title}</div>
+      <div class="notification-message">${notification.message}</div>
+      <div class="notification-time">${timeAgo(notification.createdAt)}</div>
+    </div>
+    <span class="notification-close" data-id="${doc.id}">×</span>
+  `;
 
           notificationsList.appendChild(notificationEl);
 
@@ -534,6 +499,9 @@
               try {
                 await updateDoc(doc.ref, { read: true });
                 notificationEl.classList.remove("notification-new");
+
+                // Update the badge count after marking as read
+                updateNotificationBadge(auth.currentUser?.uid);
               } catch (error) {
                 console.error("Error marking notification as read:", error);
               }
@@ -553,6 +521,9 @@
                 notificationsList.innerHTML =
                   '<div class="empty-notifications">No new notifications</div>';
               }
+
+              // Update the badge count after removing a notification
+              updateNotificationBadge(auth.currentUser?.uid);
             } catch (error) {
               console.error("Error removing notification:", error);
             }
@@ -579,6 +550,9 @@
           await Promise.all(deletePromises);
           notificationsList.innerHTML =
             '<div class="empty-notifications">No new notifications</div>';
+
+          // Update the badge after clearing all notifications
+          updateNotificationBadge(userId);
         } catch (error) {
           console.error("Error clearing notifications:", error);
         }
@@ -589,6 +563,7 @@
 
       onAuthStateChanged(auth, (user) => {
         if (user) {
+          console.log("User authenticated:", user.uid);
           // Clean up previous listener if it exists
           if (notificationsUnsubscribe) {
             notificationsUnsubscribe();
@@ -596,8 +571,12 @@
 
           // Set up new listener
           notificationsUnsubscribe = setupNotificationListener(user.uid);
+
+          // Check for unread notifications
+          updateNotificationBadge(user.uid);
         } else {
           // User is signed out
+          console.log("User signed out");
           if (notificationsUnsubscribe) {
             notificationsUnsubscribe();
             notificationsUnsubscribe = null;
@@ -606,16 +585,6 @@
             '<div class="empty-notifications">Please log in to view notifications</div>';
         }
       });
-
-      // Function to update schedule status from the notification page
-      window.updateStatus = async function (id, newStatus) {
-        try {
-          await updateDoc(doc(db, "schedules", id), { status: newStatus });
-          // The status change will trigger a notification automatically
-        } catch (err) {
-          console.error("Failed to update status:", err);
-        }
-      };
 
       // Add a badge or counter for unread notifications
       async function updateNotificationBadge(userId) {
@@ -628,44 +597,97 @@
           where("read", "==", false)
         );
 
-        const snapshot = await getDocs(q);
-        const unreadCount = snapshot.size;
+        try {
+          const snapshot = await getDocs(q);
+          const unreadCount = snapshot.size;
 
-        // Update badge if you have one in your UI
-        const badge = document.getElementById("notification-badge");
-        if (badge) {
-          if (unreadCount > 0) {
-            badge.textContent = unreadCount;
-            badge.style.display = "block";
-          } else {
-            badge.style.display = "none";
+          // Update badge if you have one in your UI
+          const notificationTab = document.querySelector(
+            "button.tab-button[onclick=\"openTab(event, 'notifications')\"]"
+          );
+
+          if (notificationTab) {
+            // Remove any existing badge
+            const existingBadge = notificationTab.querySelector(
+              ".notification-badge"
+            );
+            if (existingBadge) {
+              existingBadge.remove();
+            }
+
+            // Add new badge if there are unread notifications
+            if (unreadCount > 0) {
+              const badge = document.createElement("span");
+              badge.className = "notification-badge";
+              badge.textContent = unreadCount;
+              notificationTab.appendChild(badge);
+            }
           }
+        } catch (error) {
+          console.error("Error updating notification badge:", error);
         }
       }
 
-      // Check for unread notifications when logged in
-      onAuthStateChanged(auth, (user) => {
-        if (user) {
-          updateNotificationBadge(user.uid);
+      // Initialize when DOM is ready
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log("Notifications system initialized");
 
-          // Refresh every 5 minutes
-          setInterval(() => {
-            updateNotificationBadge(user.uid);
-          }, 300000);
+        // Check if we're in the notifications tab
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("tab") === "notifications") {
+          // Trigger click on notifications tab
+          const notificationTab = document.querySelector(
+            "button.tab-button[onclick=\"openTab(event, 'notifications')\"]"
+          );
+          if (notificationTab) {
+            notificationTab.click();
+          }
         }
       });
+    </script>
 
-      // Initialize the config reference
+    <!-- Add this script tag right before the closing </body> tag -->
+    <script>
+      // Tab functionality
+      function openTab(evt, tabName) {
+        // Declare variables
+        let i, tabContent, tabButtons;
+
+        // Get all elements with class="tab-content" and hide them
+        tabContent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabContent.length; i++) {
+          tabContent[i].classList.remove("active");
+        }
+
+        // Get all elements with class="tab-button" and remove the class "active"
+        tabButtons = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tabButtons.length; i++) {
+          tabButtons[i].classList.remove("active");
+        }
+
+        // Show the current tab, and add an "active" class to the button that opened the tab
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+
+        // Optional: Update URL parameter to remember the tab
+        const url = new URL(window.location);
+        url.searchParams.set("tab", tabName);
+        window.history.replaceState({}, "", url);
+      }
+
+      // Check URL parameters to open the correct tab on page load
       document.addEventListener("DOMContentLoaded", () => {
-        // This is just a placeholder - you should fetch this securely from an environment variable or API
-        window.firebaseConfig = {
-          apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
-          authDomain: "dormies-b47b7.firebaseapp.com",
-          projectId: "dormies-b47b7",
-          storageBucket: "dormies-b47b7.appspot.com",
-          messagingSenderId: "443577320462",
-          appId: "1:443577320462:web:0a418fa107fbd01bd1285f",
-        };
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get("tab");
+
+        if (tabParam) {
+          const tabButton = document.querySelector(
+            `button.tab-button[onclick="openTab(event, '${tabParam}')"]`
+          );
+          if (tabButton) {
+            tabButton.click();
+          }
+        }
       });
     </script>
   </body>
