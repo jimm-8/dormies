@@ -63,9 +63,6 @@ function initializeReviews(db, auth, listingId, ownerId) {
     .querySelectorAll("input[type='radio']");
   const reviewForm = document.getElementById("reviewForm");
 
-  // Initialize the notice box if it doesn't exist
-  ensureNoticeBoxExists();
-
   async function saveReview(reviewText, rating) {
     const user = auth.currentUser;
 
@@ -128,85 +125,20 @@ function initializeReviews(db, auth, listingId, ownerId) {
     }
   }
 
-  // Create the notice box if it doesn't exist
-  function ensureNoticeBoxExists() {
-    let noticeBox = document.getElementById("noticeBox");
-    
-    if (!noticeBox) {
-      noticeBox = document.createElement("div");
-      noticeBox.id = "noticeBox";
-      noticeBox.classList.add("notice", "hide");
-      
-      const noticeText = document.createElement("span");
-      noticeText.id = "noticeText";
-      noticeBox.appendChild(noticeText);
-      
-      document.body.appendChild(noticeBox);
-      
-      // Add CSS if needed
-      if (!document.getElementById("noticeBoxStyles")) {
-        const style = document.createElement("style");
-        style.id = "noticeBoxStyles";
-        style.textContent = `
-          .notice {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 12px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border-radius: 4px;
-            z-index: 10000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            transition: opacity 0.3s, transform 0.3s;
-          }
-          .notice.hide {
-            opacity: 0;
-            transform: translateX(-50%) translateY(-20px);
-            pointer-events: none;
-          }
-          .notice.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-          }
-        `;
-        document.head.appendChild(style);
-      }
-    }
-    
-    return noticeBox;
-  }
-
   function showNotice(message, duration = 3000) {
-    const noticeBox = document.getElementById("noticeBox") || ensureNoticeBoxExists();
+    const noticeBox = document.getElementById("noticeBox");
     const noticeText = document.getElementById("noticeText");
-    
     if (!noticeBox || !noticeText) {
-      alert(message); // Fallback
+      alert(message);
       return;
     }
-    
-    // Ensure we're updating the text
     noticeText.textContent = message;
-    
-    // Reset any existing animations/timeouts
     noticeBox.classList.remove("hide");
     noticeBox.classList.add("show");
-    
-    // Clear any existing timers
-    if (noticeBox.hideTimeout) {
-      clearTimeout(noticeBox.hideTimeout);
-    }
-    
-    // Set new timer
-    noticeBox.hideTimeout = setTimeout(() => {
+    setTimeout(() => {
       noticeBox.classList.remove("show");
       noticeBox.classList.add("hide");
     }, duration);
-    
-    // Log for debugging
-    console.log("Notice displayed:", message);
   }
 
   async function loadReviews() {
@@ -295,29 +227,11 @@ function initializeReviews(db, auth, listingId, ownerId) {
       return;
     }
 
-    // Disable the submit button to prevent double submissions
-    if (submitReviewButton) {
-      submitReviewButton.disabled = true;
-      submitReviewButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Submitting...';
-    }
-
-    try {
-      const success = await saveReview(reviewText, rating);
-      if (success) {
-        reviewForm.reset();
-        reviewModal.classList.add("hide");
-        showNotice("Review submitted successfully!"); // Show notice again to ensure visibility
-        await loadReviews(); // Reload reviews to show the new one
-      }
-    } catch (error) {
-      console.error("Error in review submission:", error);
-      showNotice("An error occurred. Please try again.");
-    } finally {
-      // Re-enable the submit button
-      if (submitReviewButton) {
-        submitReviewButton.disabled = false;
-        submitReviewButton.innerHTML = 'Submit Review';
-      }
+    const success = await saveReview(reviewText, rating);
+    if (success) {
+      reviewForm.reset();
+      reviewModal.classList.add("hide");
+      loadReviews();
     }
   }
 
