@@ -1,135 +1,146 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+// Import Firebase modules
 import {
   getAuth,
   onAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
 import {
   getFirestore,
-  collection,
   doc,
   getDoc,
+  collection,
   query,
   where,
   getDocs,
-} from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-storage.js";
 
-// Firebase Config
-const firebaseConfig = {
-  apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
-  authDomain: "dormies-b47b7.firebaseapp.com",
-  projectId: "dormies-b47b7",
-  storageBucket: "dormies-b47b7.appspot.com",
-  messagingSenderId: "443577320462",
-  appId: "1:443577320462:web:0a418fa107fbd01bd1285f",
-};
+// Initialize Firebase services
+const auth = getAuth();
+const db = getFirestore();
+const storage = getStorage();
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Wait for user authentication
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    console.log("User signed in:", user.uid);
-    await fetchUserData(user.uid, user.email);
-  } else {
-    console.log("No user is signed in.");
-  }
+// Main function to handle user authentication state
+document.addEventListener("DOMContentLoaded", () => {
+  // Check if user is authenticated
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      try {
+        // User is signed in, fetch their data
+        await fetchUserData(user.uid);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    } else {
+      // User is signed out, redirect to login page
+      window.location.href = "/renter/login.html";
+    }
+  });
 });
 
-// Function to fetch user data (checks both Owners & Renters)
-async function fetchUserData(userId, userEmail) {
+// Function to fetch user data from Firestore
+async function fetchUserData(userId) {
   try {
-    // Check if the user is an Owner
-    const ownerRef = doc(db, "owners", userId);
-    const ownerSnap = await getDoc(ownerRef);
+    // Get user document from Firestore
+    const userRef = doc(db, "users", userId);
+    const userSnap = await getDoc(userRef);
 
-    if (ownerSnap.exists()) {
-      const ownerData = ownerSnap.data();
-      console.log("Fetched Owner Data:", ownerData);
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
 
-      // Set owner name in the HTML
-      document.getElementById("owner_name").textContent = ownerData.name;
+      // Update UI with user data - with null checks
+      updateUserUI(userData);
 
-      // Generate initials for avatar
-      if (typeof generateAvatar === "function") {
-        generateAvatar(ownerData.name);
+      // Fetch user's profile image if it exists
+      if (userData.profileImage) {
+        fetchProfileImage(userData.profileImage);
+      } else {
+        setDefaultAvatar();
       }
 
-      // Show owner-specific button if needed
-      document.getElementById("acc_btn").style.visibility = "visible";
-      return;
-    }
+      // Now fetch any additional data like inquiries
+      const inquiriesRef = collection(db, "inquiries");
+      const q = query(inquiriesRef, where("renterId", "==", userId));
+      const querySnapshot = await getDocs(q);
 
-    // If not an owner, check if the user is a Renter
-    const rentersRef = collection(db, "renters");
-    const renterQuery = query(rentersRef, where("email", "==", userEmail));
-    const renterSnap = await getDocs(renterQuery);
-
-    if (!renterSnap.empty) {
-      renterSnap.forEach((doc) => {
-        const renterData = doc.data();
-        console.log("Fetched Renter Data:", renterData);
-
-        // Set renter's full name in the HTML
-        const fullName = `${renterData.firstname} ${renterData.lastname}`;
-        document.getElementById("renter_name").textContent = fullName;
-
-        const inputName = `${renterData.firstname} ${renterData.lastname}`;
-        document.getElementById("renter_name_input").value = inputName;
-
-        const inputEmail = renterData.email;
-        document.getElementById("renter_email_input").value = inputEmail;
-
-        const email = renterData.email;
-        document.getElementById("renter_email").textContent = email;
-
-        // Generate initials for avatar
-        if (typeof generateAvatar === "function") {
-          generateAvatar(fullName);
-        }
-
-        // If the user is a renter, make the button visible
-        if (renterData.role === "renter") {
-          document.getElementById("acc_btn").style.visibility = "visible";
-        }
+      querySnapshot.forEach((doc) => {
+        // Process each inquiry
+        const data = doc.data();
+        // Add to UI or process as needed
+        // ...
       });
-      return;
+    } else {
+      console.log("No user data found!");
     }
-
-    console.log("User is not found in Owners or Renters collection.");
   } catch (error) {
     console.error("Error fetching user data:", error);
+    throw error;
   }
 }
 
-async function updateUserProfile(user) {
-  const newName = document.getElementById("renter_name_input").value;
-  const newEmail = document.getElementById("renter_email_input").value;
-  const newPassword = document.getElementById("renter_new_password").value;
+// Update UI elements with user data - with proper null checks
+function updateUserUI(userData) {
+  // Safely update name-related elements
+  const nameElements = [
+    document.getElementById("renter_name"),
+    document.getElementById("renter_name_input"),
+  ];
 
+  nameElements.forEach((element) => {
+    if (element) {
+      element.textContent = userData.name || "";
+      if (element.tagName === "INPUT") {
+        element.value = userData.name || "";
+      }
+    }
+  });
+
+  // Safely update email-related elements
+  const emailElements = [
+    document.getElementById("renter_email"),
+    document.getElementById("renter_email_input"),
+  ];
+
+  emailElements.forEach((element) => {
+    if (element) {
+      element.textContent = userData.email || "";
+      if (element.tagName === "INPUT") {
+        element.value = userData.email || "";
+      }
+    }
+  });
+
+  // Safely update other UI elements as needed
+  const loader = document.querySelector(".loader");
+  if (loader) {
+    loader.style.display = "none";
+  }
+}
+
+// Fetch and display user's profile image
+async function fetchProfileImage(imagePath) {
   try {
-    // Update Firestore (User's Name)
-    const userDocRef = doc(db, "renters", user.uid);
-    await updateDoc(userDocRef, { firstname: newName });
-    console.log("Name updated in Firestore");
+    const avatarElement = document.getElementById("avatar");
+    if (!avatarElement) return; // Exit if element doesn't exist
 
-    // Update Firebase Auth Email
-    if (newEmail !== user.email) {
-      await updateEmail(user, newEmail);
-      console.log("Email updated in Firebase Auth");
-    }
-
-    // Update Firebase Auth Password (Only if a new password is provided)
-    if (newPassword.trim() !== "") {
-      await updatePassword(user, newPassword);
-      console.log("Password updated in Firebase Auth");
-    }
-
-    alert("Profile updated successfully!");
+    const url = await getDownloadURL(ref(storage, imagePath));
+    avatarElement.style.backgroundImage = `url(${url})`;
   } catch (error) {
-    console.error("Error updating profile:", error.message);
-    alert("Error: " + error.message);
+    console.error("Error fetching profile image:", error);
+    setDefaultAvatar();
   }
 }
+
+// Set default avatar when no profile image exists
+function setDefaultAvatar() {
+  const avatarElement = document.getElementById("avatar");
+  if (avatarElement) {
+    avatarElement.style.backgroundImage = 'url("/assets/default-avatar.png")';
+  }
+}
+
+// Export necessary functions if needed
+export { fetchUserData };
