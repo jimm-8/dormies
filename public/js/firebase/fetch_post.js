@@ -1,9 +1,17 @@
 function getImageSrc(listing) {
-  // Use listing image if available, otherwise fallback to default
-  return listing.photos && listing.photos.length > 0
-    ? listing.photos[0]
-    : "/assets/dorm1.jpg";
+  const fallbackImages = ["/assets/dorm1.jpg", "/assets/property-photos/dorm1_1.jpg", "/assets/property-photos/dorm1_2.jpg", 
+    "/assets/property-photos/dorm1_3.jpg", "/assets/property-photos/dorm1_4.jpg", "/assets/dorm2.jpg", "/assets/dorm3.jpg"
+  ];
+  
+  if (listing.photos && listing.photos.length > 0) {
+    const randomIndex = Math.floor(Math.random() * listing.photos.length);
+    return listing.photos[randomIndex];
+  }
+
+  const fallbackIndex = Math.floor(Math.random() * fallbackImages.length);
+  return fallbackImages[fallbackIndex];
 }
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
 import {
   getFirestore,
