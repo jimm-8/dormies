@@ -307,7 +307,205 @@
     <!-- You may want to add this modal for displaying all photos -->
     <!-- <div id="photos-modal" class="photos-modal">
       <div class="modal-content">
-        <span class="close-modal">&times;</span>
+        <span class="close-modal">&t<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="/assets/logo-sm.png" type="image/png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <!-- Note: The listing_deets.js script already imports Firebase, so no need to duplicate imports -->
+    <script type="module" src="/js/firebase/listing_deets.js"></script>
+    <link rel="stylesheet" href="/styles/renter.css" />
+    <link rel="stylesheet" href="/styles/listing.css" />
+    <!-- FIXED: Added this CSS to ensure notice box styling -->
+    <style>
+      .notice {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border-radius: 4px;
+        z-index: 10000;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        transition: opacity 0.3s, transform 0.3s;
+      }
+      .notice.hide {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+        pointer-events: none;
+        visibility: hidden;
+      }
+      .notice.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+        visibility: visible;
+      }
+      
+      /* Added to ensure modal is properly displayed */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+      }
+      
+      .modal.hide {
+        display: none;
+      }
+      
+      .modal:not(.hide) {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .modal-content {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+      }
+    </style>
+    <script type="module" src="/js/renter/createReview.js"></script>
+    <title>Property Details</title>
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="nav-container">
+        <div class="nav-left">
+          <a href="#" class="back-btn">
+            <i class="fa fa-arrow-left"></i> Back to Listings
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- FIXED: Moved notice box here for better visibility and guaranteed existence -->
+    <div id="noticeBox" class="notice hide">
+      <span id="noticeText"></span>
+    </div>
+
+    <main class="container">
+      <!-- Image Gallery section would be here -->
+
+      <!-- Property Header -->
+      <div class="property-header">
+        <div class="title-container">
+          <div class="title-badge-container">
+            <h1>Loading property title...</h1>
+            <div class="verified-badge">
+              <i class="ri-checkbox-circle-fill"></i> VERIFIED
+            </div>
+          </div>
+          <div class="address">
+            <i class="fa fa-map-marker-alt"></i> Loading address...
+          </div>
+        </div>
+        <div class="price-section">
+          <div class="price-tag">Loading price...</div>
+        </div>
+      </div>
+
+      <div class="details-grid">
+        <!-- Left Column -->
+        <div>
+          <!-- Property Details section would be here -->
+          
+          <!-- Property Features section would be here -->
+
+          <!-- Reviews and Feedback -->
+          <section class="reviews-container">
+            <div class="section-header">
+              <h2>Tenant Reviews & Feedback</h2>
+              <a id="writeReviewButton" class="feedback-button">
+                <i class="ri-edit-2-line"></i> Write a Review
+              </a>
+            </div>
+
+            <!-- FIXED: Modified modal to ensure it's properly hidden/shown -->
+            <div id="reviewModal" class="modal hide">
+              <div class="modal-content">
+                <span id="closeReview" class="close">&times;</span>
+                <h3>Write a Review</h3>
+                <form id="reviewForm">
+                  <div class="rating-container">
+                    <p>Rating:</p>
+                    <div id="starRating" class="star-rating">
+                      <input type="radio" id="star5" name="rating" value="5" />
+                      <label for="star5"><i class="fas fa-star"></i></label>
+
+                      <input type="radio" id="star4" name="rating" value="4" />
+                      <label for="star4"><i class="fas fa-star"></i></label>
+
+                      <input type="radio" id="star3" name="rating" value="3" />
+                      <label for="star3"><i class="fas fa-star"></i></label>
+
+                      <input type="radio" id="star2" name="rating" value="2" />
+                      <label for="star2"><i class="fas fa-star"></i></label>
+
+                      <input type="radio" id="star1" name="rating" value="1" />
+                      <label for="star1"><i class="fas fa-star"></i></label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="reviewText">Your Review:</label>
+                    <textarea
+                      id="reviewText"
+                      rows="5"
+                      placeholder="Share your experience with this property..."
+                    ></textarea>
+                  </div>
+                  <button
+                    id="submitReview"
+                    type="submit"
+                    class="btn btn-primary"
+                  >
+                    Submit Review
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Reviews List -->
+            <div id="reviewsList" class="reviews-list">
+              <!-- Reviews will be populated dynamically -->
+              <div class="reviews-loading">
+                <i class="fa fa-spinner fa-pulse"></i> Loading reviews...
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right Column -->
+        <div>
+          <!-- Inquire Form section would be here -->
+
+          <!-- Owner/Agent Info section would be here -->
+        </div>
+      </div>
+    </main>
+
+    <!-- You may want to add this modal for displaying all photos -->
+    <!-- Photos modal would be here -->
+  </body>
+</html>imes;</span>
         <div class="photos-carousel">
           Photos will be loaded here
         </div>
