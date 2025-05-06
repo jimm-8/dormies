@@ -332,7 +332,6 @@
         const notificationsQuery = query(
           userNotificationsRef,
           where("userId", "==", userId),
-          orderBy("createdAt", "desc"),
           limit(20)
         );
 
