@@ -11,13 +11,6 @@
 
     <link rel="stylesheet" href="/styles/renter/account.css" />
     <link rel="stylesheet" href="/styles/renter.css" />
-    <script type="module" src="/js/firebase/renter.js"></script>
-    <script type="module" src="/js/renter/account.js"></script>
-    <script type="module" src="/js/firebase/fetch_user.js" deter></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    />
     <title>Dormies - Account Settings</title>
   </head>
   <body>
@@ -40,7 +33,7 @@
               <span
                 ><i
                   id="back-btn"
-                  class="fa fa-arrow-left"
+                  class="fa fa-arrow-left back-btn"
                   aria-hidden="true"
                 ></i
               ></span>
@@ -48,61 +41,632 @@
             </h6>
           </div>
         </div>
-        <div class="container">
-          <div class="top"></div>
-          <div class="profile">
-            <div class="profile-image">
-              <div class="avatar" id="avatar"></div>
+        <div class="main-content">
+          <div class="tabs">
+            <div class="tab-buttons">
+              <button
+                class="tab-button active"
+                onclick="openTab(event, 'profile')"
+              >
+                Profile
+              </button>
 
-              <div id="imageModal" class="modal">
-                <div class="modal-content">
-                  <span class="close">&times;</span>
-                  <input type="file" id="imageUpload" />
-                  <canvas id="previewCanvas"></canvas>
-                  <button id="saveImage">Save</button>
+              <button class="tab-button" onclick="openTab(event, 'messages')">
+                Messages
+              </button>
+
+              <button
+                class="tab-button"
+                onclick="openTab(event, 'notifications')"
+              >
+                Notifications
+              </button>
+            </div>
+
+            <hr />
+
+            <div id="profile" class="tab-content active">
+              <div class="container">
+                <div class="top"></div>
+                <div class="profile">
+                  <div class="profile-image">
+                    <div class="avatar" id="avatar"></div>
+
+                    <div id="imageModal" class="modal">
+                      <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <input type="file" id="imageUpload" accept="image/*" />
+                        <canvas id="previewCanvas"></canvas>
+                        <button id="saveImage">Save</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="profile-info">
+                    <h3 id="name"><span id="renter_name"></span></h3>
+                    <p class="email" id="email">
+                      <span id="renter_email"></span>
+                    </p>
+                  </div>
+                </div>
+                <div class="info">
+                  <fieldset>
+                    <legend>Personal Information</legend>
+
+                    <div class="input-container">
+                      <label for="renter_name_input">Name:</label>
+                      <i id="name-edit" class="fa-solid fa-pen-to-square"></i>
+                      <input type="text" id="renter_name_input" name="name" />
+                    </div>
+
+                    <div class="input-container">
+                      <label for="renter_email_input">Email:</label>
+                      <i id="email-edit" class="fa-solid fa-pen-to-square"></i>
+                      <input
+                        type="email"
+                        id="renter_email_input"
+                        name="email"
+                      />
+                    </div>
+
+                    <div class="input-container">
+                      <label for="renter_new_password">New Password:</label>
+                      <i id="pass-edit" class="fa-solid fa-pen-to-square"></i>
+                      <input
+                        type="password"
+                        placeholder="Enter new password"
+                        id="renter_new_password"
+                        name="password"
+                      />
+                    </div>
+
+                    <button id="save-changes-btn" type="submit" disabled>
+                      Save Changes
+                    </button>
+                  </fieldset>
                 </div>
               </div>
             </div>
-            <div class="profile-info">
-              <h3 id="name"><span id="renter_name"></span></h3>
-              <p class="email" id="email"><span id="renter_email"></span></p>
+
+            <!-- Messages Tab HTML -->
+            <div id="messages" class="tab-content">
+              <div class="container">
+                <div class="messages-container">
+                  <!-- Sidebar for contacted listings -->
+                  <div class="listings-sidebar">
+                    <div class="listings-header">
+                      <h4>Contacted Properties</h4>
+                      <div class="search-bar">
+                        <input
+                          type="text"
+                          id="listing-search"
+                          placeholder="Search properties..."
+                        />
+                        <button class="search-btn">
+                          <i class="fa fa-search"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="listings-list" id="listings-container">
+                      <!-- Listings will be populated by JavaScript -->
+                    </div>
+                  </div>
+
+                  <!-- Messages main area -->
+                  <div class="messages-main">
+                    <!-- Owner Contacts Sidebar -->
+                    <div class="inquiries-sidebar">
+                      <div class="inquiries-header">
+                        <h4 id="listing-title">Select a Property</h4>
+                        <p id="listing-subtitle">
+                          Choose a property to view contacts
+                        </p>
+                      </div>
+                      <div class="inquiries-list" id="inquiries-list">
+                        <!-- Contacts will be populated by JavaScript -->
+                      </div>
+                    </div>
+
+                    <!-- Conversation Area -->
+                    <div class="conversation-area" id="conversation-area">
+                      <div class="conversation-header">
+                        <div class="user-info">
+                          <div class="user-avatar"></div>
+                          <div class="user-details">
+                            <h4 id="contact-name">Select a Contact</h4>
+                            <p id="inquiry-date">
+                              Choose a conversation to begin
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="messages-wrapper">
+                        <div class="messages-list" id="messages-container">
+                          <!-- Messages will be populated by JavaScript -->
+                        </div>
+                      </div>
+
+                      <div class="reply-section">
+                        <textarea
+                          class="reply-input"
+                          placeholder="Type your message..."
+                          id="message-input"
+                        ></textarea>
+                        <button
+                          class="send-btn"
+                          id="send-message-btn"
+                          title="Send message"
+                        >
+                          <i class="fa fa-paper-plane"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="info">
-            <fieldset>
-              <legend>Personal Information</legend>
 
-              <div class="input-container">
-                <label for="name">Name:</label>
-                <i id="name-edit" class="fa-solid fa-pen-to-square"></i>
-                <input type="text" id="renter_name_input" name="name" />
+            <!-- Fixed Notifications Tab -->
+            <div id="notifications" class="tab-content">
+              <div class="container">
+                <div class="notifications-header">
+                  <h3>Notifications</h3>
+                  <button id="clear-all-notifications" class="clear-button">
+                    Clear All
+                  </button>
+                </div>
+                <div id="notifications-list">
+                  <!-- Notifications will be displayed here -->
+                  <div class="empty-notifications">No new notifications</div>
+                </div>
               </div>
-
-              <div class="input-container">
-                <label for="email">Email:</label>
-                <i id="email-edit" class="fa-solid fa-pen-to-square"></i>
-                <input type="email" id="renter_email_input" name="email" />
-              </div>
-
-              <div class="input-container">
-                <label for="phone">New Password:</label>
-                <i id="pass-edit" class="fa-solid fa-pen-to-square"></i>
-                <input
-                  type="tel"
-                  placeholder="Enter new password"
-                  id="renter_new_password"
-                  name="phone"
-                />
-              </div>
-
-              <button id="save-changes-btn" type="submit" disabled>
-                Save Changes
-              </button>
-            </fieldset>
+            </div>
           </div>
         </div>
       </div>
       <div id="footer"></div>
     </div>
+
+    <!-- Firebase imports should be at the top level -->
+    <script type="module" src="/js/firebase/renter.js"></script>
+    <script type="module" src="/js/renter/account.js"></script>
+    <script type="module" src="/js/firebase/fetch_user.js"></script>
+    <script type="module" src="/js/renter/inquire_fetch.js"></script>
+
+    <!-- Main scripts -->
+    <script>
+      // Hide loader when page loads
+      window.addEventListener("load", function () {
+        document.querySelector(".loader").style.display = "none";
+      });
+
+      // Function to handle tab switching
+      function openTab(evt, tabName) {
+        // Hide all tab contents
+        const tabContents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < tabContents.length; i++) {
+          tabContents[i].classList.remove("active");
+        }
+
+        // Remove active class from all tab buttons
+        const tabButtons = document.getElementsByClassName("tab-button");
+        for (let i = 0; i < tabButtons.length; i++) {
+          tabButtons[i].classList.remove("active");
+        }
+
+        // Show the selected tab content and mark button as active
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+      }
+
+      // Set up default tab on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        // Default tab is already set in HTML with "active" class
+
+        // Set up back button
+        const backBtn = document.getElementById("back-btn");
+        if (backBtn) {
+          backBtn.addEventListener("click", function () {
+            window.history.back();
+          });
+        }
+
+        // Set up message loading
+        setupMessageHandlers();
+      });
+
+      // Message handling for conversations
+      function setupMessageHandlers() {
+        const conversationList = document.getElementById("inquiryList");
+        const messageView = document.getElementById("messageView");
+
+        if (!conversationList || !messageView) {
+          console.log("Message view elements not found or not ready yet.");
+          return;
+        }
+
+        function loadMessages(listingId, name) {
+          const allMessages = JSON.parse(
+            localStorage.getItem("renterMessages") || "{}"
+          );
+          const messages = allMessages[listingId] || [];
+
+          messageView.innerHTML = `
+            <div class="message-header">
+              <button id="backBtn" class="back-button">← Back</button>
+              <h3>${name}</h3>
+            </div>
+            <div class="messages" id="messagesContainer"></div>
+          `;
+
+          const messagesContainer =
+            document.getElementById("messagesContainer");
+
+          messages.forEach((msg) => {
+            const messageElement = document.createElement("div");
+            messageElement.classList.add(
+              "message",
+              msg.sender === "renter" ? "sent" : "received"
+            );
+            messageElement.innerText = msg.text;
+            messagesContainer.appendChild(messageElement);
+          });
+
+          conversationList.style.display = "none";
+          messageView.style.display = "block";
+
+          document.getElementById("backBtn").addEventListener("click", () => {
+            messageView.style.display = "none";
+            conversationList.style.display = "block";
+          });
+        }
+
+        // Attach click listeners to each conversation item
+        document.querySelectorAll(".inquiry").forEach((convo) => {
+          convo.addEventListener("click", () => {
+            const listingId = convo.getAttribute("data-id");
+            const name = convo.querySelector("h3").innerText;
+            loadMessages(listingId, name);
+          });
+        });
+      }
+    </script>
+
+    <!-- Firebase notifications module -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        query,
+        where,
+        onSnapshot,
+        doc,
+        setDoc,
+        getDoc,
+        updateDoc,
+        Timestamp,
+        orderBy,
+        limit,
+        getDocs,
+        deleteDoc,
+      } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+
+      // Firebase config - in production, use environment variables instead of hardcoding
+      // For improved security, fetch this from a protected endpoint
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+
+      const notificationsList = document.getElementById("notifications-list");
+      const clearAllButton = document.getElementById("clear-all-notifications");
+
+      // Listen for status changes in schedules
+      function setupNotificationListener(userId) {
+        if (!userId) return;
+
+        const schedulesRef = collection(db, "schedules");
+        const q = query(schedulesRef, where("ownerId", "==", userId));
+
+        // Create a separate notifications collection to store notification history
+        const userNotificationsRef = collection(db, "userNotifications");
+
+        // Set up real-time listener for schedule changes
+        const unsubscribe = onSnapshot(q, async (snapshot) => {
+          snapshot.docChanges().forEach(async (change) => {
+            // We're only interested in modified documents for status changes
+            if (change.type === "modified") {
+              const scheduleData = change.doc.data();
+
+              // If there's a status change, create a notification
+              if (
+                scheduleData.status === "accepted" ||
+                scheduleData.status === "declined"
+              ) {
+                const notificationId = `${change.doc.id}-${
+                  scheduleData.status
+                }-${Date.now()}`;
+
+                // Create the notification
+                const notification = {
+                  userId: userId,
+                  scheduleId: change.doc.id,
+                  title: `Appointment ${
+                    scheduleData.status.charAt(0).toUpperCase() +
+                    scheduleData.status.slice(1)
+                  }`,
+                  message: `Your appointment with ${
+                    scheduleData.name
+                  } on ${formatDate(
+                    scheduleData.preferredDate
+                  )} at ${formatTime(scheduleData.preferredTime)} has been ${
+                    scheduleData.status
+                  }.`,
+                  status: scheduleData.status,
+                  read: false,
+                  createdAt: Timestamp.now(),
+                };
+
+                // Store in Firestore
+                try {
+                  await setDoc(
+                    doc(userNotificationsRef, notificationId),
+                    notification
+                  );
+                  // No need to manually add to UI here, the collection listener will handle it
+                } catch (error) {
+                  console.error("Error adding notification:", error);
+                }
+              }
+            }
+          });
+        });
+
+        // Set up listener for the notifications collection
+        const notificationsQuery = query(
+          userNotificationsRef,
+          where("userId", "==", userId),
+          orderBy("createdAt", "desc"),
+          limit(20)
+        );
+
+        onSnapshot(notificationsQuery, (snapshot) => {
+          renderNotifications(snapshot);
+        });
+
+        return unsubscribe;
+      }
+
+      // Format date for display
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
+      // Format time for display
+      function formatTime(timeStr) {
+        const [hourStr, minute] = timeStr.split(":");
+        let hour = parseInt(hourStr, 10);
+        const ampm = hour >= 12 ? "PM" : "AM";
+
+        hour = hour % 12 || 12; // convert 0 or 12 to 12
+
+        return `${hour}:${minute} ${ampm}`;
+      }
+
+      // Render time ago
+      function timeAgo(timestamp) {
+        const now = new Date();
+        const date = timestamp.toDate();
+        const seconds = Math.floor((now - date) / 1000);
+
+        let interval = Math.floor(seconds / 31536000);
+        if (interval > 1) return interval + " years ago";
+        if (interval === 1) return "a year ago";
+
+        interval = Math.floor(seconds / 2592000);
+        if (interval > 1) return interval + " months ago";
+        if (interval === 1) return "a month ago";
+
+        interval = Math.floor(seconds / 86400);
+        if (interval > 1) return interval + " days ago";
+        if (interval === 1) return "yesterday";
+
+        interval = Math.floor(seconds / 3600);
+        if (interval > 1) return interval + " hours ago";
+        if (interval === 1) return "an hour ago";
+
+        interval = Math.floor(seconds / 60);
+        if (interval > 1) return interval + " minutes ago";
+        if (interval === 1) return "a minute ago";
+
+        return "just now";
+      }
+
+      // Render notifications to the UI
+      function renderNotifications(snapshot) {
+        if (snapshot.empty) {
+          notificationsList.innerHTML =
+            '<div class="empty-notifications">No new notifications</div>';
+          return;
+        }
+
+        notificationsList.innerHTML = "";
+
+        snapshot.forEach((doc) => {
+          const notification = doc.data();
+          const notificationEl = document.createElement("div");
+
+          notificationEl.className = `notification-item notification-${notification.status}`;
+          if (!notification.read) {
+            notificationEl.classList.add("notification-new");
+          }
+
+          notificationEl.innerHTML = `
+            <div class="notification-content">
+              <div class="notification-title">${notification.title}</div>
+              <div class="notification-message">${notification.message}</div>
+              <div class="notification-time">${timeAgo(
+                notification.createdAt
+              )}</div>
+            </div>
+            <span class="notification-close" data-id="${doc.id}">×</span>
+          `;
+
+          notificationsList.appendChild(notificationEl);
+
+          // Add click event to mark as read and remove new indicator
+          notificationEl.addEventListener("click", async (e) => {
+            if (e.target.classList.contains("notification-close")) {
+              return; // Let the close button handler deal with this
+            }
+
+            if (!notification.read) {
+              try {
+                await updateDoc(doc.ref, { read: true });
+                notificationEl.classList.remove("notification-new");
+              } catch (error) {
+                console.error("Error marking notification as read:", error);
+              }
+            }
+          });
+
+          // Add close button functionality
+          const closeBtn = notificationEl.querySelector(".notification-close");
+          closeBtn.addEventListener("click", async (e) => {
+            e.stopPropagation();
+            try {
+              await deleteDoc(doc.ref);
+              notificationEl.remove();
+
+              // Check if there are any notifications left
+              if (notificationsList.children.length === 0) {
+                notificationsList.innerHTML =
+                  '<div class="empty-notifications">No new notifications</div>';
+              }
+            } catch (error) {
+              console.error("Error removing notification:", error);
+            }
+          });
+        });
+      }
+
+      // Clear all notifications
+      clearAllButton.addEventListener("click", async () => {
+        const userId = auth.currentUser?.uid;
+        if (!userId) return;
+
+        const userNotificationsRef = collection(db, "userNotifications");
+        const q = query(userNotificationsRef, where("userId", "==", userId));
+
+        try {
+          const snapshot = await getDocs(q);
+          const deletePromises = [];
+
+          snapshot.forEach((doc) => {
+            deletePromises.push(deleteDoc(doc.ref));
+          });
+
+          await Promise.all(deletePromises);
+          notificationsList.innerHTML =
+            '<div class="empty-notifications">No new notifications</div>';
+        } catch (error) {
+          console.error("Error clearing notifications:", error);
+        }
+      });
+
+      // Set up auth state listener
+      let notificationsUnsubscribe = null;
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // Clean up previous listener if it exists
+          if (notificationsUnsubscribe) {
+            notificationsUnsubscribe();
+          }
+
+          // Set up new listener
+          notificationsUnsubscribe = setupNotificationListener(user.uid);
+        } else {
+          // User is signed out
+          if (notificationsUnsubscribe) {
+            notificationsUnsubscribe();
+            notificationsUnsubscribe = null;
+          }
+          notificationsList.innerHTML =
+            '<div class="empty-notifications">Please log in to view notifications</div>';
+        }
+      });
+
+      // Function to update schedule status from the notification page
+      window.updateStatus = async function (id, newStatus) {
+        try {
+          await updateDoc(doc(db, "schedules", id), { status: newStatus });
+          // The status change will trigger a notification automatically
+        } catch (err) {
+          console.error("Failed to update status:", err);
+        }
+      };
+
+      // Add a badge or counter for unread notifications
+      async function updateNotificationBadge(userId) {
+        if (!userId) return;
+
+        const userNotificationsRef = collection(db, "userNotifications");
+        const q = query(
+          userNotificationsRef,
+          where("userId", "==", userId),
+          where("read", "==", false)
+        );
+
+        const snapshot = await getDocs(q);
+        const unreadCount = snapshot.size;
+
+        // Update badge if you have one in your UI
+        const badge = document.getElementById("notification-badge");
+        if (badge) {
+          if (unreadCount > 0) {
+            badge.textContent = unreadCount;
+            badge.style.display = "block";
+          } else {
+            badge.style.display = "none";
+          }
+        }
+      }
+
+      // Check for unread notifications when logged in
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          updateNotificationBadge(user.uid);
+
+          // Refresh every 5 minutes
+          setInterval(() => {
+            updateNotificationBadge(user.uid);
+          }, 300000);
+        }
+      });
+
+      // Initialize the config reference
+      document.addEventListener("DOMContentLoaded", () => {
+        // This is just a placeholder - you should fetch this securely from an environment variable or API
+        window.firebaseConfig = {
+          apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
+          authDomain: "dormies-b47b7.firebaseapp.com",
+          projectId: "dormies-b47b7",
+          storageBucket: "dormies-b47b7.appspot.com",
+          messagingSenderId: "443577320462",
+          appId: "1:443577320462:web:0a418fa107fbd01bd1285f",
+        };
+      });
+    </script>
   </body>
 </html>

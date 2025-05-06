@@ -36,7 +36,7 @@
 
       .main-content {
         margin-left: 330px;
-        margin-top: 80px;
+        margin-top: 70px;
         padding: 30px 40px;
       }
 
@@ -51,9 +51,10 @@
       }
 
       #appointments-container {
-        display: flex;
-        flex-direction: row;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 1rem;
+        max-width: 100%;
       }
 
       .appointment-card {
@@ -229,6 +230,16 @@
         });
       }
 
+      function formatTime(timeStr) {
+        const [hourStr, minute] = timeStr.split(":");
+        let hour = parseInt(hourStr, 10);
+        const ampm = hour >= 12 ? "PM" : "AM";
+
+        hour = hour % 12 || 12; // convert 0 or 12 to 12
+
+        return `${hour}:${minute} ${ampm}`;
+      }
+
       function showEmpty(message = "No appointments found.") {
         appointmentsContainer.innerHTML = `<div class="empty">${message}</div>`;
       }
@@ -263,7 +274,7 @@
 
           if (statusFilter !== "all") {
             schedules = schedules.filter(
-              (s) => (s.status || "Pending") === statusFilter
+              (s) => (s.status || "Pending").toLowerCase() === statusFilter
             );
           }
 
@@ -307,7 +318,9 @@
     <p><strong>Preferred Date:</strong> ${formatDate(
       schedule.preferredDate
     )}</p>
-    <p><strong>Preferred Time:</strong> ${schedule.preferredTime}</p>
+    <p><strong>Preferred Time:</strong> ${formatTime(
+      schedule.preferredTime
+    )}</p>
     <p><strong>Status:</strong> ${statusDisplay}</p>
   `;
 
