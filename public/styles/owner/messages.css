@@ -74,8 +74,7 @@ body {
   background-color: var(--white);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow);
-  height: calc(100vh - 120px);
-  overflow: hidden;
+  height: calc(100vh - 200px);
 }
 
 /* ========== Inquiries Container ========== */
