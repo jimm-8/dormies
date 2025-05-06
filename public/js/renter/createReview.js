@@ -71,6 +71,7 @@ function initializeReviews(db, auth, listingId, ownerId) {
   const writeReviewButton = document.getElementById("writeReviewButton");
   const reviewModal = document.getElementById("reviewModal");
   const reviewsList = document.getElementById("reviewsList");
+  const noReviewsMessage = document.getElementById('noReviewsMessage');
   const closeReviewButton = document.getElementById("closeReview");
   const submitReviewButton = document.getElementById("submitReview");
   const reviewTextArea = document.getElementById("reviewText");
@@ -189,15 +190,19 @@ function initializeReviews(db, auth, listingId, ownerId) {
     reviewsList.innerHTML = `<div class="reviews-loading"><i class="fa fa-spinner fa-pulse"></i> Loading reviews...</div>`;
     const reviews = await fetchReviews();
     reviewsList.innerHTML = "";
-
+  
+    if (noReviewsMessage) {
+      noReviewsMessage.style.display = reviews.length === 0 ? "block" : "none";
+    }
+  
     if (reviews.length === 0) {
       reviewsList.innerHTML = `<div class="no-reviews-message"><p>No reviews yet. Be the first to leave a review!</p></div>`;
       return;
     }
-
+  
     const avgRating =
       reviews.reduce((sum, r) => sum + (r.rating || 0), 0) / reviews.length;
-
+  
     const summary = document.createElement("div");
     summary.classList.add("ratings-summary");
     summary.innerHTML = `
@@ -209,17 +214,17 @@ function initializeReviews(db, auth, listingId, ownerId) {
     })</span>
       </div>`;
     reviewsList.appendChild(summary);
-
+  
     const container = document.createElement("div");
     container.classList.add("reviews-items");
-
+  
     reviews.forEach((review) => {
       const date = review.createdAt.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
         day: "numeric",
       });
-
+  
       const el = document.createElement("div");
       el.classList.add("review");
       el.innerHTML = `
@@ -237,11 +242,11 @@ function initializeReviews(db, auth, listingId, ownerId) {
         </div>`;
       container.appendChild(el);
     });
-
+  
     reviewsList.appendChild(container);
     console.log("Reviews displayed successfully");
   }
-
+  
   function generateStarsHtml(rating) {
     let html = "";
     const full = '<i class="fas fa-star"></i>';
