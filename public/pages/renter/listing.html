@@ -16,6 +16,7 @@
     <script type="module" src="/js/firebase/listing_deets.js"></script>
     <link rel="stylesheet" href="/styles/renter.css" />
     <link rel="stylesheet" href="/styles/listing.css" />
+    <script type="module" src="/js/renter/createReview.js"></script>
     <title>Property Details</title>
   </head>
   <body>
@@ -180,7 +181,7 @@
                 <form id="reviewForm">
                   <div class="rating-container">
                     <p>Rating:</p>
-                    <div class="star-rating">
+                    <div id="starRating" class="star-rating">
                       <input type="radio" id="star5" name="rating" value="5" />
                       <label for="star5"><i class="fas fa-star"></i></label>
 
@@ -205,7 +206,11 @@
                       placeholder="Share your experience with this property..."
                     ></textarea>
                   </div>
-                  <button type="submit" class="btn btn-primary">
+                  <button
+                    id="submitReview"
+                    type="submit"
+                    class="btn btn-primary"
+                  >
                     Submit Review
                   </button>
                 </form>
@@ -213,10 +218,10 @@
             </div>
 
             <!-- Reviews List -->
-            <div class="reviews-list">
+            <div id="reviewsList" class="reviews-list">
               <!-- Reviews will be populated dynamically -->
-              <div class="no-reviews-message">
-                <p>No reviews yet. Be the first to leave a review!</p>
+              <div class="reviews-loading">
+                <i class="fa fa-spinner fa-pulse"></i> Loading reviews...
               </div>
             </div>
           </section>

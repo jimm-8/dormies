@@ -6,7 +6,6 @@ import {
   doc,
   getDoc,
   query,
-  orderBy,
   onSnapshot,
   where,
   addDoc,
@@ -122,8 +121,11 @@ async function fetchListings(ownerId) {
   showLoadingIndicator(listingsContainer);
 
   try {
-    const listingsRef = collection(db, "listings");
-    const q = query(listingsRef, where("ownerId", "==", ownerId));
+    const listingsRef = collection(db, "owners", ownerId, "listings");
+    const q = query(listingsRef); // No need for where("ownerId", ...) anymore
+
+    clearContainer(listingsContainer);
+
     const snapshot = await getDocs(q);
 
     clearContainer(listingsContainer);
@@ -220,25 +222,28 @@ async function updateListingInquiryCount(
     const q = query(
       collection(db, "inquiries"),
       where("listingId", "==", listingId),
-      where("ownerId", "==", currentOwnerId),
-      orderBy("timestamp", "desc"),
-      where("timestamp", "!=", null)
+      where("ownerId", "==", currentOwnerId)
+      // Removed: where("timestamp", "!=", null)
     );
 
     const snapshot = await getDocs(q);
 
-    // Update count
-    const count = snapshot.size;
+    // Filter out documents with missing timestamps manually
+    const inquiriesWithTimestamp = snapshot.docs
+      .map((doc) => doc.data())
+      .filter((inquiry) => inquiry.timestamp);
+
+    const count = inquiriesWithTimestamp.length;
     countElement.textContent = count === 1 ? "1 inquiry" : `${count} inquiries`;
 
-    // Update last activity
+    // Update last activity (assuming most recent = latest timestamp)
     if (count > 0) {
-      const latestInquiry = snapshot.docs[0].data();
-      const timestamp = latestInquiry.timestamp?.toDate();
+      const latestInquiry = inquiriesWithTimestamp.sort(
+        (a, b) => b.timestamp.toMillis() - a.timestamp.toMillis()
+      )[0];
 
-      if (timestamp) {
-        activityElement.textContent = `Last activity: ${formatDate(timestamp)}`;
-      }
+      const timestamp = latestInquiry.timestamp.toDate();
+      activityElement.textContent = `Last activity: ${formatDate(timestamp)}`;
     }
   } catch (error) {
     console.error("Error updating inquiry count:", error);
@@ -404,8 +409,7 @@ async function showConversation(renterId, renterName) {
       collection(db, "inquiries"),
       where("listingId", "==", currentListingId),
       where("ownerId", "==", currentOwnerId),
-      where("renterId", "==", renterId),
-      orderBy("timestamp", "asc")
+      where("renterId", "==", renterId)
     );
 
     const snapshot = await getDocs(q);
