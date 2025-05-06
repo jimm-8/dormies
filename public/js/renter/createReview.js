@@ -33,8 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Check URL parameters for listing ID and owner ID
   const urlParams = new URLSearchParams(window.location.search);
-  const listingId = urlParams.get('ownerId')?.split('&')[0];
-  const ownerId = urlParams.get('listingId') || urlParams.get('ownerId')?.split('&')[1];
+  // FIX: Corrected parameter extraction - the parameters were swapped
+  const listingId = urlParams.get('listingId');
+  const ownerId = urlParams.get('ownerId');
   
   console.log("URL params:", { listingId, ownerId });
 
@@ -306,6 +307,14 @@ function initializeReviews(db, auth, listingId, ownerId) {
   if (reviewForm) {
     reviewForm.addEventListener("submit", (e) => {
       console.log("Form submission detected");
+      handleReviewSubmit(e);
+    });
+  }
+
+  // Handle direct submit button click as well
+  if (submitReviewButton) {
+    submitReviewButton.addEventListener("click", (e) => {
+      console.log("Submit button clicked");
       handleReviewSubmit(e);
     });
   }
