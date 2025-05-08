@@ -472,55 +472,6 @@ body {
   width: 100%;
 }
 
-/* Media queries for responsiveness */
-@media (max-width: 1100px) {
-  .container {
-    width: 95%;
-    height: auto;
-    min-height: 41rem;
-  }
-
-  .top {
-    width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .tab-buttons {
-    width: 100%;
-  }
-
-  .profile-info {
-    margin-left: 8rem;
-  }
-
-  .info {
-    max-width: 95%;
-  }
-}
-
-@media (max-width: 480px) {
-  .profile {
-    flex-direction: column;
-    align-items: center;
-    margin-left: 0;
-    padding-top: 60px;
-  }
-
-  .avatar {
-    position: relative;
-    margin-top: -10rem;
-  }
-
-  .profile-info {
-    margin-left: 0;
-    text-align: center;
-    margin-top: 1rem;
-  }
-}
-
-/* Additional styles for Messages tab */
-
 /* Messages container */
 .messages-container {
   display: flex;
@@ -852,38 +803,6 @@ body {
 .send-btn:hover {
   transform: scale(1.05);
 }
-/* Mobile Responsiveness */
-@media (max-width: 992px) {
-  .messages-main {
-    flex-direction: column;
-  }
-
-  .inquiries-sidebar {
-    width: 100%;
-    max-height: 200px;
-    border-right: none;
-    border-bottom: 1px solid #eee;
-  }
-}
-
-@media (max-width: 768px) {
-  .messages-container {
-    flex-direction: column;
-    height: auto;
-    min-height: 600px;
-  }
-
-  .listings-sidebar {
-    width: 100%;
-    max-height: 200px;
-    border-right: none;
-    border-bottom: 1px solid #eee;
-  }
-
-  .conversation-area {
-    height: 400px;
-  }
-}
 
 #notifications-container {
   max-width: 600px;
@@ -1017,8 +936,406 @@ body {
   background-color: #f0f0f0;
 }
 
-@media (max-width: 768px) {
-  #notifications-container {
-    margin: 15px;
+/* Enhanced Responsive CSS */
+
+/* General responsive improvements */
+@media (max-width: 1200px) {
+  .container {
+    width: 90%;
+    max-width: 900px;
   }
+}
+
+@media (max-width: 992px) {
+  .container {
+    width: 95%;
+    height: auto;
+    min-height: 45rem;
+  }
+
+  .profile-info {
+    margin-left: 8rem;
+  }
+
+  /* Improve messages layout for tablets */
+  .messages-main {
+    flex-direction: column;
+  }
+
+  .inquiries-sidebar,
+  .listings-sidebar {
+    width: 100%;
+    max-height: 250px;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  .tab-buttons {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .tab-button {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 15px;
+    margin-top: -10px;
+    height: auto;
+    min-height: 45rem;
+  }
+
+  .profile {
+    margin-left: 10px;
+    margin-top: 50px;
+    flex-wrap: wrap;
+  }
+
+  .avatar {
+    margin-top: -5rem;
+    width: 120px;
+    height: 120px;
+    font-size: 1.8rem;
+  }
+
+  .avatar::after {
+    width: 120px;
+    height: 120px;
+  }
+
+  .profile-info {
+    margin-left: 2rem;
+    font-size: 1.4rem;
+    margin-top: -0.5rem;
+  }
+
+  #name {
+    font-size: 1.3rem;
+  }
+
+  .info {
+    max-width: 100%;
+  }
+
+  input {
+    width: 90%;
+  }
+
+  /* Messages responsiveness */
+  .messages-container {
+    flex-direction: column;
+    height: auto;
+    min-height: 650px;
+  }
+
+  .listings-sidebar,
+  .inquiries-sidebar {
+    width: 100%;
+    max-height: 200px;
+  }
+
+  .conversation-area {
+    height: 450px;
+  }
+
+  /* Notifications responsiveness */
+  #notifications-container {
+    margin: 10px;
+  }
+
+  /* Tab responsiveness */
+  .tabs {
+    margin: 60px auto 20px;
+    padding: 15px 10px;
+  }
+
+  .tab-buttons {
+    width: 100%;
+  }
+
+  .tab-button {
+    padding: 8px 5px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    width: 100%;
+    padding: 10px;
+    margin-top: 0;
+    border-radius: 0;
+  }
+
+  .top {
+    height: 10rem;
+  }
+
+  .profile {
+    flex-direction: column;
+    align-items: center;
+    margin-left: 0;
+    margin-top: 70px;
+    text-align: center;
+  }
+
+  .avatar {
+    position: relative;
+    margin-top: -5rem;
+    width: 100px;
+    height: 100px;
+    font-size: 1.5rem;
+  }
+
+  .avatar::after {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile-info {
+    margin-left: 0;
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 1.3rem;
+  }
+
+  #name {
+    font-size: 1.2rem;
+  }
+
+  #email {
+    font-size: 0.7rem;
+  }
+
+  fieldset {
+    padding: 10px;
+  }
+
+  .input-container {
+    margin-bottom: 10px;
+  }
+
+  label {
+    font-size: 0.8rem;
+  }
+
+  input {
+    width: 85%;
+    height: 35px;
+    padding: 8px 35px 8px 8px;
+  }
+
+  .input-container i {
+    font-size: 1.5rem;
+  }
+
+  button {
+    padding: 8px;
+    font-size: 0.9em;
+  }
+
+  /* Improve messages UI for mobile */
+  .message {
+    max-width: 85%;
+  }
+
+  .inquiry-item,
+  .listing-item {
+    padding: 0.5rem;
+  }
+
+  .listing-image {
+    width: 50px;
+    height: 50px;
+  }
+
+  .inquiry-avatar,
+  .user-avatar {
+    width: 35px;
+    height: 35px;
+  }
+
+  .search-bar input,
+  .reply-input {
+    padding: 0.4rem;
+  }
+
+  /* Better tab navigation for small screens */
+  .tab-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+  }
+
+  .tab-button {
+    border-radius: 5px;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 13px;
+  }
+
+  .tab-button.active {
+    border-radius: 5px;
+  }
+}
+
+@media (max-width: 400px) {
+  .profile {
+    margin-top: 60px;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    font-size: 1.2rem;
+    margin-top: -4rem;
+  }
+
+  .avatar::after {
+    width: 80px;
+    height: 80px;
+    font-size: 12px;
+  }
+
+  .profile-info {
+    font-size: 1.1rem;
+  }
+
+  #name {
+    font-size: 1rem;
+  }
+
+  /* Adjust form elements */
+  input {
+    width: 80%;
+    font-size: 12px !important;
+  }
+
+  /* Even more compact messages UI */
+  .messages-list {
+    gap: 0.75rem;
+  }
+
+  .message {
+    max-width: 90%;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .message-content p {
+    font-size: 0.85rem;
+  }
+
+  .message-footer {
+    font-size: 0.7rem;
+  }
+
+  /* Make navigation more touch-friendly */
+  .tab-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .tab-button {
+    padding: 10px 0;
+    margin-bottom: 3px;
+    border-radius: 5px;
+  }
+
+  /* Modal adjustment */
+  .modal-content {
+    width: 85%;
+    padding: 15px;
+  }
+}
+
+/* Fix for very small devices */
+@media (max-width: 320px) {
+  .avatar {
+    width: 70px;
+    height: 70px;
+    font-size: 1rem;
+  }
+
+  .avatar::after {
+    width: 70px;
+    height: 70px;
+  }
+
+  input {
+    width: 75%;
+  }
+
+  .nav-container {
+    padding: 0 10px;
+  }
+
+  h6 {
+    font-size: 1.2rem;
+  }
+
+  .listings-list,
+  .inquiries-list {
+    gap: 0.5rem;
+  }
+
+  .inquiry-item,
+  .listing-item {
+    padding: 0.4rem;
+  }
+}
+
+/* Additional Fixes for Loader and Content Display */
+@media (max-width: 768px) {
+  .loader-img {
+    width: 200px;
+  }
+
+  .loader div {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .loader-img {
+    width: 150px;
+  }
+
+  .loader div {
+    font-size: 1rem;
+  }
+}
+
+/* Improved scrollbars for better mobile experience */
+.listings-sidebar,
+.inquiries-sidebar,
+.messages-wrapper,
+#notifications-list {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.listings-sidebar::-webkit-scrollbar,
+.inquiries-sidebar::-webkit-scrollbar,
+.messages-wrapper::-webkit-scrollbar,
+#notifications-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.listings-sidebar::-webkit-scrollbar-track,
+.inquiries-sidebar::-webkit-scrollbar-track,
+.messages-wrapper::-webkit-scrollbar-track,
+#notifications-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.listings-sidebar::-webkit-scrollbar-thumb,
+.inquiries-sidebar::-webkit-scrollbar-thumb,
+.messages-wrapper::-webkit-scrollbar-thumb,
+#notifications-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
 }

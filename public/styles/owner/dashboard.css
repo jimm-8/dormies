@@ -131,7 +131,7 @@ body {
 /* Grid Layout */
 .listings-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
 }
 
@@ -347,4 +347,127 @@ body {
 .notice.hide {
   display: none;
   opacity: 0;
+}
+
+/* Large screens (Desktops) */
+@media (min-width: 1201px) {
+  .listings-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Medium screens (Tablets and Small Laptops) */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .listings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sidebar {
+    width: 250px;
+  }
+
+  .main-content {
+    margin-left: 270px;
+    width: calc(100% - 270px);
+  }
+}
+
+/* Small screens (Tablets) */
+@media (max-width: 992px) {
+  .listings-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 15px;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 768px) {
+  .listings-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .main-content {
+    margin-top: 60px;
+    padding: 12px;
+  }
+
+  .listing-img-container {
+    height: 100px;
+  }
+
+  .listing-img-container h2 {
+    font-size: 20px;
+  }
+
+  .listing-price {
+    font-size: 18px;
+  }
+
+  .detail-value {
+    font-size: 14px;
+  }
+
+  .detail-label {
+    font-size: 10px;
+  }
+
+  .loader-img {
+    width: 70%;
+  }
+
+  .loader div {
+    font-size: 1.2rem;
+  }
+
+  .title h3 {
+    font-size: 1.3rem;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  .main-content {
+    margin-left: 0;
+    margin-top: 16px;
+    padding: 10px;
+  }
+
+  .listing-actions {
+    flex-direction: row;
+    gap: 5px;
+    align-items: flex-end;
+  }
+
+  .action-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .add-listing span {
+    font-size: 16px;
+  }
+
+  .notice {
+    width: 90%;
+    padding: 10px 15px;
+    font-size: 12px;
+  }
 }

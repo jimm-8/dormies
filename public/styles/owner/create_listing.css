@@ -492,6 +492,11 @@ label {
 }
 
 @media (max-width: 768px) {
+  .content-wrapper {
+    margin-left: 0;
+    margin-top: 16px;
+    padding: 10px;
+  }
   .modal-content {
     width: 90%;
   }

@@ -51,14 +51,40 @@ function initializeSidebar() {
 
   let menuBtn = document.getElementById("menu-btn");
   let accBtn = document.getElementById("acc_btn");
+  let closeSidebarBtn = document.getElementById("close-sidebar");
 
+  // Menu button toggle
   if (menuBtn) {
+    console.log("Menu button found! Adding event listener.");
     menuBtn.addEventListener("click", () => {
-      const navList = document.getElementById("nav-list");
-      if (navList) {
-        navList.classList.toggle("active");
+      const sidebar = document.querySelector(".sidebar");
+      if (sidebar) {
+        sidebar.classList.toggle("active");
+        // Optionally, add an overlay if sidebar is active
+        document.querySelector(".overlay").classList.toggle("active");
+        // Prevent page scroll when sidebar is open
+        document.body.classList.toggle("sidebar-open");
       }
     });
+  } else {
+    console.error("Menu button not found.");
+  }
+
+  // Close sidebar button functionality
+  if (closeSidebarBtn) {
+    console.log("Close sidebar button found! Adding event listener.");
+    closeSidebarBtn.addEventListener("click", () => {
+      const sidebar = document.querySelector(".sidebar");
+      if (sidebar) {
+        sidebar.classList.remove("active");
+        // Optionally remove the overlay when sidebar is closed
+        document.querySelector(".overlay").classList.remove("active");
+        // Allow page scrolling when sidebar is closed
+        document.body.classList.remove("sidebar-open");
+      }
+    });
+  } else {
+    console.error("Close sidebar button not found.");
   }
 
   if (accBtn) {
@@ -78,13 +104,16 @@ function initializeSidebar() {
   // Fix logo path dynamically
   let logo = document.querySelector(".side-logo");
   if (logo) {
-    logo.src = "/assets/logo-md.png";
+    logo.src = new URL("/assets/logo-md.png", window.location.origin).href;
     console.log("Logo updated:", logo.src);
   }
 
   let logoLoader = document.querySelector(".loader-img");
   if (logoLoader) {
-    logoLoader.src = "/assets/logo-md.png";
+    logoLoader.src = new URL(
+      "/assets/logo-md.png",
+      window.location.origin
+    ).href;
     console.log("Logo updated:", logoLoader.src);
   }
 }
