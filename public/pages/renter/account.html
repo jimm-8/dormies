@@ -374,11 +374,6 @@
           createdAt: Timestamp.now(),
         };
 
-        // Play notification sound for accepted appointments
-        if (scheduleData.status === "accepted") {
-          playNotificationSound();
-        }
-
         // Store in Firestore
         try {
           await setDoc(doc(userNotificationsRef, notificationId), notification);
@@ -392,16 +387,6 @@
           console.log(`Notification created for schedule ${docId}`);
         } catch (error) {
           console.error("Error adding notification:", error);
-        }
-      }
-
-      // Play a notification sound
-      function playNotificationSound() {
-        try {
-          const audio = new Audio("/assets/sounds/notification.mp3");
-          audio.play();
-        } catch (error) {
-          console.error("Error playing notification sound:", error);
         }
       }
 
