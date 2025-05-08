@@ -108,6 +108,10 @@ body {
   font-size: 1.5rem;
 }
 
+.dormies {
+  color: var(--yellow);
+}
+
 .search-container {
   position: relative;
   display: flex;
