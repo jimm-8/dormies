@@ -102,8 +102,8 @@
                           <label for="rental-space">Type of Rental Space</label>
                           <select id="rental-space">
                               <option value="" disabled selected>Select</option>
-                              <option value="room">Room</option>
-                              <option value="apartment">Apartment</option>
+                              <option value="Room">Room</option>
+                              <option value="Apartment">Apartment</option>
                           </select>
                       </div>
                       
@@ -111,9 +111,9 @@
                           <label for="furnish-status">Room Furnish</label>
                           <select id="furnish-status">
                               <option value="" disabled selected>Select</option>
-                              <option value="fully-furnished">Fully Furnished</option>
-                              <option value="semi-furnished">Semi-Furnished</option>
-                              <option value="bare">Bare</option>
+                              <option value="Fully-Furnished">Fully Furnished</option>
+                              <option value="Semi-Furnished">Semi-Furnished</option>
+                              <option value="Bare Unit">Bare</option>
                           </select>
                       </div>
                       
@@ -121,9 +121,9 @@
                           <label for="room-type">Room Type</label>
                           <select id="room-type">
                               <option value="" disabled selected>Select</option>
-                              <option value="studio">Studio</option>
-                              <option value="1-bedroom">1 Bedroom</option>
-                              <option value="2-bedroom">2 Bedroom</option>
+                              <option value="Studio">Studio</option>
+                              <option value="1-Bedroom">1 Bedroom</option>
+                              <option value="2-Bedroom">2 Bedroom</option>
                           </select>
                       </div>
                       
@@ -132,8 +132,8 @@
                           <label for="room-privacy">Room Privacy</label>
                           <select id="room-privacy">
                               <option value="" disabled selected>Select</option>
-                              <option value="private">Private Room</option>
-                              <option value="shared">Shared Room</option>
+                              <option value="Private">Private Room</option>
+                              <option value="Shared">Shared Room</option>
                           </select>
                       </div>
                       
@@ -141,8 +141,8 @@
                           <label for="bathroom">Bathroom Privacy</label>
                           <select id="bathroom">
                               <option value="" disabled selected>Select</option>
-                              <option value="private">Private Bathroom</option>
-                              <option value="shared">Shared Bathroom</option>
+                              <option value="Private">Private Bathroom</option>
+                              <option value="Shared">Shared Bathroom</option>
                           </select>
                       </div>
                       
@@ -193,8 +193,8 @@
                       <label for="advance-payment">Advance Payments:</label>
                       <select id="advance-payment" name="advance-payment">
                         <option value="" disabled selected>Select</option>
-                        <option value="1-month">1 Month Advance</option>
-                        <option value="2-month">2 Month Advance</option>
+                        <option value="1-Month Advance">1 Month Advance</option>
+                        <option value="2-Month Advance">2 Month Advance</option>
                       </select>
                     </div>
 
@@ -202,8 +202,8 @@
                       <label for="deposit-payment">Deposit Payments:</label>
                       <select id="deposit-payment" name="deposit-payment">
                         <option value="" disabled selected>Select</option>
-                        <option value="1-month">1 Month Deposit</option>
-                        <option value="2-month">2 Month Deposit</option>
+                        <option value="1-Month Deposit">1 Month Deposit</option>
+                        <option value="2-Month Deposit">2 Month Deposit</option>
                       </select>
                     </div>
                   </div>
@@ -213,9 +213,9 @@
                       <label for="contract-term">Contract Term:</label>
                       <select id="contract-term" name="contract-term">  
                         <option value="" disabled selected>Select</option>
-                        <option value="flexible">Flexible Term</option>
-                        <option value="semester">1 Semester</option>
-                        <option value="year">1 Year</option>
+                        <option value="Flexible">Flexible Term</option>
+                        <option value="Per Semester">1 Semester</option>
+                        <option value="Per Year">1 Year</option>
                       </select>
                     </div>
 
@@ -223,8 +223,8 @@
                       <label for="water-bill">Water Bill Included:</label>
                       <select id="water-bill" name="water-bill">  
                         <option value="" disabled selected>Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
                       </select>
                     </div>
               
@@ -232,8 +232,8 @@
                       <label for="electric-bill">Electric Bill Included:</label>
                       <select id="electric-bill" name="electric-bill">
                         <option value="" disabled selected>Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
                       </select>
                     </div>
 
@@ -241,23 +241,23 @@
                       <label for="wifi-bill">Wifi Bill Included:</label>
                       <select id="wifi-bill" name="wifi-bill">
                         <option value="" disabled selected>Select</option>
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
-                <!-- Photo upload section (commented out in original) 
+                <!-- Photo upload section - THIS SECTION NEEDS CHANGES -->
                 <label>Upload Photos of the Rental Space</label>
                 <div class="photo-upload-section">
                   <div class="upload-container">
-                    <input type="file" id="upload-photos" name="upload-photos" accept="image/*" multiple onchange="previewImages(event)">
+                    <input type="file" id="upload-photos" accept="image/*" multiple>
                     <span>Choose Images (you can upload multiple)</span>
                   </div>
-                
+
                   <div class="image-preview" id="image-preview"></div>
-                </div>                 -->
+                </div>
               </div>
     
                 <!-- Buttons -->
@@ -267,5 +267,8 @@
             </div>
         </div>
     </div>
+    <script type="module" src="/js/firebase/post.js"></script>
+    <script type="module" src="/js/owner/create_listing.js"></script>
+    <script src="/js/cloudinary-upload.js"></script>
 </body>
 </html>

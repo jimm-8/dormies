@@ -44,12 +44,6 @@ function initNavbarEvents() {
   }
 }
 
-// Load Navbar and Footer
-document.addEventListener("DOMContentLoaded", function () {
-  loadComponent("navbar", "/pages/navbar.html", initNavbarEvents);
-  loadComponent("footer", "/pages/footer.html");
-});
-
 let logoLoader = document.querySelector(".loader-img");
 if (logoLoader) {
   logoLoader.src = "/assets/logo-md.png";

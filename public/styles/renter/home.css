@@ -80,20 +80,22 @@ body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  font-family: "Poppins", sans-serif;
 }
 
 #main {
   display: none;
   opacity: 0;
-  min-width: 100%;
+  width: 100%;
   position: relative;
   min-height: 100vh;
 }
 
 .content {
-  margin-top: 4rem;
-  min-width: 100vw;
-  padding: 30px;
+  margin-top: 3rem;
+  width: 100%;
+  padding: 30px 5%;
+  box-sizing: border-box;
 }
 
 .top {
@@ -103,16 +105,21 @@ body {
 
 .title {
   color: var(--yellow);
+  font-size: 1.5rem;
+}
+
+.dormies {
+  color: var(--yellow);
 }
 
 .search-container {
   position: relative;
   display: flex;
   align-items: center;
-  width: 800px;
+  width: min(800px, 90%);
   height: 45px;
   padding: 5px 15px;
-  border: 2px solid #03045e;
+  border: 2px solid var(--blue);
   border-radius: 30px;
   margin: 0.5rem auto;
 }
@@ -125,6 +132,7 @@ body {
   outline: none;
   border-radius: 30px;
   margin-left: -10px;
+  font-size: 1rem;
 }
 
 .search-container i {
@@ -137,48 +145,13 @@ body {
 }
 
 /* Listing cards */
-.listing-card {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  position: relative;
-  min-height: 450px; /* Fixed minimum height */
-  padding-bottom: 3rem;
-}
-
-.price-tag {
-  position: absolute;
-  bottom: 1rem;
-  left: 1rem;
-  color: #182b9b;
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-/* Add to existing styles */
-.align-right {
-  margin-left: auto; /* Pushes container to the right */
-  display: flex;
-  gap: 1rem;
-}
-
-/* Add this to prevent visited link styling */
-.listing-link,
-.listing-link:visited {
-  color: inherit;
-  text-decoration: none;
-}
-
 .listings-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 2rem;
-  margin-top: 2rem;
-  width: 1200px;
-  justify-content: center;
   margin: 2rem auto;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .listing-card {
@@ -189,6 +162,11 @@ body {
   transition: transform 0.3s ease;
   text-decoration: none !important;
   color: inherit !important;
+  position: relative;
+  min-height: 400px;
+  padding-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .listing-card:focus {
@@ -214,7 +192,7 @@ body {
 }
 
 .verified-badge {
-  color: #19268a;
+  color: var(--blue);
   font-weight: 600;
   margin-bottom: 0.5rem;
   display: flex;
@@ -226,4 +204,105 @@ body {
   color: #666;
   margin: 0.5rem 0;
   font-size: 0.9rem;
+}
+
+.price-tag {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  color: var(--blue);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.align-right {
+  margin-left: auto;
+  display: flex;
+  gap: 1rem;
+}
+
+.listing-link,
+.listing-link:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Media Queries for Responsive Design */
+
+/* Small devices (phones) */
+@media screen and (max-width: 576px) {
+  .content {
+    padding: 20px 4%;
+  }
+
+  .search-container {
+    height: 40px;
+    width: 95%;
+  }
+
+  .search-input {
+    font-size: 0.9rem;
+  }
+
+  .listings-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .listing-card {
+    min-height: 380px;
+  }
+
+  .listing-image {
+    height: 180px;
+  }
+
+  .verified-badge {
+    font-size: 0.9rem;
+  }
+
+  .address {
+    font-size: 0.8rem;
+  }
+
+  .price-tag {
+    font-size: 1.1rem;
+  }
+}
+
+/* Medium devices (tablets) */
+@media screen and (min-width: 577px) and (max-width: 768px) {
+  .listings-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .listing-image {
+    height: 160px;
+  }
+}
+
+/* Medium-large devices */
+@media screen and (min-width: 769px) and (max-width: 992px) {
+  .listings-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Large devices (desktops) */
+@media screen and (min-width: 993px) and (max-width: 1200px) {
+  .listings-container {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 95%;
+  }
+}
+
+/* Extra large devices */
+@media screen and (min-width: 1201px) {
+  .content {
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }

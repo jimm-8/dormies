@@ -4,33 +4,359 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/assets/logo-sm.png" />
-    <title>Owner - Dashboard</title>
-    <link rel="stylesheet" href="/styles/admin.css" />
-    <script type="module" src="/js/admin.js"></script>
-    <link rel="stylesheet" href="/styles/owner/appointments.css" />
     <script type="module" src="/js/owner/appointments.js"></script>
+    <title>Owner Appointments</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+      :root {
+        --blue: #03045e;
+        --yellow: #ffb703;
+        --black: #151f28;
+        --gradient: linear-gradient(135deg, #03045e 0%, #023e8a 100%);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+      }
+
+      body {
+        background-color: #f4f6f8;
+        color: #333;
+      }
+
+      h1 {
+        font-weight: bold;
+        font-size: 2rem;
+        color: var(--black);
+      }
+
+      .main-content {
+        margin-left: 330px;
+        margin-top: 70px;
+        padding: 30px 40px;
+      }
+
+      .appointments-header {
+        margin-bottom: 20px;
+      }
+
+      .appointments-header p {
+        color: #666;
+        margin-top: 4px;
+        font-size: 0.95rem;
+      }
+
+      #appointments-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+        max-width: 100%;
+      }
+
+      .appointment-card {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 1.5rem;
+        width: 100%;
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.06);
+        transition: transform 0.2s ease;
+      }
+
+      .appointment-card:hover {
+        transform: scale(1.01);
+      }
+
+      .appointment-card p {
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+      }
+
+      .appointment-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .accept-button,
+      .decline-button {
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+
+      .accept-button {
+        background-color: #4caf50;
+      }
+
+      .decline-button {
+        background-color: #f44336;
+      }
+
+      .accept-button:hover {
+        background-color: #45a049;
+      }
+
+      .decline-button:hover {
+        background-color: #e53935;
+      }
+
+      .status-tag {
+        padding: 0.4rem 0.9rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 10px;
+      }
+
+      .status-accepted {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .status-declined {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+
+      .search-filter-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .loading,
+      .empty {
+        text-align: center;
+        padding: 2rem;
+        font-size: 1.3rem;
+        color: #777;
+      }
+
+      #filter-status {
+        padding: 0.7rem 1rem;
+        font-size: 1rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        width: 200px;
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          margin-left: 0;
+          padding: 20px;
+        }
+
+        .appointment-card {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div class="loader">
-      <img src="/assets/logo-md.png" class="loader-img" alt="logo-md" />
-      <div>
-        <span>Find.</span>
-        <span>Book.</span>
-        <span>Move In.</span>
-      </div>
-    </div>
-    <!-- Sidebar & Navbar Will Be Loaded Here -->
-     <div id="main">
+    <div id="main">
       <div id="sidebar-container"></div>
 
-      <!-- Add the main-content div which is referenced in your CSS -->
-      <div>
-        <div class="main-content">
-          <div class="one">
-            <h5>Good day!</h5>
-            <h1>THIS IS APPOINTMENTS</h1>
-          </div>
+      <div class="main-content">
+        <div class="appointments-header">
+          <h1 id="current-listing-header">Appointments</h1>
+          <p>Manage your appointments with potential renters</p>
+        </div>
+
+        <div class="search-filter-container">
+          <select id="filter-status">
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="accepted">Accepted</option>
+            <option value="declined">Declined</option>
+          </select>
+        </div>
+
+        <div id="appointments-container"></div>
       </div>
-     </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+      import {
+        getFirestore,
+        collection,
+        query,
+        where,
+        getDocs,
+        updateDoc,
+        doc,
+      } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyCV7GHk-wK5bhDg2Inqm7vJqTYjl1TTTNw",
+        authDomain: "dormies-b47b7.firebaseapp.com",
+        projectId: "dormies-b47b7",
+        storageBucket: "dormies-b47b7.appspot.com",
+        messagingSenderId: "443577320462",
+        appId: "1:443577320462:web:0a418fa107fbd01bd1285f",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const auth = getAuth(app);
+
+      const appointmentsContainer = document.getElementById(
+        "appointments-container"
+      );
+      const filterStatus = document.getElementById("filter-status");
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
+      function formatTime(timeStr) {
+        const [hourStr, minute] = timeStr.split(":");
+        let hour = parseInt(hourStr, 10);
+        const ampm = hour >= 12 ? "PM" : "AM";
+
+        hour = hour % 12 || 12; // convert 0 or 12 to 12
+
+        return `${hour}:${minute} ${ampm}`;
+      }
+
+      function showEmpty(message = "No appointments found.") {
+        appointmentsContainer.innerHTML = `<div class="empty">${message}</div>`;
+      }
+
+      async function fetchAndRenderSchedules(statusFilter = "all") {
+        appointmentsContainer.innerHTML = `<div class="loading">Loading appointments...</div>`;
+
+        const user = auth.currentUser;
+        if (!user) {
+          showEmpty("You are not logged in.");
+          return;
+        }
+
+        try {
+          const q = query(
+            collection(db, "schedules"),
+            where("ownerId", "==", user.uid)
+          );
+          const snapshot = await getDocs(q);
+
+          if (snapshot.empty) {
+            showEmpty();
+            return;
+          }
+
+          let schedules = [];
+          snapshot.forEach((docSnap) => {
+            let data = docSnap.data();
+            data.id = docSnap.id;
+            schedules.push(data);
+          });
+
+          if (statusFilter !== "all") {
+            schedules = schedules.filter(
+              (s) => (s.status || "Pending").toLowerCase() === statusFilter
+            );
+          }
+
+          appointmentsContainer.innerHTML = "";
+
+          if (schedules.length === 0) {
+            showEmpty(`No ${statusFilter} appointments found.`);
+            return;
+          }
+
+          schedules.forEach(renderCard);
+        } catch (error) {
+          console.error("Failed to fetch schedules:", error);
+          showEmpty("Something went wrong.");
+        }
+      }
+
+      function renderCard(schedule) {
+        const card = document.createElement("div");
+        card.className = "appointment-card";
+
+        const status = schedule.status || "Pending";
+        let statusDisplay;
+
+        if (status === "Pending") {
+          statusDisplay = `
+      <div class="appointment-actions">
+        <button class="accept-button">Accept</button>
+        <button class="decline-button">Decline</button>
+      </div>
+    `;
+        } else {
+          statusDisplay = `<span class="status-tag status-${status}">${
+            status.charAt(0).toUpperCase() + status.slice(1)
+          }</span>`;
+        }
+
+        card.innerHTML = `
+    <p><strong>Name:</strong> ${schedule.name || "Unknown"}</p>
+    <p><strong>Phone:</strong> ${schedule.phone || "N/A"}</p>
+    <p><strong>Preferred Date:</strong> ${formatDate(
+      schedule.preferredDate
+    )}</p>
+    <p><strong>Preferred Time:</strong> ${formatTime(
+      schedule.preferredTime
+    )}</p>
+    <p><strong>Status:</strong> ${statusDisplay}</p>
+  `;
+
+        if (status === "Pending") {
+          card
+            .querySelector(".accept-button")
+            .addEventListener("click", () =>
+              updateStatus(schedule.id, "accepted")
+            );
+          card
+            .querySelector(".decline-button")
+            .addEventListener("click", () =>
+              updateStatus(schedule.id, "declined")
+            );
+        }
+
+        appointmentsContainer.appendChild(card);
+      }
+
+      async function updateStatus(id, newStatus) {
+        try {
+          await updateDoc(doc(db, "schedules", id), { status: newStatus });
+          await fetchAndRenderSchedules(filterStatus.value);
+        } catch (err) {
+          console.error("Failed to update status:", err);
+        }
+      }
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) fetchAndRenderSchedules();
+        else showEmpty("Please log in to view your appointments.");
+      });
+
+      filterStatus.addEventListener("change", () => {
+        fetchAndRenderSchedules(filterStatus.value);
+      });
+    </script>
   </body>
 </html>
